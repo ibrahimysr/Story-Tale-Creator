@@ -12,6 +12,7 @@ class StoryCreatorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true, // Bu satırı ekles
       appBar: AppBar(
         title: const Text('Hikaye Oluşturucu'),
       ),
@@ -20,7 +21,7 @@ class StoryCreatorView extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.purple[100]!, Colors.blue[100]!],
+            colors: [Colors.white,Colors.white],
           ),
         ),
         child: Consumer<StoryViewModel>(
