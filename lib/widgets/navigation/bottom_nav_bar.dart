@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:masal/features/story/views/story_creator_view.dart';
+import 'package:masal/features/home/views/home_view.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,42 +15,40 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   late final List<Widget> pages;
 
-  // Çocukça ve eğlenceli ikonlar
+  // Uzay teması için ikonlar
   final List<IconData> bottomIcons = [
-    Icons.home_filled, // Ana sayfa
-    CupertinoIcons.star_fill, // Keşfet (yıldız yaptım, daha sevimli)
-    CupertinoIcons.heart_fill, // Favoriler (kalp daha eğlenceli)
-    Icons.person_rounded, // Profil
+    Icons.rocket_launch, // Ana sayfa
+    Icons.auto_awesome, // Keşfet
+    Icons.favorite, // Favoriler
+    Icons.person_outline, // Profil
   ];
 
-  // Her ikon için renkler (çocukların seveceği parlak tonlar)
+  // Uzay teması için renkler
   final List<Color> iconColors = [
-    Colors.purple,
-    Colors.yellow,
-    Colors.red,
-    Colors.blue,
+    const Color(0xFF7c4dff), // Mor
+    const Color(0xFF00b0ff), // Mavi
+    const Color(0xFFff4081), // Pembe
+    const Color(0xFF64ffda), // Turkuaz
   ];
 
   @override
   void initState() {
     super.initState();
     pages = [
-      const StoryCreatorView(),
-      navBarPage(CupertinoIcons.star_fill, "Keşfet"),
-      navBarPage(CupertinoIcons.heart_fill, "Favoriler"),
-      navBarPage(Icons.person_rounded, "Profilim"),
+      const HomeView(),
+      navBarPage(Icons.auto_awesome, "Galaktik Keşif"),
+      navBarPage(Icons.favorite, "Yıldız Koleksiyonum"),
+      navBarPage(Icons.person_outline, "Uzay Kaşifi"),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true, // Bu satırı ekle
-      backgroundColor: Colors.purple[50], // Hafif mor arka plan
+      extendBody: true,
+      backgroundColor: const Color(0xFF1a237e),
       body: pages[_currentIndex],
       bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-        
-        
         itemCount: bottomIcons.length,
         tabBuilder: (int index, bool isActive) {
           return Column(
@@ -57,10 +56,10 @@ class _MainScreenState extends State<MainScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOutBack,
-                width: isActive ? 45 : 40,
-                height: isActive ? 45 : 40,
+                width: isActive ? 50 : 40,
+                height: isActive ? 50 : 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
@@ -75,8 +74,13 @@ class _MainScreenState extends State<MainScreen> {
                       ? [
                           BoxShadow(
                             color: iconColors[index].withOpacity(0.5),
-                            blurRadius: 10,
+                            blurRadius: 15,
                             spreadRadius: 2,
+                          ),
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.2),
+                            blurRadius: 20,
+                            spreadRadius: -5,
                           ),
                         ]
                       : [],
@@ -88,13 +92,18 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               if (isActive)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
+                Container(
+                  margin: const EdgeInsets.only(top: 4.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withOpacity(0.1),
+                  ),
                   child: Text(
-                    ["Ana Sayfa", "Keşfet", "Favoriler", "Profilim"][index],
+                    ["Görev Merkezi", "Galaktik Keşif", "Koleksiyonum", "Kaşif"][index],
                     style: TextStyle(
                       fontSize: 12,
-                      color: iconColors[index],
+                      color: Colors.white.withOpacity(0.9),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -110,10 +119,10 @@ class _MainScreenState extends State<MainScreen> {
             _currentIndex = index;
           });
         },
-        backgroundColor: Colors.white,// Renksiz (beyaz) arka plan
-        splashColor: Colors.white.withOpacity(0.3), // Mor splash efekti için
+        backgroundColor: Colors.black.withOpacity(0.8),
+        splashColor: Colors.white.withOpacity(0.1),
         splashRadius: 30,
-        elevation: 0, // Gölgeyi kaldırdım, daha sade duruyor
+        elevation: 0,
         height: 100,
       ),
     );
@@ -123,7 +132,10 @@ class _MainScreenState extends State<MainScreen> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.purple[100]!, Colors.blue[100]!],
+          colors: [
+            const Color(0xFF1a237e),
+            const Color(0xFF311b92),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -132,10 +144,29 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              iconName,
-              size: 100,
-              color: Colors.purple[700],
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.purple[400]!,
+                    Colors.blue[400]!,
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.purple[200]!.withOpacity(0.5),
+                    blurRadius: 15,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Icon(
+                iconName,
+                size: 60,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 20),
             Text(
@@ -143,8 +174,13 @@ class _MainScreenState extends State<MainScreen> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple[800],
-                fontFamily: 'Comic Sans MS',
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    color: Colors.purple[300]!,
+                    blurRadius: 5,
+                  ),
+                ],
               ),
             ),
           ],
