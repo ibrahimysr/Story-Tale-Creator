@@ -6,10 +6,10 @@ class ProfileHeader extends StatelessWidget {
   final String username;
 
   const ProfileHeader({
-    Key? key,
+    super.key,
     required this.name,
     required this.username,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

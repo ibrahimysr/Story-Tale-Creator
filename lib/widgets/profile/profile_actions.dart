@@ -7,11 +7,11 @@ class ProfileActions extends StatelessWidget {
   final VoidCallback onHelp;
 
   const ProfileActions({
-    Key? key,
+    super.key,
     required this.onEditProfile,
     required this.onSettings,
     required this.onHelp,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

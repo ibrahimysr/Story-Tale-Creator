@@ -1,18 +1,157 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/theme/space_theme.dart';
 import '../../core/theme/widgets/starry_background.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:math';
+import 'package:path_provider/path_provider.dart' show PathProviderException;
 
 class StoryDisplayView extends StatelessWidget {
   final String story;
   final Uint8List? image;
 
   const StoryDisplayView({
-    Key? key,
+    super.key,
     required this.story,
     this.image,
-  }) : super(key: key);
+  });
+
+  // Resmi yerel depolamaya kaydetme fonksiyonu
+  Future<String?> _saveImageToLocalStorage(Uint8List imageData, String userId) async {
+    try {
+      print('Resim kaydetme işlemi başladı');
+      // Uygulama dokümanları dizinini al
+      final directory = await getApplicationDocumentsDirectory().catchError((error) {
+        print('Dizin alma hatası: $error');
+        return Directory('storage/emulated/0/Download');  // Android için fallback
+      });
+      
+      print('Dizin yolu: ${directory.path}');
+      
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final random = Random().nextInt(10000);
+      
+      // Benzersiz bir dosya adı oluştur
+      final fileName = 'story_image_${userId}_${timestamp}_$random.jpg';
+      final filePath = '${directory.path}/$fileName';
+      
+      print('Oluşturulan dosya yolu: $filePath');
+      
+      // Dizinin varlığını kontrol et ve oluştur
+      if (!await directory.exists()) {
+        print('Dizin oluşturuluyor...');
+        await directory.create(recursive: true);
+      }
+      
+      // Resmi kaydet
+      final file = File(filePath);
+      await file.writeAsBytes(imageData);
+      print('Resim başarıyla kaydedildi: $fileName');
+      
+      return fileName;
+    } catch (e) {
+      print('Resim kaydetme hatası detayı: $e');
+      return null;
+    }
+  }
+
+  // Hikayeyi Firebase'e kaydetme fonksiyonu
+  Future<void> _saveStoryToFirebase(BuildContext context) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: const Text(
+                'Hikayeyi kaydetmek için giriş yapmalısınız!',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+            backgroundColor: Colors.red.withOpacity(0.8),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          ),
+        );
+        return;
+      }
+
+      print('Resim kaydetme başlıyor...');
+      print('Gelen image değeri: ${image != null ? 'var' : 'yok'}');
+      
+      String? imageFileName;
+      if (image != null) {
+        print('Resim kaydetme deneniyor...');
+        imageFileName = await _saveImageToLocalStorage(image!, user.uid);
+        print('Kaydedilen resim dosya adı: $imageFileName');
+      }
+
+      print('Firebase\'e kaydedilecek veriler:');
+      final storyData = {
+        'userId': user.uid,
+        'story': story,
+        'createdAt': FieldValue.serverTimestamp(),
+        'hasImage': imageFileName != null,
+        'imageFileName': imageFileName,
+      };
+      print(storyData);
+
+      await FirebaseFirestore.instance.collection('userStories').add(storyData);
+
+      // Başarılı mesajı göster
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: const Text(
+              'Hikaye kütüphanenize kaydedildi! ✨',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          backgroundColor: SpaceTheme.accentPurple.withOpacity(0.8),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+      );
+    } catch (e) {
+      // Hata mesajı göster
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'Bir hata oluştu: ${e.toString()}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          backgroundColor: Colors.red.withOpacity(0.8),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,34 +171,11 @@ class StoryDisplayView extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               decoration: SpaceTheme.iconContainerDecoration,
               child: const Icon(
-                Icons.copy,
+                Icons.save,
                 color: Colors.white,
               ),
             ),
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: story));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: const Text(
-                      'Hikaye kopyalandı! ✨',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  backgroundColor: SpaceTheme.accentPurple.withOpacity(0.8),
-                  duration: const Duration(seconds: 2),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              );
-            },
+            onPressed: () => _saveStoryToFirebase(context),
           ),
           const SizedBox(width: 8),
         ],
@@ -207,4 +323,4 @@ class StoryDisplayView extends StatelessWidget {
       ),
     );
   }
-} 
+}

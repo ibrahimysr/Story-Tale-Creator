@@ -183,12 +183,12 @@ class SpaceTheme {
         elevation: 8,
         shadowColor: color.withOpacity(0.5),
       ).copyWith(
-        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-          (Set<MaterialState> states) {
-            if (states.contains(MaterialState.pressed)) {
+        overlayColor: WidgetStateProperty.resolveWith<Color?>(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.pressed)) {
               return Colors.white.withOpacity(0.2);
             }
-            if (states.contains(MaterialState.hovered)) {
+            if (states.contains(WidgetState.hovered)) {
               return Colors.white.withOpacity(0.1);
             }
             return null;

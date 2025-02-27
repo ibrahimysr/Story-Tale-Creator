@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/space_theme.dart';
 
 class HabitHeader extends StatelessWidget {
-  const HabitHeader({Key? key}) : super(key: key);
+  const HabitHeader({super.key});
 
   @override
   Widget build(BuildContext context) {

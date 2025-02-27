@@ -7,11 +7,11 @@ class StreakOverview extends StatelessWidget {
   final String todayProgress;
 
   const StreakOverview({
-    Key? key,
+    super.key,
     required this.longestStreak,
     required this.totalHabits,
     required this.todayProgress,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

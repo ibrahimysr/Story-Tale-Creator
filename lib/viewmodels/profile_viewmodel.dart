@@ -26,19 +26,16 @@ class ProfileViewModel extends ChangeNotifier {
         throw Exception('Kullanıcı oturumu bulunamadı');
       }
 
-      // Önce auth bilgilerini alalım
       String displayName = user.displayName ?? '';
       String email = user.email ?? '';
 
-      // Firestore'dan kullanıcı bilgilerini alalım
       final doc = await _firestore.collection('users').doc(user.uid).get();
       
       if (!doc.exists) {
-        // Eğer kullanıcı Firestore'da yoksa, yeni profil oluşturalım
         final newProfile = {
           'uid': user.uid,
           'name': displayName,
-          'username': email.split('@')[0], // Email'den basit bir username oluştur
+          'username': email.split('@')[0], 
           'stories': 0,
           'missions': '0/10',
           'level': 1,
@@ -47,7 +44,6 @@ class ProfileViewModel extends ChangeNotifier {
         await _firestore.collection('users').doc(user.uid).set(newProfile);
         _userProfile = UserProfile.fromMap(newProfile);
       } else {
-        // Varolan profili yükleyelim
         _userProfile = UserProfile.fromMap({
           'uid': user.uid,
           ...doc.data() ?? {},
@@ -93,12 +89,10 @@ class ProfileViewModel extends ChangeNotifier {
       
       if (name != null) {
         updates['name'] = name;
-        // Auth displayName'i de güncelle
         await user.updateDisplayName(name);
       }
 
       if (username != null) {
-        // Kullanıcı adının kullanılabilir olduğunu kontrol et
         final isAvailable = await checkUsernameAvailable(username);
         if (!isAvailable && username != _userProfile?.username) {
           throw Exception('Bu kullanıcı adı zaten kullanımda');
@@ -108,7 +102,7 @@ class ProfileViewModel extends ChangeNotifier {
 
       if (updates.isNotEmpty) {
         await _firestore.collection('users').doc(user.uid).update(updates);
-        await loadUserProfile(); // Profili yeniden yükle
+        await loadUserProfile(); 
       }
     } catch (e) {
       _error = e.toString();

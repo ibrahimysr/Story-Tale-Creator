@@ -9,13 +9,13 @@ class SpaceTextField extends StatelessWidget {
   final String? Function(String?)? validator;
 
   const SpaceTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.label,
     required this.icon,
     this.isPassword = false,
     this.validator,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

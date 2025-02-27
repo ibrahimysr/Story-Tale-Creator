@@ -187,7 +187,7 @@ class HomeView extends StatelessWidget {
     bool isComingSoon = false,
     VoidCallback? onTap,
   }) {
-    return Container(
+    return SizedBox(
       height: 220,
       width: double.infinity,
       child: Card(
@@ -354,7 +354,7 @@ class HomeView extends StatelessWidget {
     bool isComingSoon = false,
     VoidCallback? onTap,
   }) {
-    return Container(
+    return SizedBox(
       width: 180,
       child: Card(
         elevation: 8,

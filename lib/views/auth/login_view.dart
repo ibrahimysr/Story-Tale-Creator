@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
+import 'package:masal/viewmodels/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/auth/space_text_field.dart';
@@ -8,13 +9,14 @@ import '../../core/theme/widgets/starry_background.dart';
 import 'register_view.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMixin {
+class _LoginViewState extends State<LoginView>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -55,34 +57,37 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(gradient: SpaceTheme.mainGradient),
-        child: Stack(
-          children: [
-            const StarryBackground(),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 40),
-                      _buildHeader(),
-                      const SizedBox(height: 40),
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: SlideTransition(
-                          position: _slideAnimation,
-                          child: _buildLoginForm(),
+    return ChangeNotifierProvider(
+      create: (_) => LoginViewModel(),
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(gradient: SpaceTheme.mainGradient),
+          child: Stack(
+            children: [
+              const StarryBackground(),
+              SafeArea(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+                        _buildHeader(),
+                        const SizedBox(height: 40),
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: SlideTransition(
+                            position: _slideAnimation,
+                            child: _buildLoginForm(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -119,90 +124,126 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
   }
 
   Widget _buildLoginForm() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1,
-        ),
-        boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            SpaceTextField(
-              controller: _emailController,
-              label: 'Galaktik E-posta',
-              icon: Icons.email_outlined,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Lütfen e-posta adresinizi girin';
-                }
-                if (!value.contains('@')) {
-                  return 'Geçerli bir e-posta adresi girin';
-                }
-                return null;
-              },
+    return Consumer<LoginViewModel>(
+      builder: (context, viewModel, child) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.2),
+              width: 1,
             ),
-            const SizedBox(height: 16),
-            SpaceTextField(
-              controller: _passwordController,
-              label: 'Gizli Şifre',
-              icon: Icons.lock_outline,
-              isPassword: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Lütfen şifrenizi girin';
-                }
-                if (value.length < 6) {
-                  return 'Şifre en az 6 karakter olmalıdır';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 24),
-            _buildLoginButton(),
-            const SizedBox(height: 16),
-            _buildRegisterButton(),
-           
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoginButton() {
-    return 
-     Container(
-          constraints: const BoxConstraints(maxWidth: 300),
-          child: ElevatedButton(
-            onPressed:  () async {
-                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
-
-                   
+            boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
+          ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SpaceTextField(
+                  controller: _emailController,
+                  label: 'Galaktik E-posta',
+                  icon: Icons.email_outlined,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Lütfen e-posta adresinizi girin';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Geçerli bir e-posta adresi girin';
+                    }
+                    return null;
                   },
-            style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentPurple),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Center(
-                child:  const Text(
-                        'Galaksiye Giriş Yap',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                ),
+                const SizedBox(height: 16),
+                SpaceTextField(
+                  controller: _passwordController,
+                  label: 'Gizli Şifre',
+                  icon: Icons.lock_outline,
+                  isPassword: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Lütfen şifrenizi girin';
+                    }
+                    if (value.length < 6) {
+                      return 'Şifre en az 6 karakter olmalıdır';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                _buildLoginButton(viewModel),
+                const SizedBox(height: 16),
+                _buildRegisterButton(),
+                if (viewModel.state == LoginState.error)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      viewModel.errorMessage,
+                      style: TextStyle(
+                        color: Colors.red[300],
+                        fontSize: 14,
                       ),
-              ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+              ],
             ),
           ),
         );
-    
-    
+      },
+    );
+  }
+
+  Widget _buildLoginButton(LoginViewModel viewModel) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 300),
+      child: ElevatedButton(
+        onPressed: viewModel.state == LoginState.loading
+            ? null
+            : () async {
+                if (_formKey.currentState!.validate()) {
+                  await viewModel.login(
+                    _emailController.text,
+                    _passwordController.text,
+                  );
+                  
+                  if (viewModel.state == LoginState.success) {
+                    // ignore: use_build_context_synchronously
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MainScreen(),
+                      ),
+                    );
+                  }
+                }
+              },
+        style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentPurple),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Center(
+            child: viewModel.state == LoginState.loading
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                : const Text(
+                    'Galaksiye Giriş Yap',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildRegisterButton() {
@@ -222,4 +263,4 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
       ),
     );
   }
-} 
+}

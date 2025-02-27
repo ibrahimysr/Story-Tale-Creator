@@ -7,11 +7,11 @@ class AnimatedScaleButton extends StatefulWidget {
   const AnimatedScaleButton({
     required this.onPressed,
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _AnimatedScaleButtonState createState() => _AnimatedScaleButtonState();
+  State<AnimatedScaleButton> createState() => _AnimatedScaleButtonState();
 }
 
 class _AnimatedScaleButtonState extends State<AnimatedScaleButton>

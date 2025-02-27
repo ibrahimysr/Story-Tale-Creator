@@ -51,8 +51,8 @@ class HabitTrackerViewModel extends ChangeNotifier {
   int _xpToNextLevel = 100;
   String _currentAchievement = "Sihir Çırağı";
   bool _didLevelUp = false;
-  int _longestStreak = 7; // Örnek değer
-  String _todayProgress = "2/3"; // Örnek değer
+  final int _longestStreak = 7;
+  String _todayProgress = "2/3"; 
 
   // Getters
   List<Habit> get habits => _habits;

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:masal/views/habit_tracker/habit_tracker_views.dart';
 import 'package:masal/views/profile/profile_views.dart';
-import 'package:masal/views/story/story_creator_view.dart';
 import 'package:masal/views/home/home_view.dart';
+import 'package:masal/views/story/story_library_view.dart';
 import '../../core/theme/space_theme.dart';
 import '../../core/theme/widgets/starry_background.dart';
 
@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
     pages = [
       const HomeView(),
       HabitTrackerScreen(),
-      navBarPage(Icons.favorite, "Yıldız Koleksiyonum"),
+      StoryLibraryView(),
       const ProfileView()
     ];
   }

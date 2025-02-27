@@ -38,4 +38,32 @@ class UserRepository {
       throw Exception('Kullanıcı kaydı sırasında hata: $e');
     }
   }
+
+  Future<UserModel> loginUser(String email, String password) async {
+    try {
+      User? user = await _authService.signInWithEmailAndPassword(
+          email, password);
+      
+      if (user == null) {
+        throw Exception('Giriş başarısız oldu.');
+      }
+
+      // Kullanıcı bilgilerini Firestore'dan al
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+      
+      if (!userDoc.exists) {
+        throw Exception('Kullanıcı bilgileri bulunamadı.');
+      }
+
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      
+      return UserModel(
+        id: user.uid,
+        username: userData['username'],
+        email: userData['email'],
+      );
+    } catch (e) {
+      throw Exception('Giriş sırasında hata: $e');
+    }
+  }
 }

@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'views/auth/login_view.dart';
 import 'viewmodels/story_viewmodel.dart';
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.deepPurple,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: const MainScreen(),
+        home: const LoginView(),
         routes: {
           '/login': (context) => const LoginView(),
         },

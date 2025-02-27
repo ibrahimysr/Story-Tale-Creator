@@ -9,7 +9,7 @@ import '../../core/theme/space_theme.dart';
 import '../../core/theme/widgets/starry_background.dart';
 
 class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key}) : super(key: key);
+  const RegisterView({super.key});
 
   @override
   State<RegisterView> createState() => _RegisterViewState();

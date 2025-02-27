@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class StarryBackground extends StatefulWidget {
-  const StarryBackground({Key? key}) : super(key: key);
+  const StarryBackground({super.key});
 
   @override
   State<StarryBackground> createState() => _StarryBackgroundState();

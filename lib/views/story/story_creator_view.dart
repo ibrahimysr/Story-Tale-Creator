@@ -9,7 +9,7 @@ import '../../core/theme/widgets/starry_background.dart';
 import 'story_display_view.dart';
 
 class StoryCreatorView extends StatefulWidget {
-  const StoryCreatorView({Key? key}) : super(key: key);
+  const StoryCreatorView({super.key});
 
   @override
   State<StoryCreatorView> createState() => _StoryCreatorViewState();

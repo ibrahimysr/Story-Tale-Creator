@@ -11,7 +11,7 @@ class SelectorCard extends StatelessWidget {
   final Function(String) onChanged;
 
   const SelectorCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.icon,
@@ -19,7 +19,7 @@ class SelectorCard extends StatelessWidget {
     required this.options,
     required this.selectedValue,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

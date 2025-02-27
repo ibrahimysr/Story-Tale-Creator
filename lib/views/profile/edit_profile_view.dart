@@ -5,7 +5,7 @@ import '../../../core/theme/widgets/starry_background.dart';
 import '../../viewmodels/profile_viewmodel.dart';
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({Key? key}) : super(key: key);
+  const EditProfileView({super.key});
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();

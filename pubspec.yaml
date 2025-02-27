@@ -23,6 +23,8 @@ dependencies:
   firebase_auth: ^5.5.1
   firebase_database: ^11.3.4
   cloud_firestore: 
+  firebase_storage:
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:
