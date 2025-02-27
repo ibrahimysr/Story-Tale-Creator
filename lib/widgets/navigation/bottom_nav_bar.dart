@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'package:masal/features/story/views/story_creator_view.dart';
-import 'package:masal/features/home/views/home_view.dart';
+import 'package:masal/views/habit_tracker/habit_tracker_views.dart';
+import 'package:masal/views/profile/profile_views.dart';
+import 'package:masal/views/story/story_creator_view.dart';
+import 'package:masal/views/home/home_view.dart';
+import '../../core/theme/space_theme.dart';
+import '../../core/theme/widgets/starry_background.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -36,154 +39,133 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     pages = [
       const HomeView(),
-      navBarPage(Icons.auto_awesome, "Galaktik Keşif"),
+      HabitTrackerScreen(),
       navBarPage(Icons.favorite, "Yıldız Koleksiyonum"),
-      navBarPage(Icons.person_outline, "Uzay Kaşifi"),
+      const ProfileView()
     ];
+  }
+
+  Widget navBarPage(IconData icon, String title) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 100, color: Colors.white.withOpacity(0.5)),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 24,
+              color: Colors.white.withOpacity(0.7),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      backgroundColor: const Color(0xFF1a237e),
-      body: pages[_currentIndex],
-      bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-        itemCount: bottomIcons.length,
-        tabBuilder: (int index, bool isActive) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutBack,
-                width: isActive ? 50 : 40,
-                height: isActive ? 50 : 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      iconColors[index],
-                      iconColors[index].withOpacity(0.7),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: isActive
-                      ? [
-                          BoxShadow(
-                            color: iconColors[index].withOpacity(0.5),
-                            blurRadius: 15,
-                            spreadRadius: 2,
-                          ),
-                          BoxShadow(
-                            color: Colors.white.withOpacity(0.2),
-                            blurRadius: 20,
-                            spreadRadius: -5,
-                          ),
-                        ]
-                      : [],
-                ),
-                child: Icon(
-                  bottomIcons[index],
-                  size: isActive ? 30 : 25,
-                  color: Colors.white,
-                ),
-              ),
-              if (isActive)
-                Container(
-                  margin: const EdgeInsets.only(top: 4.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      backgroundColor: SpaceTheme.primaryDark,
+      body: Stack(
+        children: [
+          const Positioned.fill(
+            child: StarryBackground(),
+          ),
+          pages[_currentIndex],
+        ],
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              SpaceTheme.primaryDark.withOpacity(0.5),
+              SpaceTheme.primaryDark,
+            ],
+          ),
+        ),
+        child: AnimatedBottomNavigationBar.builder(
+          itemCount: bottomIcons.length,
+          tabBuilder: (int index, bool isActive) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutBack,
+                  width: isActive ? 50 : 40,
+                  height: isActive ? 50 : 40,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        iconColors[index],
+                        iconColors[index].withOpacity(0.7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: isActive
+                        ? [
+                            BoxShadow(
+                              color: iconColors[index].withOpacity(0.5),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.2),
+                              blurRadius: 20,
+                              spreadRadius: -5,
+                            ),
+                          ]
+                        : [],
                   ),
-                  child: Text(
-                    ["Görev Merkezi", "Galaktik Keşif", "Koleksiyonum", "Kaşif"][index],
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withOpacity(0.9),
-                      fontWeight: FontWeight.bold,
+                  child: Icon(
+                    bottomIcons[index],
+                    size: isActive ? 30 : 25,
+                    color: Colors.white,
+                  ),
+                ),
+                if (isActive)
+                  Container(
+                    margin: const EdgeInsets.only(top: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white.withOpacity(0.1),
+                    ),
+                    child: Text(
+                      ["Uzay Üssü", "Görev Merkezi", "Koleksiyonum", "Kaşif"][index],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-            ],
-          );
-        },
-        activeIndex: _currentIndex,
-        gapLocation: GapLocation.none,
-        notchSmoothness: NotchSmoothness.softEdge,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        backgroundColor: Colors.black.withOpacity(0.8),
-        splashColor: Colors.white.withOpacity(0.1),
-        splashRadius: 30,
-        elevation: 0,
-        height: 100,
-      ),
-    );
-  }
-
-  Widget navBarPage(IconData iconName, String title) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            const Color(0xFF1a237e),
-            const Color(0xFF311b92),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.purple[400]!,
-                    Colors.blue[400]!,
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.purple[200]!.withOpacity(0.5),
-                    blurRadius: 15,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: Icon(
-                iconName,
-                size: 60,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                shadows: [
-                  Shadow(
-                    color: Colors.purple[300]!,
-                    blurRadius: 5,
-                  ),
-                ],
-              ),
-            ),
-          ],
+              ],
+            );
+          },
+          activeIndex: _currentIndex,
+          gapLocation: GapLocation.none,
+          notchSmoothness: NotchSmoothness.softEdge,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          backgroundColor: Colors.transparent,
+          splashColor: Colors.white.withOpacity(0.1),
+          splashRadius: 30,
+          elevation: 0,
+          height: 100,
         ),
       ),
     );

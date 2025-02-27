@@ -25,94 +25,95 @@ class SelectorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
-      decoration: SpaceTheme.getCardDecoration(color),
-      child: Material(
-        color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.5,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: options.length,
+        itemBuilder: (context, index) {
+          final option = options[index];
+          final isSelected = option == selectedValue;
+          
+          return GestureDetector(
+            onTap: () => onChanged(option),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: isSelected 
+                  ? SpaceTheme.getMagicalGradient(color)
+                  : LinearGradient(
+                      colors: [
+                        color.withOpacity(0.2),
+                        color.withOpacity(0.1),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: isSelected 
+                    ? Colors.white.withOpacity(0.5)
+                    : Colors.white.withOpacity(0.1),
+                  width: isSelected ? 2 : 1,
+                ),
+                boxShadow: isSelected 
+                  ? [
+                      BoxShadow(
+                        color: color.withOpacity(0.3),
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                      ),
+                    ]
+                  : [],
+              ),
+              child: Stack(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: SpaceTheme.iconContainerDecoration,
-                    child: Icon(icon, color: Colors.white, size: 30),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    title,
-                    style: SpaceTheme.cardTitleStyle.copyWith(
-                      fontSize: 22,
-                      color: Colors.white,
+                  if (isSelected)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withOpacity(0.3),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.check,
+                          size: 12,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        option,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          color: Colors.white.withOpacity(isSelected ? 1 : 0.8),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              Text(
-                description,
-                style: SpaceTheme.cardDescriptionStyle,
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    canvasColor: SpaceTheme.primaryDark,
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: selectedValue,
-                      hint: Text(
-                        'Seçiniz',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                        ),
-                      ),
-                      items: options.map((option) {
-                        return DropdownMenuItem<String>(
-                          value: option,
-                          child: Text(
-                            option,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          onChanged(value);
-                        }
-                      },
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                      icon: const Icon(
-                        Icons.arrow_drop_down,
-                        color: Colors.white,
-                      ),
-                      dropdownColor: color.withOpacity(0.9),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
