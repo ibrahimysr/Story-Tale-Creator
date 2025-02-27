@@ -27,7 +27,7 @@ class StoryService {
 
     try {
       final response = await http.post(
-        Uri.parse('${Environment.geminiApiUrl}?key=${AppConstants.geminiApiKey}'),
+        Uri.parse('${Environment.geminiApiUrl}?key=${Environment.geminiApiKey}'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "contents": [
@@ -40,15 +40,46 @@ class StoryService {
         }),
       );
 
-      if (response.statusCode != 200) {
-        throw Exception('Hikaye oluşturulamadı: ${response.statusCode}');
+      if (response.statusCode == 429) {
+        throw Exception('Çok fazla istek gönderildi. Lütfen biraz bekleyin.');
       }
 
-      final jsonResponse = jsonDecode(response.body);
-      final storyText = jsonResponse['candidates'][0]['content']['parts'][0]['text'];
+      if (response.statusCode == 401) {
+        throw Exception('API anahtarı geçersiz. Lütfen daha sonra tekrar deneyin.');
+      }
+
+      if (response.statusCode != 200) {
+        throw Exception('Hikaye oluşturulamadı. Lütfen daha sonra tekrar deneyin.');
+      }
+
+      final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      final candidates = jsonResponse['candidates'] as List<dynamic>;
+      
+      if (candidates.isEmpty) {
+        throw Exception('Hikaye oluşturulamadı. Lütfen farklı seçimlerle tekrar deneyin.');
+      }
+
+      final content = candidates[0]['content'] as Map<String, dynamic>;
+      final parts = content['parts'] as List<dynamic>;
+      
+      if (parts.isEmpty) {
+        throw Exception('Hikaye metni alınamadı. Lütfen tekrar deneyin.');
+      }
+
+      final storyText = parts[0]['text'] as String;
+      
+      if (storyText.isEmpty) {
+        throw Exception('Oluşturulan hikaye boş. Lütfen tekrar deneyin.');
+      }
+
       return StoryModel.fromText(storyText);
+    } on FormatException {
+      throw Exception('Hikaye formatında bir sorun oluştu. Lütfen tekrar deneyin.');
     } catch (e) {
-      throw Exception('Hikaye oluşturulurken bir hata oluştu: $e');
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.');
     }
   }
 } 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738778424613",
+    "project_id": "masal-hikaye",
+    "storage_bucket": "masal-hikaye.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738778424613:android:e5246f1d8606a5098e66cc",
+        "android_client_info": {
+          "package_name": "com.example.masal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDNtJU70ID3CQqzBSfuCve97yez44mt9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

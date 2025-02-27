@@ -1,50 +1,72 @@
 import 'package:flutter/material.dart';
 
 class SpaceTheme {
-  // Ana Renkler
-  static const Color primaryDark = Color(0xFF1a237e); // Koyu lacivert
-  static const Color primaryLight = Color(0xFF311b92); // Koyu mor
-  static const Color accentPurple = Color(0xFF7c4dff);
-  static const Color accentBlue = Color(0xFF00b0ff);
-  static const Color accentPink = Color(0xFFff4081);
-  static const Color accentTurquoise = Color(0xFF64ffda);
+  // Sihirli Renkler
+  static const Color primaryDark = Color(0xFF1A0B2E); // Derin gece mavisi
+  static const Color primaryLight = Color(0xFF2C1854); // Mistik mor
+  static const Color accentPurple = Color(0xFF9C27B0); // Büyülü mor
+  static const Color accentBlue = Color(0xFF0288D1); // Büyü mavisi
+  static const Color accentGold = Color(0xFFFFD700); // Sihirli altın
+  static const Color accentEmerald = Color(0xFF00BFA5); // Mistik zümrüt
+  static const Color accentPink = Color(0xFFE91E63); // Büyülü pembe
+  static const Color accentTurquoise = Color(0xFF00BCD4); // Mistik turkuaz
 
-  // Gradient Arkaplanlar
+  // Büyülü Gradyanlar
   static LinearGradient get mainGradient => const LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [primaryDark, primaryLight],
+        colors: [
+          primaryDark,
+          primaryLight,
+        ],
+        stops: [0.3, 1.0],
       );
 
-  static LinearGradient getGlowGradient(Color color) => LinearGradient(
-        colors: [color, color.withOpacity(0.7)],
+  static LinearGradient getMagicalGradient(Color color) => LinearGradient(
+        colors: [
+          color,
+          color.withOpacity(0.6),
+          color.withOpacity(0.3),
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
+        stops: const [0.2, 0.6, 1.0],
       );
 
-  // Gölge Efektleri
-  static List<BoxShadow> getGlowingShadow(Color color) => [
+  // Büyülü Gölgeler
+  static List<BoxShadow> getMagicalGlow(Color color) => [
         BoxShadow(
           color: color.withOpacity(0.5),
-          blurRadius: 15,
+          blurRadius: 20,
           spreadRadius: 2,
         ),
         BoxShadow(
           color: Colors.white.withOpacity(0.2),
-          blurRadius: 20,
+          blurRadius: 30,
           spreadRadius: -5,
+        ),
+        BoxShadow(
+          color: color.withOpacity(0.1),
+          blurRadius: 50,
+          spreadRadius: 10,
         ),
       ];
 
-  // Text Stilleri
+  // Metin Stilleri
   static TextStyle get titleStyle => TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
-        color: Colors.amber[100],
+        color: accentGold,
         shadows: [
           Shadow(
-            color: Colors.purple[300]!,
-            blurRadius: 5,
+            color: accentGold.withOpacity(0.5),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+          Shadow(
+            color: Colors.purple.withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
           ),
         ],
       );
@@ -52,17 +74,28 @@ class SpaceTheme {
   static TextStyle get subtitleStyle => TextStyle(
         fontSize: 16,
         color: Colors.blue[100],
+        shadows: [
+          Shadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 5,
+          ),
+        ],
       );
 
-  static TextStyle get cardTitleStyle => TextStyle(
+  static TextStyle get cardTitleStyle => const TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
         color: Colors.white,
         shadows: [
           Shadow(
-            color: Colors.black.withOpacity(0.3),
-            offset: const Offset(0, 2),
+            color: Colors.black54,
+            offset: Offset(0, 2),
             blurRadius: 4,
+          ),
+          Shadow(
+            color: Colors.purple,
+            offset: Offset(0, 0),
+            blurRadius: 8,
           ),
         ],
       );
@@ -70,20 +103,23 @@ class SpaceTheme {
   static TextStyle get cardDescriptionStyle => TextStyle(
         fontSize: 16,
         color: Colors.white.withOpacity(0.9),
-      );
-
-  // Kart Dekorasyonu
-  static BoxDecoration getCardDecoration(Color color) => BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: getGlowGradient(color),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.3),
-            blurRadius: 15,
-            spreadRadius: -5,
-            offset: const Offset(0, 10),
+        shadows: [
+          Shadow(
+            color: Colors.purple.withOpacity(0.3),
+            blurRadius: 5,
           ),
         ],
+      );
+
+  // Kart Dekorasyonları
+  static BoxDecoration getCardDecoration(Color color) => BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: getMagicalGradient(color),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 0.5,
+        ),
+        boxShadow: getMagicalGlow(color),
       );
 
   // Avatar Dekorasyonu
@@ -91,32 +127,72 @@ class SpaceTheme {
         shape: BoxShape.circle,
         gradient: LinearGradient(
           colors: [
-            Colors.purple[400]!,
-            Colors.blue[400]!,
+            accentGold.withOpacity(0.8),
+            accentPurple.withOpacity(0.8),
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.purple[200]!.withOpacity(0.5),
-            blurRadius: 15,
-            spreadRadius: 2,
-          ),
-        ],
+        boxShadow: getMagicalGlow(accentGold),
       );
 
   // "Yakında" Badge Dekorasyonu
   static BoxDecoration get comingSoonBadgeDecoration => BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.5),
+          color: accentGold.withOpacity(0.5),
           width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: accentGold.withOpacity(0.2),
+            blurRadius: 10,
+            spreadRadius: 1,
+          ),
+        ],
       );
 
   // İkon Container Dekorasyonu
   static BoxDecoration get iconContainerDecoration => BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: accentGold.withOpacity(0.3),
+          width: 0.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentGold.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 1,
+          ),
+        ],
+      );
+
+  // Yeni: Büyülü Buton Stili
+  static ButtonStyle getMagicalButtonStyle(Color color) => ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 32,
+          vertical: 16,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        elevation: 8,
+        shadowColor: color.withOpacity(0.5),
+      ).copyWith(
+        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.pressed)) {
+              return Colors.white.withOpacity(0.2);
+            }
+            if (states.contains(MaterialState.hovered)) {
+              return Colors.white.withOpacity(0.1);
+            }
+            return null;
+          },
+        ),
       );
 } 

@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:masal/env.dart';
 import '../models/story_options_model.dart';
-import '../../../core/constants/app_constants.dart';
 
 class ImageService {
   Future<Uint8List> generateImage({
@@ -19,7 +18,7 @@ class ImageService {
       final prompt = "A colorful cartoon-style illustration for a children's book. Setting: $placeEn, Character: $characterEn, Event: $eventEn, Story title: $title";
 
       var request = http.MultipartRequest('POST', Uri.parse(Environment.vyroApiUrl));
-      request.headers['Authorization'] = 'Bearer ${AppConstants.vyroApiKey}';
+      request.headers['Authorization'] = 'Bearer ${Environment.vyroApiKey}';
       request.fields['prompt'] = prompt;
       request.fields['style'] = 'imagine-turbo';
       request.fields['aspect_ratio'] = '1:1';

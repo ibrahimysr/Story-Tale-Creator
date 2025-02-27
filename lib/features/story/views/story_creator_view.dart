@@ -77,7 +77,7 @@ class StoryCreatorView extends StatelessWidget {
                           title: 'Zaman Boyutu',
                           description: 'Hikayenin zamanını seç',
                           icon: Icons.access_time,
-                          color: SpaceTheme.accentTurquoise,
+                          color: SpaceTheme.accentEmerald,
                           options: StoryOptionsModel.times,
                           selectedValue: viewModel.selectedTime,
                           onChanged: (value) => viewModel.updateSelection(time: value),
@@ -86,7 +86,7 @@ class StoryCreatorView extends StatelessWidget {
                           title: 'Kozmik Duygu',
                           description: 'Hikayedeki ana duyguyu seç',
                           icon: Icons.emoji_emotions,
-                          color: SpaceTheme.accentPink,
+                          color: SpaceTheme.accentGold,
                           options: StoryOptionsModel.emotions,
                           selectedValue: viewModel.selectedEmotion,
                           onChanged: (value) => viewModel.updateSelection(emotion: value),
@@ -111,7 +111,8 @@ class StoryCreatorView extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => StoryDisplayView(
-                                          story: viewModel.generatedStory!,
+                                          story: viewModel.generatedStory!.content,
+                                          image: viewModel.generatedStory!.image,
                                         ),
                                       ),
                                     );

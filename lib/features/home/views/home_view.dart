@@ -20,12 +20,10 @@ class HomeView extends StatelessWidget {
               ),
               Column(
                 children: [
-                  // Üst başlık kısmı
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
                       children: [
-                        // Sihirli kristal top avatar
                         Container(
                           height: 50,
                           width: 50,
@@ -54,13 +52,11 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
 
-                  // Ana içerik - Aktivite kartları
                   Expanded(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          // Hikaye Oluşturma Kartı
                           _buildActivityCard(
                             title: 'Sihirli Hikaye Yaratıcısı',
                             description: 'Hayal gücünün sınırlarını zorla ve kendi evrenini yarat!',
@@ -92,7 +88,7 @@ class HomeView extends StatelessWidget {
                             title: 'Yıldızlararası Görevler',
                             description: 'Eğlenceli görevlerle galakside ilerle!',
                             icon: Icons.rocket_launch_rounded,
-                            color: SpaceTheme.accentPink,
+                            color: SpaceTheme.accentEmerald,
                             isComingSoon: true,
                           ),
                         ],
