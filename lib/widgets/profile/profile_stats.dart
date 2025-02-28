@@ -3,14 +3,12 @@ import '../../../core/theme/space_theme.dart';
 
 class ProfileStats extends StatelessWidget {
   final int stories;
-  final String missions;
-  final int level;
+  final int totalLikes;
 
   const ProfileStats({
     Key? key,
     required this.stories,
-    required this.missions,
-    required this.level,
+    required this.totalLikes,
   }) : super(key: key);
 
   @override
@@ -50,7 +48,7 @@ class ProfileStats extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildStatItem(
                 'Hikayeler',
@@ -59,16 +57,10 @@ class ProfileStats extends StatelessWidget {
                 Icons.auto_stories,
               ),
               _buildStatItem(
-                'Görevler',
-                missions,
-                SpaceTheme.accentBlue,
-                Icons.rocket_launch,
-              ),
-              _buildStatItem(
-                'Seviye',
-                level.toString(),
-                SpaceTheme.accentEmerald,
-                Icons.workspace_premium,
+                'Beğeniler',
+                totalLikes.toString(),
+                Colors.red[300] ?? Colors.red,
+                Icons.favorite,
               ),
             ],
           ),

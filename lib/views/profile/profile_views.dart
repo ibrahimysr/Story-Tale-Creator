@@ -81,9 +81,8 @@ class ProfileView extends StatelessWidget {
                           ),
                           const SizedBox(height: 30),
                           ProfileStats(
-                            stories: profile.stories,
-                            missions: profile.missions,
-                            level: profile.level,
+                            stories: viewModel.totalStories,
+                            totalLikes: viewModel.totalLikes,
                           ),
                           const SizedBox(height: 30),
                           ProfileActions(

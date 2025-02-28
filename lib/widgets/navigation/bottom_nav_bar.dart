@@ -3,6 +3,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:masal/views/habit_tracker/habit_tracker_views.dart';
 import 'package:masal/views/profile/profile_views.dart';
 import 'package:masal/views/home/home_view.dart';
+import 'package:masal/views/story/story_discover_view.dart';
 import 'package:masal/views/story/story_library_view.dart';
 import '../../core/theme/space_theme.dart';
 import '../../core/theme/widgets/starry_background.dart';
@@ -39,9 +40,9 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     pages = [
       const HomeView(),
-      HabitTrackerScreen(),
+      StoryDiscoverView(),
       StoryLibraryView(),
-      const ProfileView()
+       ProfileView()
     ];
   }
 

@@ -19,7 +19,6 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
   @override
   void initState() {
     super.initState();
-    // Sayfa açıldığında seçimleri sıfırla
     Future.microtask(() {
       context.read<StoryViewModel>().resetSelections();
     });
@@ -106,7 +105,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: AnimatedScaleButton(
-        onPressed: !canProceed
+        onPressed: !canProceed || (currentStep == 5 && viewModel.isLoading)
             ? null
             : () {
                 if (currentStep == 5) {
@@ -117,6 +116,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                         MaterialPageRoute(
                           builder: (context) => StoryDisplayView(
                             story: viewModel.generatedStory!.content,
+                            title: viewModel.generatedStory!.title,
                             image: viewModel.generatedStory!.image,
                           ),
                         ),
@@ -132,14 +132,26 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                currentStep == 5 ? Icons.rocket_launch : Icons.arrow_forward,
-                color: Colors.white,
-                size: 24,
-              ),
+              if (currentStep == 5 && viewModel.isLoading)
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              else
+                Icon(
+                  currentStep == 5 ? Icons.rocket_launch : Icons.arrow_forward,
+                  color: Colors.white,
+                  size: 24,
+                ),
               const SizedBox(width: 8),
               Text(
-                currentStep == 5 ? 'Maceraya Başla' : 'İlerle',
+                currentStep == 5 
+                  ? (viewModel.isLoading ? 'Oluşturuluyor...' : 'Maceraya Başla')
+                  : 'İlerle',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -277,47 +289,50 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
             const Positioned.fill(
               child: StarryBackground(),
             ),
-            Consumer<StoryViewModel>(
-              builder: (context, viewModel, child) {
-                return Column(
-                  children: [
-                    _buildProgressBar(viewModel.currentStep),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              _buildCurrentStep(context, viewModel),
-                              if (viewModel.errorMessage != null)
-                                Container(
-                                  margin: const EdgeInsets.only(top: 16.0),
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: Colors.red.withOpacity(0.3),
+            SafeArea(
+              child: Consumer<StoryViewModel>(
+                builder: (context, viewModel, child) {
+                  return Column(
+                    children: [
+                      _buildProgressBar(viewModel.currentStep),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _buildCurrentStep(context, viewModel),
+                                if (viewModel.errorMessage != null)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 16.0),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.red.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      viewModel.errorMessage!,
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 16,
+                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
-                                  child: Text(
-                                    viewModel.errorMessage!,
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),

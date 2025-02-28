@@ -2,18 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../model/user_profile_model.dart';
+import '../repository/profile_repository.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final ProfileRepository _repository;
   
   UserProfile? _userProfile;
   bool _isLoading = false;
   String? _error;
+  int _totalStories = 0;
+  int _totalLikes = 0;
+
+  ProfileViewModel({ProfileRepository? repository})
+      : _repository = repository ?? ProfileRepository() {
+    loadUserProfile();
+    loadUserStats();
+  }
 
   UserProfile? get userProfile => _userProfile;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  int get totalStories => _totalStories;
+  int get totalLikes => _totalLikes;
 
   Future<void> loadUserProfile() async {
     try {
@@ -111,5 +123,29 @@ class ProfileViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> loadUserStats() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final stats = await _repository.getUserStats();
+      _totalStories = stats['totalStories'];
+      _totalLikes = stats['totalLikes'];
+
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  void clearError() {
+    _error = null;
+    notifyListeners();
   }
 } 

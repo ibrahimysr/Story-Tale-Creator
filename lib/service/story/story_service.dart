@@ -21,7 +21,12 @@ class StoryService {
     - Olay: $event
     
     Hikaye 6-7 paragraf uzunluğunda olmalı ve 7-10 yaş arası çocuklar için uygun olmalı.
-    Hikayenin başlığı da olsun. Hikaye Türkçe olmalı.
+    Hikayenin başında # işareti ile başlayan, kısa ve etkileyici bir başlık olmalı.
+    Başlık en fazla 5 kelime olmalı.
+    Örnek başlık formatı:
+    # Uzayın Cesur Kaşifi
+    
+    Hikaye Türkçe olmalı.
     """;
 
     try {
