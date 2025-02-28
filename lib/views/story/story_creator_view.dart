@@ -15,11 +15,13 @@ class StoryCreatorView extends StatefulWidget {
 }
 
 class _StoryCreatorViewState extends State<StoryCreatorView> {
-  @override
+@override
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<StoryViewModel>().resetSelections();
+      if (mounted) { 
+        context.read<StoryViewModel>().resetSelections();
+      }
     });
   }
 
@@ -37,7 +39,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                   decoration: BoxDecoration(
                     color: index < currentStep 
                       ? SpaceTheme.accentPurple 
-                      : SpaceTheme.accentPurple.withOpacity(0.2),
+                      : SpaceTheme.accentPurple.withValues(alpha:0.2),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -48,7 +50,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
           Text(
             'Adım $currentStep/5',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha:0.8),
               fontSize: 14,
             ),
           ),
@@ -71,7 +73,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
           Text(
             subtitle,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha:0.8),
               fontSize: 16,
             ),
             textAlign: TextAlign.center,
@@ -110,6 +112,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                 if (currentStep == 5) {
                   viewModel.generateStory().then((_) {
                     if (viewModel.generatedStory != null && context.mounted) {
+                      if (mounted) {  // mounted kontrolü eklendi
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -120,6 +123,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                           ),
                         ),
                       );
+                    }
                     }
                   });
                 } else {
@@ -308,10 +312,10 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                                     margin: const EdgeInsets.only(top: 16.0),
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withOpacity(0.1),
+                                      color: Colors.red.withValues(alpha:0.1),
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
-                                        color: Colors.red.withOpacity(0.3),
+                                        color: Colors.red.withValues(alpha:0.3),
                                       ),
                                     ),
                                     child: Text(

@@ -9,7 +9,7 @@ import '../core/theme/space_theme.dart';
 import '../core/theme/widgets/starry_background.dart';
 
 class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key}) : super(key: key);
+  const RegisterView({super.key});
 
   @override
   State<RegisterView> createState() => _RegisterViewState();
@@ -21,7 +21,7 @@ class _RegisterViewState extends State<RegisterView>
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  String _selectedAvatar = 'boy (1).png'; // Varsayılan avatar
+  final String _selectedAvatar = 'boy (1).png'; // Varsayılan avatar
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -105,8 +105,8 @@ class _RegisterViewState extends State<RegisterView>
             shape: BoxShape.circle,
             gradient: LinearGradient(
               colors: [
-                SpaceTheme.accentGold.withOpacity(0.8),
-                SpaceTheme.accentPurple.withOpacity(0.8),
+                SpaceTheme.accentGold.withValues(alpha:0.8),
+                SpaceTheme.accentPurple.withValues(alpha:0.8),
               ],
             ),
             boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentGold),
@@ -132,10 +132,10 @@ class _RegisterViewState extends State<RegisterView>
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha:0.2),
               width: 1,
             ),
             boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
@@ -226,12 +226,14 @@ class _RegisterViewState extends State<RegisterView>
                   );
                   
                   if (viewModel.state == RegisterState.success) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MainScreen(),
-                      ),
-                    );
+                   if (mounted) { // mounted kontrolü eklendi
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MainScreen(),
+                        ),
+                      );
+                    }
                   }
                 }
               },

@@ -21,7 +21,7 @@ class HabitHeader extends StatelessWidget {
           Text(
             'Yıldızlara ulaşmak için her gün bir adım',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha:0.7),
               fontSize: 16,
             ),
           ),

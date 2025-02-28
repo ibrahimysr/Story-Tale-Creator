@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -30,7 +31,7 @@ class StoryDisplayViewModel extends ChangeNotifier {
   // Kontrast renk seçen yardımcı fonksiyon
   Color _getContrastingTextColor(Color backgroundColor) {
     return _isColorLight(backgroundColor) 
-        ? Colors.black.withOpacity(0.8)
+        ? Colors.black.withValues(alpha:0.8)
         : Colors.white;
   }
 
@@ -99,7 +100,7 @@ class StoryDisplayViewModel extends ChangeNotifier {
       
       notifyListeners();
     } catch (e) {
-      print('Renk paleti oluşturulurken hata: $e');
+      log('Renk paleti oluşturulurken hata: $e');
     }
   }
 

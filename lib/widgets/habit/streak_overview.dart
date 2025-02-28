@@ -21,13 +21,13 @@ class StreakOverview extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            SpaceTheme.accentGold.withOpacity(0.3),
-            SpaceTheme.accentPurple.withOpacity(0.3),
+            SpaceTheme.accentGold.withValues(alpha:0.3),
+            SpaceTheme.accentPurple.withValues(alpha:0.3),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha:0.1),
         ),
       ),
       child: Row(
@@ -47,7 +47,7 @@ class StreakOverview extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: SpaceTheme.accentGold.withOpacity(0.2),
+            color: SpaceTheme.accentGold.withValues(alpha:0.2),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -69,7 +69,7 @@ class StreakOverview extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha:0.7),
             fontSize: 12,
           ),
         ),

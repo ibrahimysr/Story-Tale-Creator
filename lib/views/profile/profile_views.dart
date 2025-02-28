@@ -61,7 +61,7 @@ class ProfileView extends StatelessWidget {
                         Text(
                           viewModel.error!,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha:0.7),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -127,15 +127,15 @@ class ProfileView extends StatelessWidget {
                                   vertical: 16,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.05),
+                                  color: Colors.white.withValues(alpha:0.05),
                                   borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.1),
+                                    color: Colors.white.withValues(alpha:0.1),
                                     width: 1,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: SpaceTheme.accentPurple.withOpacity(0.1),
+                                      color: SpaceTheme.accentPurple.withValues(alpha:0.1),
                                       blurRadius: 10,
                                       spreadRadius: 1,
                                     ),
@@ -149,7 +149,7 @@ class ProfileView extends StatelessWidget {
                                         Container(
                                           padding: const EdgeInsets.all(10),
                                           decoration: BoxDecoration(
-                                            color: SpaceTheme.accentPurple.withOpacity(0.1),
+                                            color: SpaceTheme.accentPurple.withValues(alpha:0.1),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: Icon(
@@ -162,7 +162,7 @@ class ProfileView extends StatelessWidget {
                                         Text(
                                           'Çıkış Yap',
                                           style: TextStyle(
-                                            color: Colors.white.withOpacity(0.9),
+                                            color: Colors.white.withValues(alpha:0.9),
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -171,7 +171,7 @@ class ProfileView extends StatelessWidget {
                                     ),
                                     Icon(
                                       Icons.arrow_forward_ios_rounded,
-                                      color: Colors.white.withOpacity(0.5),
+                                      color: Colors.white.withValues(alpha:0.5),
                                       size: 20,
                                     ),
                                   ],

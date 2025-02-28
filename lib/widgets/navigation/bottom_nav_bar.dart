@@ -50,13 +50,13 @@ class _MainScreenState extends State<MainScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 100, color: Colors.white.withOpacity(0.5)),
+          Icon(icon, size: 100, color: Colors.white.withValues(alpha:0.5)),
           const SizedBox(height: 20),
           Text(
             title,
             style: TextStyle(
               fontSize: 24,
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha:0.7),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -85,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
             end: Alignment.bottomCenter,
             colors: [
               Colors.transparent,
-              SpaceTheme.primaryDark.withOpacity(0.5),
+              SpaceTheme.primaryDark.withValues(alpha:0.5),
               SpaceTheme.primaryDark,
             ],
           ),
@@ -107,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
                     gradient: LinearGradient(
                       colors: [
                         iconColors[index],
-                        iconColors[index].withOpacity(0.7),
+                        iconColors[index].withValues(alpha:0.7),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -115,12 +115,12 @@ class _MainScreenState extends State<MainScreen> {
                     boxShadow: isActive
                         ? [
                             BoxShadow(
-                              color: iconColors[index].withOpacity(0.5),
+                              color: iconColors[index].withValues(alpha:0.5),
                               blurRadius: 15,
                               spreadRadius: 2,
                             ),
                             BoxShadow(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha:0.2),
                               blurRadius: 20,
                               spreadRadius: -5,
                             ),
@@ -139,13 +139,13 @@ class _MainScreenState extends State<MainScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha:0.1),
                     ),
                     child: Text(
                       ["Görev Merkezi", "Uzayı Keşfet", "Koleksiyonum", "Kaşif"][index],
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha:0.9),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -162,7 +162,7 @@ class _MainScreenState extends State<MainScreen> {
             });
           },
           backgroundColor: Colors.transparent,
-          splashColor: Colors.white.withOpacity(0.1),
+          splashColor: Colors.white.withValues(alpha:0.1),
           splashRadius: 30,
           elevation: 0,
           height: 100,

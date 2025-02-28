@@ -7,10 +7,10 @@ class HomeStoryItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const HomeStoryItem({
-    Key? key,
+    super.key,
     required this.story,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +18,15 @@ class HomeStoryItem extends StatelessWidget {
       width: 160,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: SpaceTheme.accentPurple.withOpacity(0.2),
+            color: SpaceTheme.accentPurple.withValues(alpha:0.2),
             blurRadius: 8,
             spreadRadius: 1,
           ),
@@ -38,8 +38,8 @@ class HomeStoryItem extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            splashColor: SpaceTheme.accentPurple.withOpacity(0.3),
-            highlightColor: SpaceTheme.accentPurple.withOpacity(0.1),
+            splashColor: SpaceTheme.accentPurple.withValues(alpha:0.3),
+            highlightColor: SpaceTheme.accentPurple.withValues(alpha:0.1),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -53,7 +53,7 @@ class HomeStoryItem extends StatelessWidget {
                           fit: BoxFit.cover,
                         )
                       : Container(
-                          color: SpaceTheme.accentBlue.withOpacity(0.2),
+                          color: SpaceTheme.accentBlue.withValues(alpha:0.2),
                           child: const Center(
                             child: Icon(
                               Icons.book,
@@ -89,7 +89,7 @@ class HomeStoryItem extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: SpaceTheme.accentBlue.withOpacity(0.3),
+                            color: SpaceTheme.accentBlue.withValues(alpha:0.3),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Text(

@@ -112,8 +112,8 @@ class _RegisterViewState extends State<RegisterView>
             shape: BoxShape.circle,
             gradient: LinearGradient(
               colors: [
-                SpaceTheme.accentGold.withOpacity(0.8),
-                SpaceTheme.accentPurple.withOpacity(0.8),
+                SpaceTheme.accentGold.withValues(alpha:0.8),
+                SpaceTheme.accentPurple.withValues(alpha:0.8),
               ],
             ),
             boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentGold),
@@ -144,10 +144,10 @@ class _RegisterViewState extends State<RegisterView>
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(25),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha:0.2),
                 width: 1,
               ),
               boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
@@ -159,10 +159,10 @@ class _RegisterViewState extends State<RegisterView>
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha:0.1),
                       borderRadius: BorderRadius.circular(25),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha:0.2),
                         width: 1,
                       ),
                     ),
@@ -316,12 +316,14 @@ class _RegisterViewState extends State<RegisterView>
                   
                   if (viewModel.state == RegisterState.success) {
                     // ignore: use_build_context_synchronously
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MainScreen(),
-                      ),
-                    );
+                    if (mounted) { // mounted kontrolü eklendi
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MainScreen(),
+                        ),
+                      );
+                    }
                   }
                 }
               },

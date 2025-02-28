@@ -47,8 +47,8 @@ class SelectorCard extends StatelessWidget {
                   ? SpaceTheme.getMagicalGradient(color)
                   : LinearGradient(
                       colors: [
-                        color.withOpacity(0.2),
-                        color.withOpacity(0.1),
+                        color.withValues(alpha:0.2),
+                        color.withValues(alpha:0.1),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -56,14 +56,14 @@ class SelectorCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   color: isSelected 
-                    ? Colors.white.withOpacity(0.5)
-                    : Colors.white.withOpacity(0.1),
+                    ? Colors.white.withValues(alpha:0.5)
+                    : Colors.white.withValues(alpha:0.1),
                   width: isSelected ? 2 : 1,
                 ),
                 boxShadow: isSelected 
                   ? [
                       BoxShadow(
-                        color: color.withOpacity(0.3),
+                        color: color.withValues(alpha:0.3),
                         blurRadius: 10,
                         spreadRadius: 2,
                       ),
@@ -83,7 +83,7 @@ class SelectorCard extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: color.withOpacity(0.3),
+                              color: color.withValues(alpha:0.3),
                               blurRadius: 5,
                             ),
                           ],
@@ -104,7 +104,7 @@ class SelectorCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: Colors.white.withOpacity(isSelected ? 1 : 0.8),
+                          color: Colors.white.withValues(alpha:isSelected ? 1 : 0.8),
                         ),
                       ),
                     ),

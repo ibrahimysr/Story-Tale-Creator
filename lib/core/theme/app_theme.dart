@@ -19,7 +19,7 @@ class AppTheme {
       cardTheme: CardTheme(
         elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha:0.9),
       ),
     );
   }

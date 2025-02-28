@@ -7,7 +7,7 @@ import '../../widgets/story/story_library_item.dart';
 import 'story_display_view.dart';
 
 class StoryDiscoverView extends StatelessWidget {
-  const StoryDiscoverView({Key? key}) : super(key: key);
+  const StoryDiscoverView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,13 +73,13 @@ class StoryDiscoverView extends StatelessWidget {
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: 'Hikayelerde ara...',
-              hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+              hintStyle: TextStyle(color: Colors.white.withValues(alpha:0.6)),
               prefixIcon: Icon(
                 Icons.search,
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha:0.6),
               ),
               filled: true,
-              fillColor: SpaceTheme.accentPurple.withOpacity(0.2),
+              fillColor: SpaceTheme.accentPurple.withValues(alpha:0.2),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide.none,

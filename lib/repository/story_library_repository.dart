@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -142,7 +143,7 @@ class StoryLibraryRepository {
       }
       return null;
     } catch (e) {
-      print('Resim yükleme hatası: $e');
+      log('Resim yükleme hatası: $e');
       return null;
     }
   }

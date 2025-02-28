@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -23,16 +25,16 @@ class ProfileRepository {
         totalLikes += data['likeCount'] as int? ?? 0;
       }
 
-      print('Kullanıcı istatistikleri yüklendi:');
-      print('Toplam hikaye sayısı: $totalStories');
-      print('Toplam beğeni sayısı: $totalLikes');
+      log('Kullanıcı istatistikleri yüklendi:');
+      log('Toplam hikaye sayısı: $totalStories');
+      log('Toplam beğeni sayısı: $totalLikes');
 
       return {
         'totalStories': totalStories,
         'totalLikes': totalLikes,
       };
     } catch (e) {
-      print('Kullanıcı istatistikleri alınırken hata: $e');
+      log('Kullanıcı istatistikleri alınırken hata: $e');
       throw Exception('Kullanıcı istatistikleri alınırken bir hata oluştu: $e');
     }
   }

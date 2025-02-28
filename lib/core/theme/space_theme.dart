@@ -25,8 +25,8 @@ class SpaceTheme {
   static LinearGradient getMagicalGradient(Color color) => LinearGradient(
         colors: [
           color,
-          color.withOpacity(0.6),
-          color.withOpacity(0.3),
+          color.withValues(alpha:0.6),
+          color.withValues(alpha:0.3),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -36,17 +36,17 @@ class SpaceTheme {
   // Büyülü Gölgeler
   static List<BoxShadow> getMagicalGlow(Color color) => [
         BoxShadow(
-          color: color.withOpacity(0.5),
+          color: color.withValues(alpha:0.5),
           blurRadius: 20,
           spreadRadius: 2,
         ),
         BoxShadow(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           blurRadius: 30,
           spreadRadius: -5,
         ),
         BoxShadow(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha:0.1),
           blurRadius: 50,
           spreadRadius: 10,
         ),
@@ -59,12 +59,12 @@ class SpaceTheme {
         color: accentGold,
         shadows: [
           Shadow(
-            color: accentGold.withOpacity(0.5),
+            color: accentGold.withValues(alpha:0.5),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
           Shadow(
-            color: Colors.purple.withOpacity(0.3),
+            color: Colors.purple.withValues(alpha:0.3),
             blurRadius: 15,
             offset: const Offset(0, 4),
           ),
@@ -76,7 +76,7 @@ class SpaceTheme {
         color: Colors.blue[100],
         shadows: [
           Shadow(
-            color: Colors.blue.withOpacity(0.3),
+            color: Colors.blue.withValues(alpha:0.3),
             blurRadius: 5,
           ),
         ],
@@ -102,10 +102,10 @@ class SpaceTheme {
 
   static TextStyle get cardDescriptionStyle => TextStyle(
         fontSize: 16,
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha:0.9),
         shadows: [
           Shadow(
-            color: Colors.purple.withOpacity(0.3),
+            color: Colors.purple.withValues(alpha:0.3),
             blurRadius: 5,
           ),
         ],
@@ -116,7 +116,7 @@ class SpaceTheme {
         borderRadius: BorderRadius.circular(20),
         gradient: getMagicalGradient(color),
         border: Border.all(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha:0.1),
           width: 0.5,
         ),
         boxShadow: getMagicalGlow(color),
@@ -127,8 +127,8 @@ class SpaceTheme {
         shape: BoxShape.circle,
         gradient: LinearGradient(
           colors: [
-            accentGold.withOpacity(0.8),
-            accentPurple.withOpacity(0.8),
+            accentGold.withValues(alpha: 0.8),
+            accentPurple.withValues(alpha:0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -138,15 +138,15 @@ class SpaceTheme {
 
   // "Yakında" Badge Dekorasyonu
   static BoxDecoration get comingSoonBadgeDecoration => BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha:0.3),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: accentGold.withOpacity(0.5),
+          color: accentGold.withValues(alpha:0.5),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: accentGold.withOpacity(0.2),
+            color: accentGold.withValues(alpha:0.2),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -155,15 +155,15 @@ class SpaceTheme {
 
   // İkon Container Dekorasyonu
   static BoxDecoration get iconContainerDecoration => BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha:0.3),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
-          color: accentGold.withOpacity(0.3),
+          color: accentGold.withValues(alpha:0.3),
           width: 0.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: accentGold.withOpacity(0.1),
+            color: accentGold.withValues(alpha:0.1),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -181,15 +181,15 @@ class SpaceTheme {
           borderRadius: BorderRadius.circular(20),
         ),
         elevation: 8,
-        shadowColor: color.withOpacity(0.5),
+        shadowColor: color.withValues(alpha:0.5),
       ).copyWith(
         overlayColor: WidgetStateProperty.resolveWith<Color?>(
           (Set<WidgetState> states) {
             if (states.contains(WidgetState.pressed)) {
-              return Colors.white.withOpacity(0.2);
+              return Colors.white.withValues(alpha:0.2);
             }
             if (states.contains(WidgetState.hovered)) {
-              return Colors.white.withOpacity(0.1);
+              return Colors.white.withValues(alpha:0.1);
             }
             return null;
           },

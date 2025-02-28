@@ -124,7 +124,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> with SingleTi
                 Text(
                   '${_currentPage + 1}/${_pages.length}',
                   style: TextStyle(
-                    color: widget.textColor.withOpacity(0.8),
+                    color: widget.textColor.withValues(alpha:0.8),
                     fontSize: 16,
                   ),
                 ),
@@ -152,11 +152,11 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> with SingleTi
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha:0.2),
             blurRadius: 10,
             spreadRadius: 2,
           ),
@@ -172,7 +172,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> with SingleTi
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha:0.2),
                     blurRadius: 8,
                     spreadRadius: 2,
                   ),
@@ -212,7 +212,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> with SingleTi
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: IconButton(
@@ -224,7 +224,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> with SingleTi
 }
 
 class PageFlipPhysics extends ScrollPhysics {
-  const PageFlipPhysics({ScrollPhysics? parent}) : super(parent: parent);
+  const PageFlipPhysics({super.parent});
 
   @override
   PageFlipPhysics applyTo(ScrollPhysics? ancestor) {

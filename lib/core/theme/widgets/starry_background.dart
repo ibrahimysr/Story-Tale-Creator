@@ -86,7 +86,7 @@ class StarPainter extends CustomPainter {
 
       // Yanıp sönme efekti
       final flicker = (sin(animation * 2 * pi + star.x * 10) + 1) / 2;
-      paint.color = Colors.white.withOpacity(star.opacity * (0.5 + flicker * 0.5));
+      paint.color = Colors.white.withValues(alpha:star.opacity * (0.5 + flicker * 0.5));
 
       canvas.drawCircle(
         Offset(star.x * size.width, star.y * size.height),

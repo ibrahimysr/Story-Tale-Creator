@@ -10,12 +10,12 @@ class StoryLibraryItem extends StatelessWidget {
   final VoidCallback onLike;
 
   const StoryLibraryItem({
-    Key? key,
+    super.key,
     required this.story,
     required this.onTap,
     this.onDelete,
     required this.onLike,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +25,15 @@ class StoryLibraryItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: SpaceTheme.accentPurple.withOpacity(0.2),
+            color: SpaceTheme.accentPurple.withValues(alpha:0.2),
             blurRadius: 15,
             spreadRadius: 2,
           ),
@@ -45,8 +45,8 @@ class StoryLibraryItem extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            splashColor: SpaceTheme.accentPurple.withOpacity(0.3),
-            highlightColor: SpaceTheme.accentPurple.withOpacity(0.1),
+            splashColor: SpaceTheme.accentPurple.withValues(alpha:0.3),
+            highlightColor: SpaceTheme.accentPurple.withValues(alpha:0.1),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -100,8 +100,8 @@ class StoryLibraryItem extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: isLiked
-                                        ? SpaceTheme.accentPurple.withOpacity(0.3)
-                                        : Colors.white.withOpacity(0.1),
+                                        ? SpaceTheme.accentPurple.withValues(alpha:0.3)
+                                        : Colors.white.withValues(alpha:0.1),
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: Row(
@@ -159,7 +159,7 @@ class StoryLibraryItem extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: SpaceTheme.accentPurple.withOpacity(0.2),
+                                    color: SpaceTheme.accentPurple.withValues(alpha:0.2),
                                     blurRadius: 8,
                                     spreadRadius: 1,
                                   ),
@@ -197,7 +197,7 @@ class StoryLibraryItem extends StatelessWidget {
                                       vertical: 8,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: SpaceTheme.accentBlue.withOpacity(0.3),
+                                      color: SpaceTheme.accentBlue.withValues(alpha:0.3),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     child: const Text(

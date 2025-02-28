@@ -63,14 +63,7 @@ class StoryViewModel extends ChangeNotifier {
       characterTranslations = await _optionsService.getCharacterTranslations();
       eventTranslations = await _optionsService.getEventTranslations();
 
-      print('Yüklenen kategoriler:');
-      print('Mekanlar: $places');
-      print('Karakterler: $characters');
-      print('Olaylar: $events');
-      print('Çeviriler:');
-      print('Mekan çevirileri: $placeTranslations');
-      print('Karakter çevirileri: $characterTranslations');
-      print('Olay çevirileri: $eventTranslations');
+    
 
       isLoading = false;
       notifyListeners();

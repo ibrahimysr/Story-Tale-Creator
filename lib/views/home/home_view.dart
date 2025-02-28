@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:masal/views/story/story_creator_view.dart';
 import 'package:masal/core/theme/space_theme.dart';
@@ -29,7 +28,7 @@ class HomeView extends StatelessWidget {
                   RefreshIndicator(
                     onRefresh: () => viewModel.loadRecentStories(),
                     color: SpaceTheme.accentPurple,
-                    backgroundColor: SpaceTheme.primaryDark.withOpacity(0.8),
+                    backgroundColor: SpaceTheme.primaryDark.withValues(alpha:0.8),
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -278,7 +277,7 @@ class HomeView extends StatelessWidget {
       width: double.infinity,
       child: Card(
         elevation: 8,
-        shadowColor: color.withOpacity(0.4),
+        shadowColor: color.withValues(alpha:0.4),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -300,8 +299,8 @@ class HomeView extends StatelessWidget {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          Colors.white.withOpacity(0.2),
-                          Colors.white.withOpacity(0),
+                          Colors.white.withValues(alpha:0.2),
+                          Colors.white.withValues(alpha:0),
                         ],
                       ),
                     ),
@@ -329,7 +328,7 @@ class HomeView extends StatelessWidget {
                           Text(
                             'Yakında',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha:0.9),
                               fontWeight: FontWeight.bold,
                             ),
                           ),

@@ -9,7 +9,7 @@ import '../../viewmodels/habit_tracker_viewmodel.dart';
 import '../../model/habit/habit.dart';
 
 class HabitTrackerScreen extends StatelessWidget {
-  const HabitTrackerScreen({Key? key}) : super(key: key);
+  const HabitTrackerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class HabitTrackerScreen extends StatelessWidget {
 }
 
 class HabitTrackerView extends StatefulWidget {
-  const HabitTrackerView({Key? key}) : super(key: key);
+  const HabitTrackerView({super.key});
 
   @override
   State<HabitTrackerView> createState() => _HabitTrackerViewState();
@@ -167,7 +167,7 @@ class _HabitTrackerViewState extends State<HabitTrackerView> with SingleTickerPr
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: SpaceTheme.getMagicalButtonStyle(habit.color.withOpacity(0.7)),
+                    style: SpaceTheme.getMagicalButtonStyle(habit.color.withValues(alpha:0.7)),
                     child: const Text("Kapat",style:TextStyle(color: Colors.white)),
                   ),
                 ],

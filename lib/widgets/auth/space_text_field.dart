@@ -16,7 +16,7 @@ class SpaceTextField extends StatelessWidget {
   final VoidCallback? onEditingComplete;
 
   const SpaceTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.label,
     required this.icon,
@@ -28,7 +28,7 @@ class SpaceTextField extends StatelessWidget {
     this.focusNode,
     this.textInputAction,
     this.onEditingComplete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,16 +50,16 @@ class SpaceTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha:0.7),
         ),
         prefixIcon: Icon(
           icon,
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha:0.7),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha:0.3),
           ),
         ),
         focusedBorder: OutlineInputBorder(

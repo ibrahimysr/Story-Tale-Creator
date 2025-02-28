@@ -58,7 +58,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
                         ]
                       : [
                           viewModel.dominantColor,
-                          viewModel.dominantColor.withOpacity(0.7),
+                          viewModel.dominantColor.withValues(alpha:0.7),
                         ],
                 ),
               ),
@@ -74,10 +74,10 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
                           height: 200,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: color.withOpacity(0.3),
+                            color: color.withValues(alpha:0.3),
                             boxShadow: [
                               BoxShadow(
-                                color: color.withOpacity(0.2),
+                                color: color.withValues(alpha:0.2),
                                 blurRadius: 50,
                                 spreadRadius: 20,
                               ),
@@ -85,7 +85,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   SafeArea(
                     child: StoryDisplayContent(
                       story: widget.story,
@@ -125,8 +125,8 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: viewModel.colorPalette.isNotEmpty
-                    ? viewModel.colorPalette[0].withOpacity(0.3)
-                    : Colors.white.withOpacity(0.1),
+                    ? viewModel.colorPalette[0].withValues(alpha:0.3)
+                    : Colors.white.withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: viewModel.isLoading
@@ -178,8 +178,8 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
             ),
           ),
           backgroundColor: viewModel.colorPalette.isNotEmpty
-              ? viewModel.colorPalette[0].withOpacity(0.8)
-              : SpaceTheme.accentPurple.withOpacity(0.8),
+              ? viewModel.colorPalette[0].withValues(alpha:0.8)
+              : SpaceTheme.accentPurple.withValues(alpha:0.8),
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -203,7 +203,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
               ),
             ),
           ),
-          backgroundColor: Colors.red.withOpacity(0.8),
+          backgroundColor: Colors.red.withValues(alpha:0.8),
           duration: const Duration(seconds: 3),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
