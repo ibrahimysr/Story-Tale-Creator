@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/theme/space_theme.dart';
 
 class SpaceTextField extends StatelessWidget {
@@ -8,6 +9,11 @@ class SpaceTextField extends StatelessWidget {
   final bool isPassword;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
 
   const SpaceTextField({
     Key? key,
@@ -17,6 +23,11 @@ class SpaceTextField extends StatelessWidget {
     this.isPassword = false,
     this.validator,
     this.onChanged,
+    this.keyboardType,
+    this.inputFormatters,
+    this.focusNode,
+    this.textInputAction,
+    this.onEditingComplete,
   }) : super(key: key);
 
   @override
@@ -27,6 +38,15 @@ class SpaceTextField extends StatelessWidget {
       validator: validator,
       onChanged: onChanged,
       style: const TextStyle(color: Colors.white),
+      keyboardType: keyboardType ?? (isPassword ? TextInputType.visiblePassword : TextInputType.text),
+      inputFormatters: inputFormatters,
+      focusNode: focusNode,
+      textInputAction: textInputAction ?? TextInputAction.next,
+      onEditingComplete: onEditingComplete ?? () {
+        FocusScope.of(context).nextFocus();
+      },
+      autocorrect: false,
+      enableSuggestions: !isPassword,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(

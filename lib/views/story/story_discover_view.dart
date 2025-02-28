@@ -46,7 +46,7 @@ class StoryDiscoverView extends StatelessWidget {
                           }
 
                           if (!viewModel.hasStories) {
-                            return _buildEmptyView();
+                            return _buildEmptyView(viewModel.isSearching);
                           }
 
                           return _buildStoriesList(context, viewModel);
@@ -60,6 +60,38 @@ class StoryDiscoverView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Consumer<StoryDiscoverViewModel>(
+      builder: (context, viewModel, _) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            onChanged: (value) => viewModel.search(value),
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: 'Hikayelerde ara...',
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.white.withOpacity(0.6),
+              ),
+              filled: true,
+              fillColor: SpaceTheme.accentPurple.withOpacity(0.2),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -140,32 +172,35 @@ class StoryDiscoverView extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyView() {
+  Widget _buildEmptyView(bool isSearching) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.explore_off,
+            isSearching ? Icons.search_off : Icons.explore_off,
             color: Colors.amber[100],
             size: 60,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Henüz hikaye paylaşılmamış',
-            style: TextStyle(
+          Text(
+            isSearching
+                ? 'Aradığınız kriterlere uygun hikaye bulunamadı'
+                : 'Henüz hikaye paylaşılmamış',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'İlk hikayeyi siz oluşturun!',
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 16,
+          if (!isSearching)
+            const Text(
+              'İlk hikayeyi siz paylaşın!',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -174,18 +209,47 @@ class StoryDiscoverView extends StatelessWidget {
   Widget _buildStoriesList(BuildContext context, StoryDiscoverViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: viewModel.stories.length,
-        itemBuilder: (context, index) {
-          final story = viewModel.stories[index];
-          return StoryLibraryItem(
-            story: story,
-            onTap: () => _viewStoryDetail(context, story),
-            onDelete: null, // Keşfet sayfasında silme butonu gizlenecek
-            onLike: () => viewModel.toggleLike(story.id),
-          );
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (!viewModel.isLoadingMore && 
+              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent * 0.8 &&
+              viewModel.canLoadMore) {
+            viewModel.loadMoreStories();
+          }
+          return true;
         },
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: viewModel.stories.length + (viewModel.isLoadingMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index == viewModel.stories.length) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: SpaceTheme.accentPurple,
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            final story = viewModel.stories[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: StoryLibraryItem(
+                story: story,
+                onTap: () => _viewStoryDetail(context, story),
+                onDelete: null,
+                onLike: () => viewModel.toggleLike(story.id),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -201,54 +265,6 @@ class StoryDiscoverView extends StatelessWidget {
           showSaveButton: false,
         ),
       ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Consumer<StoryDiscoverViewModel>(
-      builder: (context, viewModel, _) {
-        return Container(
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1,
-            ),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Icon(
-                Icons.search,
-                color: Colors.white.withOpacity(0.8),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  onChanged: viewModel.setSearchQuery,
-                  decoration: InputDecoration(
-                    hintText: 'Hikaye ara...',
-                    hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.6),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-              if (viewModel.searchQuery.isNotEmpty)
-                IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.white70),
-                  onPressed: () {
-                    viewModel.setSearchQuery('');
-                  },
-                ),
-            ],
-          ),
-        );
-      },
     );
   }
 } 

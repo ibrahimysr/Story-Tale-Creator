@@ -133,114 +133,58 @@ class _RegisterViewState extends State<RegisterView>
     );
   }
 
-  Widget _buildAvatarSelector() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Avatar Seç',
-            style: TextStyle(
-              color: SpaceTheme.accentGold,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _avatars.length,
-              itemBuilder: (context, index) {
-                final avatar = _avatars[index];
-                final isSelected = avatar == _selectedAvatar;
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedAvatar = avatar;
-                    });
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isSelected ? SpaceTheme.accentGold : Colors.transparent,
-                        width: 3,
-                      ),
-                    ),
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage('assets/avatar/$avatar'),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+ 
   Widget _buildRegisterForm() {
     return Consumer<RegisterViewModel>(
       builder: (context, viewModel, child) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1,
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
+              ),
+              boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
             ),
-            boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Avatar Seç',
-                        style: TextStyle(
-                          color: SpaceTheme.accentGold,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                        width: 1,
                       ),
-                      const SizedBox(height: 20),
-                      Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.8,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Avatar Seç',
+                          style: TextStyle(
+                            color: SpaceTheme.accentGold,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
                           height: 150,
                           child: GridView.builder(
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 16,
-                              crossAxisSpacing: 16,
-                              childAspectRatio: 1,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 5,
+                              mainAxisSpacing: 8,
+                              crossAxisSpacing: 8,
                             ),
                             itemCount: _avatars.length,
                             itemBuilder: (context, index) {
@@ -269,70 +213,85 @@ class _RegisterViewState extends State<RegisterView>
                             },
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                SpaceTextField(
-                  controller: _usernameController,
-                  label: 'Kaşif Adı',
-                  icon: Icons.person_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Lütfen bir kaşif adı girin';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                SpaceTextField(
-                  controller: _emailController,
-                  label: 'Galaktik E-posta',
-                  icon: Icons.email_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Lütfen e-posta adresinizi girin';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Geçerli bir e-posta adresi girin';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                SpaceTextField(
-                  controller: _passwordController,
-                  label: 'Gizli Şifre',
-                  icon: Icons.lock_outline,
-                  isPassword: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Lütfen şifrenizi girin';
-                    }
-                    if (value.length < 6) {
-                      return 'Şifre en az 6 karakter olmalıdır';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                _buildRegisterButton(viewModel),
-                const SizedBox(height: 16),
-                _buildLoginButton(),
-                if (viewModel.state == RegisterState.error)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      viewModel.errorMessage,
-                      style: TextStyle(
-                        color: Colors.red[300],
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center,
+                      ],
                     ),
                   ),
-              ],
+                  const SizedBox(height: 24),
+                  SpaceTextField(
+                    controller: _usernameController,
+                    label: 'Kaşif Adı',
+                    icon: Icons.person_outline,
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Lütfen bir kaşif adı girin';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  SpaceTextField(
+                    controller: _emailController,
+                    label: 'Galaktik E-posta',
+                    icon: Icons.email_outlined,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Lütfen e-posta adresinizi girin';
+                      }
+                      if (!value.contains('@')) {
+                        return 'Geçerli bir e-posta adresi girin';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  SpaceTextField(
+                    controller: _passwordController,
+                    label: 'Gizli Şifre',
+                    icon: Icons.lock_outline,
+                    isPassword: true,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                      if (_formKey.currentState!.validate()) {
+                        viewModel.register(
+                          _usernameController.text,
+                          _emailController.text,
+                          _passwordController.text,
+                          _selectedAvatar,
+                        );
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Lütfen şifrenizi girin';
+                      }
+                      if (value.length < 6) {
+                        return 'Şifre en az 6 karakter olmalıdır';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  _buildRegisterButton(viewModel),
+                  const SizedBox(height: 16),
+                  _buildLoginButton(),
+                  if (viewModel.state == RegisterState.error)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        viewModel.errorMessage,
+                        style: TextStyle(
+                          color: Colors.red[300],
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );

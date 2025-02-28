@@ -8,30 +8,84 @@ class StoryLibraryRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<List<StoryLibraryModel>> getAllStories() async {
+  final Map<String, bool> _likeInProgress = {};
+
+  Future<List<StoryLibraryModel>> getAllStories({
+    int limit = 10,
+    String? startAfter,
+  }) async {
     try {
       final user = _auth.currentUser;
       if (user == null) throw Exception('Kullanıcı giriş yapmamış!');
 
-      final QuerySnapshot snapshot = await _firestore
+      Query query = _firestore
           .collection('userStories')
           .where('userId', isEqualTo: user.uid)
-          .get();
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
+
+      if (startAfter != null) {
+        final startAfterDoc = await _firestore
+            .collection('userStories')
+            .doc(startAfter)
+            .get();
+        if (startAfterDoc.exists) {
+          query = query.startAfterDocument(startAfterDoc);
+        }
+      }
+
+      final QuerySnapshot snapshot = await query.get();
+
+      // Mevcut hikayeleri public yap
+      for (var doc in snapshot.docs) {
+        if (!(doc.data() as Map<String, dynamic>).containsKey('isPublic')) {
+          await doc.reference.update({'isPublic': true});
+        }
+      }
 
       return snapshot.docs.map((doc) {
         return StoryLibraryModel.fromFirebase(
           doc.id,
           doc.data() as Map<String, dynamic>,
         );
-      }).toList()
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      }).toList();
     } catch (e) {
       throw Exception('Hikayeler yüklenirken bir hata oluştu: $e');
     }
   }
 
-  Future<void> toggleLike(String storyId) async {
+  Future<StoryLibraryModel?> getStory(String storyId) async {
     try {
+      final doc = await _firestore
+          .collection('userStories')
+          .doc(storyId)
+          .get();
+
+      if (!doc.exists) return null;
+
+      // Hikayeyi public yap
+      if (!(doc.data() as Map<String, dynamic>).containsKey('isPublic')) {
+        await doc.reference.update({'isPublic': true});
+      }
+
+      return StoryLibraryModel.fromFirebase(
+        doc.id,
+        doc.data() as Map<String, dynamic>,
+      );
+    } catch (e) {
+      throw Exception('Hikaye yüklenirken bir hata oluştu: $e');
+    }
+  }
+
+  Future<void> toggleLike(String storyId) async {
+    // Eğer beğeni işlemi devam ediyorsa, yeni işlemi engelle
+    if (_likeInProgress[storyId] == true) {
+      return;
+    }
+
+    try {
+      _likeInProgress[storyId] = true;
+      
       final user = _auth.currentUser;
       if (user == null) throw Exception('Kullanıcı giriş yapmamış!');
 
@@ -60,6 +114,8 @@ class StoryLibraryRepository {
       }
     } catch (e) {
       throw Exception('Beğeni işlemi sırasında bir hata oluştu: $e');
+    } finally {
+      _likeInProgress[storyId] = false;
     }
   }
 
@@ -88,6 +144,28 @@ class StoryLibraryRepository {
     } catch (e) {
       print('Resim yükleme hatası: $e');
       return null;
+    }
+  }
+
+  Future<String> createStory(String title, String story, File? imageFile) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) throw Exception('Kullanıcı oturum açmamış');
+
+      Map<String, dynamic> storyData = {
+        'title': title,
+        'story': story,
+        'userId': user.uid,
+        'createdAt': FieldValue.serverTimestamp(),
+        'likeCount': 0,
+        'isPublic': true, // Varsayılan olarak public
+        'likes': [],
+      };
+
+      final docRef = await _firestore.collection('userStories').add(storyData);
+      return docRef.id;
+    } catch (e) {
+      throw Exception('Hikaye oluşturulurken bir hata oluştu: $e');
     }
   }
 } 

@@ -8,26 +8,54 @@ class HomeRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<List<HomeStoryModel>> getRecentStories() async {
+  Future<List<HomeStoryModel>> getRecentStories({
+    int limit = 5,
+    String? startAfter,
+  }) async {
     try {
       final user = _auth.currentUser;
       if (user == null) return [];
 
-      final QuerySnapshot snapshot = await _firestore
+      Query query = _firestore
           .collection('userStories')
           .where('userId', isEqualTo: user.uid)
-          .limit(5)
-          .get();
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
+
+      if (startAfter != null) {
+        final startAfterDoc = await _firestore
+            .collection('userStories')
+            .doc(startAfter)
+            .get();
+        if (startAfterDoc.exists) {
+          query = query.startAfterDocument(startAfterDoc);
+        }
+      }
+
+      final QuerySnapshot snapshot = await query.get();
 
       return snapshot.docs.map((doc) {
         return HomeStoryModel.fromFirebase(
           doc.id,
           doc.data() as Map<String, dynamic>,
         );
-      }).toList()
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      }).toList();
     } catch (e) {
-      throw Exception('Hikayeler yüklenirken bir hata oluştu: $e');
+      if (e is FirebaseException && e.code == 'failed-precondition') {
+        throw Exception(
+          'Sistem hazırlanıyor, lütfen biraz bekleyin ve sayfayı yenileyin. '
+          'Bu işlem sadece ilk seferde gereklidir.'
+        );
+      }
+      
+      if (e.toString().contains('indexes?create_composite=')) {
+        throw Exception(
+          'Sistem ilk kurulum aşamasında. '
+          'Lütfen birkaç dakika bekleyip tekrar deneyin.'
+        );
+      }
+      
+      throw Exception('Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   }
 

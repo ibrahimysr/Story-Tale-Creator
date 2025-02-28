@@ -8,14 +8,55 @@ class StoryDiscoverRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<List<StoryLibraryModel>> getAllStories({String? searchQuery}) async {
-    try {
-      Query query = _firestore.collection('userStories');
+  final Map<String, bool> _likeInProgress = {};
 
-      // Beğeni sayısına göre sıralama
-      query = query.orderBy('likeCount', descending: true);
+  Future<List<StoryLibraryModel>> getAllStories({
+    int limit = 15,
+    String? startAfter,
+    String? searchQuery,
+  }) async {
+    try {
+      Query query = _firestore
+          .collection('userStories')
+          .where('isPublic', isEqualTo: true)
+          .orderBy('likeCount', descending: true)
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
+
+      if (startAfter != null) {
+        final startAfterDoc = await _firestore
+            .collection('userStories')
+            .doc(startAfter)
+            .get();
+        if (startAfterDoc.exists) {
+          query = query.startAfterDocument(startAfterDoc);
+        }
+      }
 
       final QuerySnapshot snapshot = await query.get();
+      
+      // Eğer hiç hikaye yoksa, tüm hikayeleri getir ve public yap
+      if (snapshot.docs.isEmpty) {
+        final allStoriesQuery = await _firestore
+            .collection('userStories')
+            .orderBy('createdAt', descending: true)
+            .limit(limit)
+            .get();
+
+        // Tüm hikayeleri public yap
+        for (var doc in allStoriesQuery.docs) {
+          if (!(doc.data()).containsKey('isPublic')) {
+            await doc.reference.update({'isPublic': true});
+          }
+        }
+
+        // Sorguyu tekrar çalıştır
+        return getAllStories(
+          limit: limit,
+          startAfter: startAfter,
+          searchQuery: searchQuery,
+        );
+      }
 
       var stories = snapshot.docs.map((doc) {
         return StoryLibraryModel.fromFirebase(
@@ -35,12 +76,53 @@ class StoryDiscoverRepository {
 
       return stories;
     } catch (e) {
-      throw Exception('Hikayeler yüklenirken bir hata oluştu: $e');
+      if (e is FirebaseException) {
+        if (e.code == 'failed-precondition') {
+          throw Exception(
+            'Sistem hazırlanıyor, lütfen biraz bekleyin ve sayfayı yenileyin. '
+            'Bu işlem sadece ilk seferde gereklidir.'
+          );
+        }
+        
+        if (e.message?.contains('indexes?create_composite=') ?? false) {
+          throw Exception(
+            'Sistem ilk kurulum aşamasında. '
+            'Lütfen birkaç dakika bekleyip tekrar deneyin.'
+          );
+        }
+      }
+      
+      throw Exception('Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+    }
+  }
+
+  Future<StoryLibraryModel?> getStory(String storyId) async {
+    try {
+      final doc = await _firestore
+          .collection('userStories')
+          .doc(storyId)
+          .get();
+
+      if (!doc.exists) return null;
+
+      return StoryLibraryModel.fromFirebase(
+        doc.id,
+        doc.data() as Map<String, dynamic>,
+      );
+    } catch (e) {
+      throw Exception('Hikaye yüklenirken bir hata oluştu: $e');
     }
   }
 
   Future<void> toggleLike(String storyId) async {
+    // Eğer beğeni işlemi devam ediyorsa, yeni işlemi engelle
+    if (_likeInProgress[storyId] == true) {
+      return;
+    }
+
     try {
+      _likeInProgress[storyId] = true;
+      
       final user = _auth.currentUser;
       if (user == null) throw Exception('Kullanıcı giriş yapmamış!');
 
@@ -55,11 +137,13 @@ class StoryDiscoverRepository {
       final isLiked = likedByUsers.contains(user.uid);
 
       if (isLiked) {
+        // Beğeniyi kaldır
         await storyRef.update({
           'likeCount': FieldValue.increment(-1),
           'likedByUsers': FieldValue.arrayRemove([user.uid]),
         });
       } else {
+        // Beğeni ekle
         await storyRef.update({
           'likeCount': FieldValue.increment(1),
           'likedByUsers': FieldValue.arrayUnion([user.uid]),
@@ -67,6 +151,8 @@ class StoryDiscoverRepository {
       }
     } catch (e) {
       throw Exception('Beğeni işlemi sırasında bir hata oluştu: $e');
+    } finally {
+      _likeInProgress[storyId] = false;
     }
   }
 

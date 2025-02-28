@@ -12,7 +12,7 @@ class StoryDisplayContent extends StatefulWidget {
   final Color textColor;
 
   const StoryDisplayContent({
-    Key? key,
+    super.key,
     required this.story,
     required this.title,
     this.image,
@@ -20,7 +20,7 @@ class StoryDisplayContent extends StatefulWidget {
     required this.isLoading,
     required this.showSaveButton,
     required this.textColor,
-  }) : super(key: key);
+  });
 
   @override
   State<StoryDisplayContent> createState() => _StoryDisplayContentState();
@@ -238,17 +238,14 @@ class PageFlipPhysics extends ScrollPhysics {
         damping: 1,
       );
 
-  @override
   double getPage(ScrollMetrics position) {
     return position.pixels / position.viewportDimension;
   }
 
-  @override
   double getPixels(ScrollMetrics position, double page) {
     return page * position.viewportDimension;
   }
 
-  @override
   double getTargetPixels(ScrollMetrics position, double velocity, double suggestedPixels) {
     return suggestedPixels;
   }

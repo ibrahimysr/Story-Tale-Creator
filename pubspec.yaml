@@ -26,6 +26,8 @@ dependencies:
   firebase_storage:
   path_provider: ^2.1.2
   palette_generator: ^0.3.3+6
+  shared_preferences: ^2.5.2
+  connectivity_plus: ^6.1.3
 
 dev_dependencies:
   flutter_test:

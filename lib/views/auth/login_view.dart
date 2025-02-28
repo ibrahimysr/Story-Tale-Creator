@@ -123,70 +123,84 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
   Widget _buildLoginForm() {
     return Consumer<LoginViewModel>(
       builder: (context, viewModel, child) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1,
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
+              ),
+              boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
             ),
-            boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentPurple),
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                SpaceTextField(
-                  controller: _emailController,
-                  label: 'Galaktik E-posta',
-                  icon: Icons.email_outlined,
-                  onChanged: viewModel.setEmail,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Lütfen e-posta adresinizi girin';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Geçerli bir e-posta adresi girin';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                SpaceTextField(
-                  controller: _passwordController,
-                  label: 'Gizli Şifre',
-                  icon: Icons.lock_outline,
-                  isPassword: true,
-                  onChanged: viewModel.setPassword,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Lütfen şifrenizi girin';
-                    }
-                    if (value.length < 6) {
-                      return 'Şifre en az 6 karakter olmalıdır';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 24),
-                _buildLoginButton(viewModel),
-                const SizedBox(height: 16),
-                _buildRegisterButton(),
-                if (viewModel.error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      viewModel.error!,
-                      style: TextStyle(
-                        color: Colors.red[300],
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SpaceTextField(
+                    controller: _emailController,
+                    label: 'Galaktik E-posta',
+                    icon: Icons.email_outlined,
+                    onChanged: viewModel.setEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Lütfen e-posta adresinizi girin';
+                      }
+                      if (!value.contains('@')) {
+                        return 'Geçerli bir e-posta adresi girin';
+                      }
+                      return null;
+                    },
                   ),
-              ],
+                  const SizedBox(height: 16),
+                  SpaceTextField(
+                    controller: _passwordController,
+                    label: 'Gizli Şifre',
+                    icon: Icons.lock_outline,
+                    isPassword: true,
+                    onChanged: viewModel.setPassword,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                      if (_formKey.currentState!.validate()) {
+                        viewModel.login(context);
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Lütfen şifrenizi girin';
+                      }
+                      if (value.length < 6) {
+                        return 'Şifre en az 6 karakter olmalıdır';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  _buildLoginButton(viewModel),
+                  const SizedBox(height: 16),
+                  _buildRegisterButton(),
+                  if (viewModel.error != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        viewModel.error!,
+                        style: TextStyle(
+                          color: Colors.red[300],
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );

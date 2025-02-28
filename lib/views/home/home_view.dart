@@ -160,7 +160,8 @@ class HomeView extends StatelessWidget {
   Widget _buildRecentStoriesList() {
     return Consumer<HomeViewModel>(
       builder: (context, viewModel, _) {
-        if (viewModel.isLoadingStories) {
+        // İlk yükleme sırasında tam ekran loading göster
+        if (viewModel.isLoadingStories && !viewModel.hasStories) {
           return Center(
             child: CircularProgressIndicator(
               color: SpaceTheme.accentPurple,
@@ -168,7 +169,7 @@ class HomeView extends StatelessWidget {
           );
         }
 
-        if (viewModel.storyLoadError != null) {
+        if (viewModel.storyLoadError != null && !viewModel.hasStories) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -178,6 +179,7 @@ class HomeView extends StatelessWidget {
                 Text(
                   viewModel.storyLoadError!,
                   style: const TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
                 ),
                 TextButton(
                   onPressed: viewModel.loadRecentStories,
@@ -207,17 +209,43 @@ class HomeView extends StatelessWidget {
           );
         }
 
-        return ListView.builder(
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          itemCount: viewModel.recentStories.length,
-          itemBuilder: (context, index) {
-            final story = viewModel.recentStories[index];
-            return HomeStoryItem(
-              story: story,
-              onTap: () => _viewStoryDetail(context, story),
-            );
+        return NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (!viewModel.isLoadingMore && 
+                scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+                viewModel.canLoadMore) {
+              viewModel.loadMoreStories();
+            }
+            return true;
           },
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: viewModel.recentStories.length + (viewModel.isLoadingMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index == viewModel.recentStories.length) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: SpaceTheme.accentPurple,
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              final story = viewModel.recentStories[index];
+              return HomeStoryItem(
+                story: story,
+                onTap: () => _viewStoryDetail(context, story),
+              );
+            },
+          ),
         );
       },
     );
