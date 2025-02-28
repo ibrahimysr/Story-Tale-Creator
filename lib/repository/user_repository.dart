@@ -9,7 +9,7 @@ class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<UserModel> registerUser(
-      String username, String email, String password) async {
+      String username, String email, String password, String avatar) async {
     try {
       User? user = await _authService.registerWithEmailAndPassword(
           email, password);
@@ -22,13 +22,14 @@ class UserRepository {
         id: user.uid,
         username: username,
         email: email,
+        avatar: avatar,
       );
 
       final userData = {
         'id': user.uid,
         'username': username,
         'email': email,
-      
+        'avatar': avatar,
       };
       
       await _firestore.collection('users').doc(user.uid).set(userData);
@@ -61,6 +62,7 @@ class UserRepository {
         id: user.uid,
         username: userData['username'],
         email: userData['email'],
+        avatar: userData['avatar'],
       );
     } catch (e) {
       throw Exception('Giriş sırasında hata: $e');

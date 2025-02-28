@@ -16,6 +16,14 @@ class _EditProfileViewState extends State<EditProfileView> {
   late TextEditingController _nameController;
   late TextEditingController _usernameController;
   bool _isLoading = false;
+  String _selectedAvatar = 'boy (1).png';
+
+  final List<String> _avatars = [
+    'boy (1).png', 'boy (2).png', 'boy (3).png', 'boy (4).png', 'boy (5).png',
+    'boy (6).png', 'boy (7).png', 'boy (8).png', 'boy (9).png', 'boy (10).png',
+    'girl (1).png', 'girl (2).png', 'girl (3).png', 'girl (4).png', 'girl (5).png',
+    'girl (6).png', 'girl (7).png', 'girl (8).png', 'girl (9).png', 'girl (10).png',
+  ];
 
   @override
   void initState() {
@@ -25,6 +33,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     
     _nameController = TextEditingController(text: profile?.name ?? '');
     _usernameController = TextEditingController(text: profile?.username ?? '');
+    _selectedAvatar = profile?.avatar ?? 'boy (1).png';
   }
 
   @override
@@ -106,6 +115,8 @@ class _EditProfileViewState extends State<EditProfileView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildAvatarSelector(),
+                const SizedBox(height: 20),
                 _buildInputField(
                   'İsim',
                   'Görünen adınızı girin',
@@ -161,6 +172,66 @@ class _EditProfileViewState extends State<EditProfileView> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAvatarSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Avatar',
+          style: TextStyle(
+            color: SpaceTheme.accentGold,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          height: 150,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+          child: GridView.builder(
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: 1,
+            ),
+            itemCount: _avatars.length,
+            itemBuilder: (context, index) {
+              final avatar = _avatars[index];
+              final isSelected = avatar == _selectedAvatar;
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedAvatar = avatar;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isSelected ? SpaceTheme.accentGold : Colors.transparent,
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage('assets/avatar/$avatar'),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -246,6 +317,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       await viewModel.updateProfile(
         name: _nameController.text,
         username: _usernameController.text,
+        avatar: _selectedAvatar,
       );
 
       if (!mounted) return;

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/space_theme.dart';
-import '../../core/theme/widgets/starry_background.dart';
 import '../../model/story/story_display_model.dart';
 import '../../viewmodels/story_display_viewmodel.dart';
 import '../../widgets/story/story_display_content.dart';
 
-class StoryDisplayView extends StatelessWidget {
+class StoryDisplayView extends StatefulWidget {
   final String story;
   final String title;
   final Uint8List? image;
@@ -22,91 +21,143 @@ class StoryDisplayView extends StatelessWidget {
   });
 
   @override
+  State<StoryDisplayView> createState() => _StoryDisplayViewState();
+}
+
+class _StoryDisplayViewState extends State<StoryDisplayView> {
+  late StoryDisplayViewModel viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = StoryDisplayViewModel();
+    if (widget.image != null) {
+      viewModel.generatePaletteFromImage(widget.image!);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => StoryDisplayViewModel(),
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: SpaceTheme.primaryDark,
-        appBar: _buildAppBar(context),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: SpaceTheme.mainGradient,
-          ),
-          child: Stack(
-            children: [
-              const Positioned.fill(
-                child: StarryBackground(),
-              ),
-              SafeArea(
-                child: Consumer<StoryDisplayViewModel>(
-                  builder: (context, viewModel, _) {
-                    return StoryDisplayContent(
-                      story: story,
-                      title: title,
-                      image: image,
-                      onSave: () => _saveStory(context, viewModel),
-                      isLoading: viewModel.isLoading,
-                      showSaveButton: showSaveButton,
-                    );
-                  },
+    return ChangeNotifierProvider.value(
+      value: viewModel,
+      child: Consumer<StoryDisplayViewModel>(
+        builder: (context, viewModel, _) {
+          return Scaffold(
+            extendBodyBehindAppBar: true,
+            backgroundColor: viewModel.dominantColor,
+            appBar: _buildAppBar(context, viewModel),
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: viewModel.colorPalette.length >= 2
+                      ? [
+                          viewModel.colorPalette[0],
+                          viewModel.colorPalette[1],
+                        ]
+                      : [
+                          viewModel.dominantColor,
+                          viewModel.dominantColor.withOpacity(0.7),
+                        ],
                 ),
               ),
-            ],
-          ),
-        ),
+              child: Stack(
+                children: [
+                  if (viewModel.colorPalette.isNotEmpty)
+                    ...viewModel.colorPalette.take(3).map((color) {
+                      return Positioned(
+                        left: -50 + (viewModel.colorPalette.indexOf(color) * 100),
+                        top: -100 + (viewModel.colorPalette.indexOf(color) * 50),
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: color.withOpacity(0.3),
+                            boxShadow: [
+                              BoxShadow(
+                                color: color.withOpacity(0.2),
+                                blurRadius: 50,
+                                spreadRadius: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  SafeArea(
+                    child: StoryDisplayContent(
+                      story: widget.story,
+                      title: widget.title,
+                      image: widget.image,
+                      onSave: () => _saveStory(context, viewModel),
+                      isLoading: viewModel.isLoading,
+                      showSaveButton: widget.showSaveButton,
+                      textColor: viewModel.textColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, StoryDisplayViewModel viewModel) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       title: Text(
-        'Uzayın Derinliklerinden',
-        style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
+        widget.title,
+        style: SpaceTheme.titleStyle.copyWith(
+          fontSize: 20,
+          color: viewModel.textColor,
+        ),
       ),
+      iconTheme: IconThemeData(color: viewModel.textColor),
       actions: [
-        if (showSaveButton)
-          Consumer<StoryDisplayViewModel>(
-            builder: (context, viewModel, _) {
-              return IconButton(
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: SpaceTheme.iconContainerDecoration,
-                  child: viewModel.isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Icon(
-                          Icons.save,
-                          color: Colors.white,
-                        ),
-                ),
-                onPressed: viewModel.isLoading
-                    ? null
-                    : () => _saveStory(context, viewModel),
-              );
-            },
+        if (widget.showSaveButton)
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: viewModel.colorPalette.isNotEmpty
+                    ? viewModel.colorPalette[0].withOpacity(0.3)
+                    : Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: viewModel.isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : Icon(
+                      Icons.save,
+                      color: viewModel.textColor,
+                    ),
+            ),
+            onPressed: viewModel.isLoading
+                ? null
+                : () => _saveStory(context, viewModel),
           ),
         const SizedBox(width: 8),
       ],
     );
   }
 
-  Future<void> _saveStory(
-      BuildContext context, StoryDisplayViewModel viewModel) async {
+  Future<void> _saveStory(BuildContext context, StoryDisplayViewModel viewModel) async {
     try {
       final storyModel = StoryDisplayModel(
-        story: story,
-        title: title,
-        image: image,
+        story: widget.story,
+        title: widget.title,
+        image: widget.image,
       );
 
       await viewModel.saveStory(storyModel);
@@ -117,16 +168,18 @@ class StoryDisplayView extends StatelessWidget {
         SnackBar(
           content: Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: const Text(
+            child: Text(
               'Hikaye kütüphanenize kaydedildi! ✨',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white,
+                color: viewModel.textColor,
                 fontSize: 16,
               ),
             ),
           ),
-          backgroundColor: SpaceTheme.accentPurple.withOpacity(0.8),
+          backgroundColor: viewModel.colorPalette.isNotEmpty
+              ? viewModel.colorPalette[0].withOpacity(0.8)
+              : SpaceTheme.accentPurple.withOpacity(0.8),
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -144,8 +197,8 @@ class StoryDisplayView extends StatelessWidget {
             child: Text(
               'Bir hata oluştu: ${e.toString()}',
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: viewModel.textColor,
                 fontSize: 16,
               ),
             ),

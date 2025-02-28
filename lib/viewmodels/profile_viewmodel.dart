@@ -51,6 +51,7 @@ class ProfileViewModel extends ChangeNotifier {
           'stories': 0,
           'missions': '0/10',
           'level': 1,
+          'avatar': 'boy (1).png',
         };
         
         await _firestore.collection('users').doc(user.uid).set(newProfile);
@@ -61,6 +62,9 @@ class ProfileViewModel extends ChangeNotifier {
           ...doc.data() ?? {},
         });
       }
+
+      await loadUserStats();
+
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -86,6 +90,7 @@ class ProfileViewModel extends ChangeNotifier {
   Future<void> updateProfile({
     String? name,
     String? username,
+    String? avatar,
   }) async {
     try {
       _isLoading = true;
@@ -110,6 +115,10 @@ class ProfileViewModel extends ChangeNotifier {
           throw Exception('Bu kullanıcı adı zaten kullanımda');
         }
         updates['username'] = username;
+      }
+
+      if (avatar != null) {
+        updates['avatar'] = avatar;
       }
 
       if (updates.isNotEmpty) {

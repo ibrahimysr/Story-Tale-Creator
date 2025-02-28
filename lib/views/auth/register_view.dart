@@ -21,10 +21,18 @@ class _RegisterViewState extends State<RegisterView>
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  String _selectedAvatar = 'boy (1).png'; // Varsayılan avatar
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+
+  final List<String> _avatars = [
+    'boy (1).png', 'boy (2).png', 'boy (3).png', 'boy (4).png', 'boy (5).png',
+    'boy (6).png', 'boy (7).png', 'boy (8).png', 'boy (9).png', 'boy (10).png',
+    'girl (1).png', 'girl (2).png', 'girl (3).png', 'girl (4).png', 'girl (5).png',
+    'girl (6).png', 'girl (7).png', 'girl (8).png', 'girl (9).png', 'girl (10).png',
+  ];
 
   @override
   void initState() {
@@ -125,6 +133,65 @@ class _RegisterViewState extends State<RegisterView>
     );
   }
 
+  Widget _buildAvatarSelector() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Avatar Seç',
+            style: TextStyle(
+              color: SpaceTheme.accentGold,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _avatars.length,
+              itemBuilder: (context, index) {
+                final avatar = _avatars[index];
+                final isSelected = avatar == _selectedAvatar;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedAvatar = avatar;
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isSelected ? SpaceTheme.accentGold : Colors.transparent,
+                        width: 3,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundImage: AssetImage('assets/avatar/$avatar'),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRegisterForm() {
     return Consumer<RegisterViewModel>(
       builder: (context, viewModel, child) {
@@ -143,6 +210,70 @@ class _RegisterViewState extends State<RegisterView>
             key: _formKey,
             child: Column(
               children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Avatar Seç',
+                        style: TextStyle(
+                          color: SpaceTheme.accentGold,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          height: 150,
+                          child: GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 16,
+                              crossAxisSpacing: 16,
+                              childAspectRatio: 1,
+                            ),
+                            itemCount: _avatars.length,
+                            itemBuilder: (context, index) {
+                              final avatar = _avatars[index];
+                              final isSelected = avatar == _selectedAvatar;
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedAvatar = avatar;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected ? SpaceTheme.accentGold : Colors.transparent,
+                                      width: 4,
+                                    ),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 45,
+                                    backgroundImage: AssetImage('assets/avatar/$avatar'),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
                 SpaceTextField(
                   controller: _usernameController,
                   label: 'Kaşif Adı',
@@ -221,6 +352,7 @@ class _RegisterViewState extends State<RegisterView>
                     _usernameController.text,
                     _emailController.text,
                     _passwordController.text,
+                    _selectedAvatar,
                   );
                   
                   if (viewModel.state == RegisterState.success) {

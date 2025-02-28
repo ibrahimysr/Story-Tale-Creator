@@ -70,41 +70,8 @@ class HomeView extends StatelessWidget {
                                   
                                   const SizedBox(height: 24),
                                   
-                                  // Arama çubuğu
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: Colors.white.withOpacity(0.2),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.search,
-                                          color: Colors.white.withOpacity(0.8),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              hintText: 'Macera ara...',
-                                              hintStyle: TextStyle(
-                                                color: Colors.white.withOpacity(0.6),
-                                              ),
-                                              border: InputBorder.none,
-                                            ),
-                                            style: const TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  
-                                  const SizedBox(height: 30),
+                               
+                             
                                   
                                   // Hikaye Yaratıcısı kartı
                                   _buildActivityCard(

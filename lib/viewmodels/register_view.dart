@@ -21,6 +21,7 @@ class _RegisterViewState extends State<RegisterView>
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  String _selectedAvatar = 'boy (1).png'; // Varsayılan avatar
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -221,6 +222,7 @@ class _RegisterViewState extends State<RegisterView>
                     _usernameController.text,
                     _emailController.text,
                     _passwordController.text,
+                    _selectedAvatar,
                   );
                   
                   if (viewModel.state == RegisterState.success) {

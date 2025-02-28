@@ -5,6 +5,7 @@ class UserProfile {
   final int stories;
   final String missions;
   final int level;
+  final String avatar;
 
   UserProfile({
     required this.uid,
@@ -13,6 +14,7 @@ class UserProfile {
     required this.stories,
     required this.missions,
     required this.level,
+    required this.avatar,
   });
 
   factory UserProfile.fromMap(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ class UserProfile {
       stories: map['stories'] ?? 0,
       missions: map['missions'] ?? '0/0',
       level: map['level'] ?? 1,
+      avatar: map['avatar'] ?? 'boy (1).png',
     );
   }
 
@@ -34,6 +37,7 @@ class UserProfile {
       'stories': stories,
       'missions': missions,
       'level': level,
+      'avatar': avatar,
     };
   }
 } 

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
-import 'package:masal/viewmodels/login_viewmodel.dart';
 import 'package:provider/provider.dart';
-
 import '../../widgets/auth/space_text_field.dart';
 import '../../core/theme/space_theme.dart';
 import '../../core/theme/widgets/starry_background.dart';
+import '../../viewmodels/login_viewmodel.dart';
 import 'register_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -15,8 +13,7 @@ class LoginView extends StatefulWidget {
   State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView>
-    with SingleTickerProviderStateMixin {
+class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -145,6 +142,7 @@ class _LoginViewState extends State<LoginView>
                   controller: _emailController,
                   label: 'Galaktik E-posta',
                   icon: Icons.email_outlined,
+                  onChanged: viewModel.setEmail,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Lütfen e-posta adresinizi girin';
@@ -161,6 +159,7 @@ class _LoginViewState extends State<LoginView>
                   label: 'Gizli Şifre',
                   icon: Icons.lock_outline,
                   isPassword: true,
+                  onChanged: viewModel.setPassword,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Lütfen şifrenizi girin';
@@ -175,11 +174,11 @@ class _LoginViewState extends State<LoginView>
                 _buildLoginButton(viewModel),
                 const SizedBox(height: 16),
                 _buildRegisterButton(),
-                if (viewModel.state == LoginState.error)
+                if (viewModel.error != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
-                      viewModel.errorMessage,
+                      viewModel.error!,
                       style: TextStyle(
                         color: Colors.red[300],
                         fontSize: 14,
@@ -199,31 +198,18 @@ class _LoginViewState extends State<LoginView>
     return Container(
       constraints: const BoxConstraints(maxWidth: 300),
       child: ElevatedButton(
-        onPressed: viewModel.state == LoginState.loading
+        onPressed: viewModel.isLoading
             ? null
             : () async {
                 if (_formKey.currentState!.validate()) {
-                  await viewModel.login(
-                    _emailController.text,
-                    _passwordController.text,
-                  );
-                  
-                  if (viewModel.state == LoginState.success) {
-                    // ignore: use_build_context_synchronously
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MainScreen(),
-                      ),
-                    );
-                  }
+                  await viewModel.login(context);
                 }
               },
         style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentPurple),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Center(
-            child: viewModel.state == LoginState.loading
+            child: viewModel.isLoading
                 ? const SizedBox(
                     height: 20,
                     width: 20,

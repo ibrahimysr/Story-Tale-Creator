@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:masal/env.dart';
-import '../../model/story/story_options_model.dart';
 
 class ImageService {
   Future<Uint8List> generateImage({
@@ -11,11 +10,7 @@ class ImageService {
     required String title,
   }) async {
     try {
-      final String placeEn = StoryOptionsModel.placeTranslations[place] ?? 'Magical place';
-      final String characterEn = StoryOptionsModel.characterTranslations[character] ?? 'Brave hero';
-      final String eventEn = StoryOptionsModel.eventTranslations[event] ?? 'Exciting adventure';
-
-      final prompt = "A colorful cartoon-style illustration for a children's book. Setting: $placeEn, Character: $characterEn, Event: $eventEn, Story title: $title";
+      final prompt = "A colorful cartoon-style illustration for a children's book. Setting: $place, Character: $character, Event: $event, Story title: $title";
       
       print('Resim oluşturma isteği gönderiliyor...');
       print('Prompt: $prompt');

@@ -191,6 +191,8 @@ class StoryLibraryView extends StatelessWidget {
           story: story.story,
           title: story.title,
           image: story.imageData,
+                    showSaveButton: false,
+
         ),
       ),
     );

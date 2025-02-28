@@ -15,12 +15,12 @@ class RegisterViewModel extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   UserModel? get user => _user;
 
-  Future<void> register(String username, String email, String password) async {
+  Future<void> register(String username, String email, String password, String avatar) async {
     try {
       _state = RegisterState.loading;
       notifyListeners();
 
-      _user = await _userRepository.registerUser(username, email, password);
+      _user = await _userRepository.registerUser(username, email, password, avatar);
       
       _state = RegisterState.success;
       notifyListeners();

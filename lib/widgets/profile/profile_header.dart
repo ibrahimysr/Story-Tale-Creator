@@ -4,11 +4,13 @@ import '../../../core/theme/space_theme.dart';
 class ProfileHeader extends StatelessWidget {
   final String name;
   final String username;
+  final String avatar;
 
   const ProfileHeader({
     super.key,
     required this.name,
     required this.username,
+    required this.avatar,
   });
 
   @override
@@ -18,11 +20,10 @@ class ProfileHeader extends StatelessWidget {
         const SizedBox(height: 20),
         Container(
           decoration: SpaceTheme.avatarDecoration,
-          padding: const EdgeInsets.all(20),
-          child: const Icon(
-            Icons.person,
-            size: 50,
-            color: Colors.white,
+          padding: const EdgeInsets.all(4),
+          child: CircleAvatar(
+            radius: 50,
+            backgroundImage: AssetImage('assets/avatar/$avatar'),
           ),
         ),
         const SizedBox(height: 15),

@@ -19,14 +19,20 @@ class ProfileRepository {
       int totalLikes = 0;
 
       for (var doc in storySnapshot.docs) {
-        totalLikes += (doc.data() as Map<String, dynamic>)['likeCount'] as int? ?? 0;
+        final data = doc.data() as Map<String, dynamic>;
+        totalLikes += data['likeCount'] as int? ?? 0;
       }
+
+      print('Kullanıcı istatistikleri yüklendi:');
+      print('Toplam hikaye sayısı: $totalStories');
+      print('Toplam beğeni sayısı: $totalLikes');
 
       return {
         'totalStories': totalStories,
         'totalLikes': totalLikes,
       };
     } catch (e) {
+      print('Kullanıcı istatistikleri alınırken hata: $e');
       throw Exception('Kullanıcı istatistikleri alınırken bir hata oluştu: $e');
     }
   }

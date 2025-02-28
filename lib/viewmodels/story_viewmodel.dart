@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import '../model/story/story_model.dart';
 import '../service/story/story_service.dart';
 import '../service/story/image_service.dart';
+import '../service/story/story_options_service.dart';
 
 class StoryViewModel extends ChangeNotifier {
   final StoryService _storyService;
   final ImageService _imageService;
+  final StoryOptionsService _optionsService;
 
   String? selectedPlace;
   String? selectedCharacter;
@@ -18,14 +20,65 @@ class StoryViewModel extends ChangeNotifier {
   StoryModel? generatedStory;
   int _currentStep = 1;
 
+  // Kategori listeleri
+  List<String> places = [];
+  List<String> characters = [];
+  List<String> times = [];
+  List<String> emotions = [];
+  List<String> events = [];
+
+  // Çeviriler
+  Map<String, String> placeTranslations = {};
+  Map<String, String> characterTranslations = {};
+  Map<String, String> eventTranslations = {};
+
   int get currentStep => _currentStep;
 
   StoryViewModel({
     StoryService? storyService,
     ImageService? imageService,
+    StoryOptionsService? optionsService,
   })  : _storyService = storyService ?? StoryService(),
-        _imageService = imageService ?? ImageService() {
+        _imageService = imageService ?? ImageService(),
+        _optionsService = optionsService ?? StoryOptionsService() {
     resetSelections();
+    loadCategories();
+  }
+
+  Future<void> loadCategories() async {
+    try {
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      // Kategorileri yükle
+      places = await _optionsService.getPlaces();
+      characters = await _optionsService.getCharacters();
+      times = await _optionsService.getTimes();
+      emotions = await _optionsService.getEmotions();
+      events = await _optionsService.getEvents();
+
+      // Çevirileri yükle
+      placeTranslations = await _optionsService.getPlaceTranslations();
+      characterTranslations = await _optionsService.getCharacterTranslations();
+      eventTranslations = await _optionsService.getEventTranslations();
+
+      print('Yüklenen kategoriler:');
+      print('Mekanlar: $places');
+      print('Karakterler: $characters');
+      print('Olaylar: $events');
+      print('Çeviriler:');
+      print('Mekan çevirileri: $placeTranslations');
+      print('Karakter çevirileri: $characterTranslations');
+      print('Olay çevirileri: $eventTranslations');
+
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      isLoading = false;
+      errorMessage = e.toString();
+      notifyListeners();
+    }
   }
 
   void resetSelections() {
@@ -92,9 +145,9 @@ class StoryViewModel extends ChangeNotifier {
       );
 
       final image = await _imageService.generateImage(
-        place: selectedPlace!,
-        character: selectedCharacter!,
-        event: selectedEvent!,
+        place: placeTranslations[selectedPlace!] ?? selectedPlace!,
+        character: characterTranslations[selectedCharacter!] ?? selectedCharacter!,
+        event: eventTranslations[selectedEvent!] ?? selectedEvent!,
         title: story.title,
       );
 

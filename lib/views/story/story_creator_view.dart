@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/story_viewmodel.dart';
-import '../../model/story/story_options_model.dart';
 import '../../widgets/common/selector_card.dart';
 import '../../widgets/common/animated_scale_button.dart';
 import '../../core/theme/space_theme.dart';
@@ -181,7 +180,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               description: '',
               icon: Icons.rocket_launch,
               color: SpaceTheme.accentBlue,
-              options: StoryOptionsModel.places,
+              options: viewModel.places,
               selectedValue: viewModel.selectedPlace,
               onChanged: (value) => viewModel.updateSelection(place: value),
             ),
@@ -200,7 +199,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               description: '',
               icon: Icons.person_outline,
               color: SpaceTheme.accentPurple,
-              options: StoryOptionsModel.characters,
+              options: viewModel.characters,
               selectedValue: viewModel.selectedCharacter,
               onChanged: (value) => viewModel.updateSelection(character: value),
             ),
@@ -219,7 +218,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               description: '',
               icon: Icons.access_time,
               color: SpaceTheme.accentEmerald,
-              options: StoryOptionsModel.times,
+              options: viewModel.times,
               selectedValue: viewModel.selectedTime,
               onChanged: (value) => viewModel.updateSelection(time: value),
             ),
@@ -238,7 +237,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               description: '',
               icon: Icons.emoji_emotions,
               color: SpaceTheme.accentGold,
-              options: StoryOptionsModel.emotions,
+              options: viewModel.emotions,
               selectedValue: viewModel.selectedEmotion,
               onChanged: (value) => viewModel.updateSelection(emotion: value),
             ),
@@ -257,7 +256,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               description: '',
               icon: Icons.auto_awesome,
               color: SpaceTheme.accentPurple,
-              options: StoryOptionsModel.events,
+              options: viewModel.events,
               selectedValue: viewModel.selectedEvent,
               onChanged: (value) => viewModel.updateSelection(event: value),
             ),

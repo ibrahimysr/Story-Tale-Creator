@@ -1,39 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:masal/repository/user_repository.dart';
-import '../model/auth/user_model.dart';
-
-enum LoginState { initial, loading, success, error }
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final UserRepository _userRepository = UserRepository();
-  
-  LoginState _state = LoginState.initial;
-  String _errorMessage = '';
-  UserModel? _user;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
+  String? _error;
+  String _email = '';
+  String _password = '';
 
-  LoginState get state => _state;
-  String get errorMessage => _errorMessage;
-  UserModel? get user => _user;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
 
-  Future<void> login(String email, String password) async {
-    try {
-      _state = LoginState.loading;
-      notifyListeners();
-
-      _user = await _userRepository.loginUser(email, password);
-      
-      _state = LoginState.success;
-      notifyListeners();
-    } catch (e) {
-      _errorMessage = e.toString();
-      _state = LoginState.error;
-      notifyListeners();
-    }
+  void setEmail(String value) {
+    _email = value;
+    _error = null;
+    notifyListeners();
   }
 
-  void resetState() {
-    _state = LoginState.initial;
-    _errorMessage = '';
+  void setPassword(String value) {
+    _password = value;
+    _error = null;
     notifyListeners();
+  }
+
+  Future<void> login(BuildContext context) async {
+    if (_email.isEmpty || _password.isEmpty) {
+      _error = 'Lütfen e-posta ve şifrenizi girin';
+      notifyListeners();
+      return;
+    }
+
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _auth.signInWithEmailAndPassword(
+        email: _email,
+        password: _password,
+      );
+
+      _isLoading = false;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      _isLoading = false;
+      switch (e.code) {
+        case 'user-not-found':
+          _error = 'Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı';
+          break;
+        case 'wrong-password':
+          _error = 'Hatalı şifre';
+          break;
+        case 'invalid-email':
+          _error = 'Geçersiz e-posta adresi';
+          break;
+        default:
+          _error = 'Giriş yapılırken bir hata oluştu: ${e.message}';
+      }
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = 'Beklenmeyen bir hata oluştu';
+      notifyListeners();
+    }
   }
 } 

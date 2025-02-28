@@ -57,30 +57,38 @@ class StoryLibraryItem extends StatelessWidget {
                     children: [
                       // Üst kısım: Tarih, Beğeni ve Silme butonu
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                story.title,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  story.title,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                story.formattedDate,
-                                style: TextStyle(
-                                  color: Colors.amber[100],
-                                  fontSize: 14,
+                                const SizedBox(height: 4),
+                                Text(
+                                  story.formattedDate,
+                                  style: TextStyle(
+                                    color: Colors.amber[100],
+                                    fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               // Beğeni butonu ve sayacı
                               InkWell(
@@ -97,6 +105,7 @@ class StoryLibraryItem extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Icon(
                                         isLiked
@@ -121,9 +130,8 @@ class StoryLibraryItem extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              // Silme butonu
                               if (onDelete != null) ...[
+                                const SizedBox(width: 8),
                                 IconButton(
                                   icon: Icon(
                                     Icons.delete,

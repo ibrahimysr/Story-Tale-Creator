@@ -7,6 +7,7 @@ class HomeViewModel extends ChangeNotifier {
   bool _isLoadingStories = false;
   String? _storyLoadError;
   List<HomeStoryModel> _recentStories = [];
+  bool _mounted = true;
 
   HomeViewModel({HomeRepository? repository})
       : _repository = repository ?? HomeRepository() {
@@ -18,33 +19,41 @@ class HomeViewModel extends ChangeNotifier {
   List<HomeStoryModel> get recentStories => _recentStories;
   bool get hasStories => _recentStories.isNotEmpty;
 
-  // Son hikayeleri yükleme
+  @override
+  void dispose() {
+    _mounted = false;
+    super.dispose();
+  }
+
   Future<void> loadRecentStories() async {
+    if (!_mounted) return;
+    
     try {
       _isLoadingStories = true;
       _storyLoadError = null;
-      notifyListeners();
+      if (_mounted) notifyListeners();
 
       _recentStories = await _repository.getRecentStories();
 
-      // Her hikaye için resmi yükle
       for (var story in _recentStories) {
+        if (!_mounted) return;
         if (story.hasImage && story.imageFilePath != null) {
           story.imageData = await _repository.loadImage(story.imageFilePath!);
         }
       }
 
       _isLoadingStories = false;
-      notifyListeners();
+      if (_mounted) notifyListeners();
     } catch (e) {
+      if (!_mounted) return;
       _isLoadingStories = false;
       _storyLoadError = e.toString();
       notifyListeners();
     }
   }
 
-  // Hata mesajını temizleme
   void clearError() {
+    if (!_mounted) return;
     _storyLoadError = null;
     notifyListeners();
   }
