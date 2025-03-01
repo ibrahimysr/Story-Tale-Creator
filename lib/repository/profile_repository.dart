@@ -8,9 +8,16 @@ class ProfileRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<Map<String, dynamic>> getUserStats() async {
-    try {
-      final user = _auth.currentUser;
-      if (user == null) throw Exception('Kullanıcı giriş yapmamış!');
+try {
+    final user = _auth.currentUser;
+    if (user == null) {
+      // Instead of throwing an exception, return empty stats
+      log('Kullanıcı giriş yapmamış, boş istatistikler döndürülüyor');
+      return {
+        'totalStories': 0,
+        'totalLikes': 0,
+      };
+    }
 
       final QuerySnapshot storySnapshot = await _firestore
           .collection('userStories')
@@ -34,8 +41,8 @@ class ProfileRepository {
         'totalLikes': totalLikes,
       };
     } catch (e) {
-      log('Kullanıcı istatistikleri alınırken hata: $e');
-      throw Exception('Kullanıcı istatistikleri alınırken bir hata oluştu: $e');
-    }
+    log('Kullanıcı istatistikleri alınırken hata: $e');
+    throw Exception('Kullanıcı istatistikleri alınırken bir hata oluştu: $e');
+  }
   }
 } 

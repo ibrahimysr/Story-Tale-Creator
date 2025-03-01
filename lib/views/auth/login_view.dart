@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/auth/space_text_field.dart';
 import '../../core/theme/space_theme.dart';
@@ -187,6 +188,8 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
                   _buildLoginButton(viewModel),
                   const SizedBox(height: 16),
                   _buildRegisterButton(),
+                  const SizedBox(height: 16),
+                  _buildNoAccountButton(),
                   if (viewModel.error != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
@@ -263,4 +266,24 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
       ),
     );
   }
+  Widget _buildNoAccountButton() {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>  MainScreen()),
+        );
+      },
+      child: Text(
+        'Kayıt Olmadan Devam Et',
+        style: TextStyle(
+          color: SpaceTheme.accentGold,
+          fontSize: 16,
+        ),
+      ),
+    );
+  }
 }
+
+
+

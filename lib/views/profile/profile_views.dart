@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/views/auth/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../core/theme/space_theme.dart';
@@ -45,6 +46,42 @@ class ProfileView extends StatelessWidget {
                   );
                 }
 
+                // Check for auth error specifically
+                if (viewModel.error == "auth_required") {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.account_circle_outlined,
+                          size: 80,
+                          color: SpaceTheme.accentGold,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Profil Sayfasını Görmek İçin Lütfen Giriş Yapınız',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Navigate to login page
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginView()));
+                          },
+                          style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentBlue),
+                          child: const Text('Giriş Yap',style: TextStyle(color: Colors.white),),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                // Other error handling
                 if (viewModel.error != null) {
                   return Center(
                     child: Column(
@@ -61,7 +98,7 @@ class ProfileView extends StatelessWidget {
                         Text(
                           viewModel.error!,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha:0.7),
+                            color: Colors.white.withOpacity(0.7),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -127,15 +164,15 @@ class ProfileView extends StatelessWidget {
                                   vertical: 16,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha:0.05),
+                                  color: Colors.white.withOpacity(0.05),
                                   borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
-                                    color: Colors.white.withValues(alpha:0.1),
+                                    color: Colors.white.withOpacity(0.1),
                                     width: 1,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: SpaceTheme.accentPurple.withValues(alpha:0.1),
+                                      color: SpaceTheme.accentPurple.withOpacity(0.1),
                                       blurRadius: 10,
                                       spreadRadius: 1,
                                     ),
@@ -149,7 +186,7 @@ class ProfileView extends StatelessWidget {
                                         Container(
                                           padding: const EdgeInsets.all(10),
                                           decoration: BoxDecoration(
-                                            color: SpaceTheme.accentPurple.withValues(alpha:0.1),
+                                            color: SpaceTheme.accentPurple.withOpacity(0.1),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: Icon(
@@ -162,7 +199,7 @@ class ProfileView extends StatelessWidget {
                                         Text(
                                           'Çıkış Yap',
                                           style: TextStyle(
-                                            color: Colors.white.withValues(alpha:0.9),
+                                            color: Colors.white.withOpacity(0.9),
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -171,7 +208,7 @@ class ProfileView extends StatelessWidget {
                                     ),
                                     Icon(
                                       Icons.arrow_forward_ios_rounded,
-                                      color: Colors.white.withValues(alpha:0.5),
+                                      color: Colors.white.withOpacity(0.5),
                                       size: 20,
                                     ),
                                   ],

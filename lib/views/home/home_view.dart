@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/views/auth/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:masal/views/story/story_creator_view.dart';
 import 'package:masal/core/theme/space_theme.dart';
@@ -7,6 +8,9 @@ import 'package:masal/views/story/story_display_view.dart';
 import 'package:masal/views/story/story_library_view.dart';
 import '../../viewmodels/home_viewmodel.dart';
 import '../../widgets/home/home_story_item.dart';
+import 'package:device_info_plus/device_info_plus.dart'; // Cihaz ID'si için
+import 'package:shared_preferences/shared_preferences.dart'; // Locale kayıt için
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase auth kontrolü için
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -69,22 +73,13 @@ class HomeView extends StatelessWidget {
                                   
                                   const SizedBox(height: 24),
                                   
-                               
-                             
-                                  
-                                  // Hikaye Yaratıcısı kartı
                                   _buildActivityCard(
                                     title: 'Sihirli Hikaye Yaratıcısı',
                                     description: 'Hayal gücünün sınırlarını zorla ve kendi evrenini yarat!',
                                     icon: Icons.auto_awesome_motion,
                                     color: SpaceTheme.accentPurple,
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const StoryCreatorView(),
-                                        ),
-                                      );
+                                    onTap: () async {
+                                      await _handleStoryCreatorTap(context);
                                     },
                                   ),
                                 ],
@@ -153,6 +148,103 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _handleStoryCreatorTap(BuildContext context) async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    
+    if (currentUser != null) {
+      _navigateToStoryCreator(context);
+      return;
+    }
+    
+    final prefs = await SharedPreferences.getInstance();
+    final hasUsedFreeAccess = prefs.getBool('has_used_free_access') ?? false;
+    
+    if (hasUsedFreeAccess) {
+      _showLoginRequiredDialog(context);
+    } else {
+      
+    final deviceId = await _getDeviceId(context);
+      
+      await prefs.setBool('has_used_free_access', true);
+      await prefs.setString('device_id', deviceId);
+      
+      _navigateToStoryCreator(context);
+    }
+  }
+  
+ Future<String> _getDeviceId(BuildContext context) async {
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  
+  if (Theme.of(context).platform == TargetPlatform.android) {
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    return androidInfo.id;
+  } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+    return iosInfo.identifierForVendor ?? 'unknown';
+  }
+  
+  return 'unknown';
+}
+
+  // Hikaye oluşturucuya yönlendirme
+  void _navigateToStoryCreator(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const StoryCreatorView(),
+      ),
+    );
+  }
+  
+  void _showLoginRequiredDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: SpaceTheme.primaryDark,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Giriş Yapmanız Gerekiyor',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            'Hikaye oluşturma özelliğini kullanmak için lütfen giriş yapın veya kayıt olun.',
+            style: TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'İptal',
+                style: TextStyle(color: SpaceTheme.accentBlue),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+               
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginView()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: SpaceTheme.accentPurple,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Giriş Yap',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -112,8 +112,8 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                 if (currentStep == 5) {
                   viewModel.generateStory().then((_) {
                     if (viewModel.generatedStory != null && context.mounted) {
-                      if (mounted) {  // mounted kontrolü eklendi
-                      Navigator.push(
+                      if (mounted) {  
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => StoryDisplayView(

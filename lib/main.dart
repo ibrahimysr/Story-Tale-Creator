@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileViewModel()..loadUserProfile()),
       ],
       child: MaterialApp(
+        
         debugShowCheckedModeBanner: false,
         title: 'Masal',
         theme: ThemeData(

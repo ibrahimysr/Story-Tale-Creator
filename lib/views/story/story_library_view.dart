@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Auth ekledik
 import '../../core/theme/space_theme.dart';
 import '../../core/theme/widgets/starry_background.dart';
 import '../../viewmodels/story_library_viewmodel.dart';
@@ -11,52 +12,122 @@ class StoryLibraryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => StoryLibraryViewModel(),
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: SpaceTheme.primaryDark,
-        appBar: _buildAppBar(context),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: SpaceTheme.mainGradient,
-          ),
-          child: Stack(
-            children: [
-              const Positioned.fill(
-                child: StarryBackground(),
-              ),
+    // Firebase Auth durumunu kontrol et
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final bool isAuthenticated = currentUser != null;
+
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: SpaceTheme.primaryDark,
+      appBar: _buildAppBar(context),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: SpaceTheme.mainGradient,
+        ),
+        child: Stack(
+          children: [
+            const Positioned.fill(
+              child: StarryBackground(),
+            ),
+            // Kullanıcı giriş yapmamışsa Login ekranı göster
+            if (!isAuthenticated)
               SafeArea(
-                child: Consumer<StoryLibraryViewModel>(
-                  builder: (context, viewModel, _) {
-                    if (viewModel.isLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: SpaceTheme.accentPurple,
-                        ),
-                      );
-                    }
+                child: _buildLoginPrompt(context),
+              )
+            else
+              SafeArea(
+                child: ChangeNotifierProvider(
+                  create: (_) => StoryLibraryViewModel(),
+                  child: Consumer<StoryLibraryViewModel>(
+                    builder: (context, viewModel, _) {
+                      if (viewModel.isLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: SpaceTheme.accentPurple,
+                          ),
+                        );
+                      }
 
-                    if (viewModel.errorMessage != null) {
-                      return _buildErrorView(context, viewModel);
-                    }
+                      if (viewModel.errorMessage != null) {
+                        return _buildErrorView(context, viewModel);
+                      }
 
-                    if (!viewModel.hasStories) {
-                      return _buildEmptyView();
-                    }
+                      if (!viewModel.hasStories) {
+                        return _buildEmptyView();
+                      }
 
-                    return _buildStoriesList(context, viewModel);
-                  },
+                      return _buildStoriesList(context, viewModel);
+                    },
+                  ),
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
 
+  // Yeni eklenen login mesajı penceresi
+  Widget _buildLoginPrompt(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.auto_stories,
+            size: 80,
+            color: SpaceTheme.accentGold,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Hikaye Kütüphanenizi Görmek İçin\nLütfen Giriş Yapınız',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Tüm hikayelerinize erişmek ve yeni hikayeler kaydetmek için hesabınıza giriş yapın.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 30),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: SpaceTheme.accentBlue,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: const Text(
+              'Giriş Yap',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    // Firebase Auth durumunu kontrol et
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final bool isAuthenticated = currentUser != null;
+
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -65,27 +136,31 @@ class StoryLibraryView extends StatelessWidget {
         style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
       ),
       actions: [
-        Consumer<StoryLibraryViewModel>(
-          builder: (context, viewModel, _) {
-            return IconButton(
-              icon: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: SpaceTheme.iconContainerDecoration,
-                child: const Icon(
-                  Icons.refresh,
-                  color: Colors.white,
+        // Sadece giriş yapmış kullanıcılar için yenileme butonunu göster
+        if (isAuthenticated)
+          Consumer<StoryLibraryViewModel>(
+            builder: (context, viewModel, _) {
+              return IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: SpaceTheme.iconContainerDecoration,
+                  child: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              onPressed: viewModel.loadStories,
-            );
-          },
-        ),
+                onPressed: viewModel.loadStories,
+              );
+            },
+          ),
         const SizedBox(width: 8),
       ],
     );
   }
 
+  // Geri kalan metotlar aynı kalacak
   Widget _buildErrorView(BuildContext context, StoryLibraryViewModel viewModel) {
+    // Mevcut kodla aynı
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -134,6 +209,7 @@ class StoryLibraryView extends StatelessWidget {
   }
 
   Widget _buildEmptyView() {
+    // Mevcut kodla aynı
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -166,6 +242,7 @@ class StoryLibraryView extends StatelessWidget {
 
   Widget _buildStoriesList(
       BuildContext context, StoryLibraryViewModel viewModel) {
+    // Mevcut kodla aynı
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: NotificationListener<ScrollNotification>(
@@ -216,6 +293,7 @@ class StoryLibraryView extends StatelessWidget {
   }
 
   void _viewStoryDetail(BuildContext context, story) {
+    // Mevcut kodla aynı
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -234,6 +312,7 @@ class StoryLibraryView extends StatelessWidget {
     StoryLibraryViewModel viewModel,
     story,
   ) async {
+    // Mevcut kodla aynı ancak withValues yerine withOpacity kullanıyoruz
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -243,7 +322,7 @@ class StoryLibraryView extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(
-              color: SpaceTheme.accentPurple.withValues(alpha: 0.5),
+              color: SpaceTheme.accentPurple.withOpacity(0.5),
               width: 2,
             ),
           ),
@@ -265,7 +344,7 @@ class StoryLibraryView extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha: 0.2),
+                  color: Colors.grey.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Text(
@@ -283,7 +362,7 @@ class StoryLibraryView extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.6),
+                  color: Colors.red.withOpacity(0.6),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Text(
@@ -313,7 +392,7 @@ class StoryLibraryView extends StatelessWidget {
                         ),
                       ),
                       backgroundColor:
-                          SpaceTheme.accentPurple.withValues(alpha: 0.8),
+                          SpaceTheme.accentPurple.withOpacity(0.8),
                       duration: const Duration(seconds: 2),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
@@ -336,7 +415,7 @@ class StoryLibraryView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      backgroundColor: Colors.red.withValues(alpha: 0.8),
+                      backgroundColor: Colors.red.withOpacity(0.8),
                       duration: const Duration(seconds: 3),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(

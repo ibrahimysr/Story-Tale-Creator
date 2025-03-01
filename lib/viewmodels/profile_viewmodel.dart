@@ -28,15 +28,19 @@ class ProfileViewModel extends ChangeNotifier {
   int get totalLikes => _totalLikes;
 
   Future<void> loadUserProfile() async {
-    try {
-      _isLoading = true;
-      _error = null;
-      notifyListeners();
+   try {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
-      final user = _auth.currentUser;
-      if (user == null) {
-        throw Exception('Kullanıcı oturumu bulunamadı');
-      }
+    final user = _auth.currentUser;
+    if (user == null) {
+      _error = "auth_required"; // Special error code for auth issues
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
 
       String displayName = user.displayName ?? '';
       String email = user.email ?? '';
@@ -65,12 +69,12 @@ class ProfileViewModel extends ChangeNotifier {
 
       await loadUserStats();
 
-    } catch (e) {
-      _error = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+   } catch (e) {
+    _error = e.toString();
+  } finally {
+    _isLoading = false;
+    notifyListeners();
+  }
   }
 
   Future<bool> checkUsernameAvailable(String username) async {
@@ -134,24 +138,33 @@ class ProfileViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> loadUserStats() async {
-    try {
-      _isLoading = true;
-      _error = null;
-      notifyListeners();
+Future<void> loadUserStats() async {
+  try {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
-      final stats = await _repository.getUserStats();
-      _totalStories = stats['totalStories'];
-      _totalLikes = stats['totalLikes'];
-
+    final user = _auth.currentUser;
+    if (user == null) {
+      // Don't set an error here, just return empty stats
+      _totalStories = 0;
+      _totalLikes = 0;
       _isLoading = false;
       notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      _error = e.toString();
-      notifyListeners();
+      return;
     }
-  }
+
+    final stats = await _repository.getUserStats();
+    _totalStories = stats['totalStories'];
+    _totalLikes = stats['totalLikes'];
+
+    _isLoading = false;
+    notifyListeners();
+  } catch (e) {
+    _isLoading = false;
+    _error = e.toString();
+    notifyListeners();
+  }}
 
   void clearError() {
     _error = null;
