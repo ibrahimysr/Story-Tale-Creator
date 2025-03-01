@@ -315,8 +315,7 @@ class _RegisterViewState extends State<RegisterView>
                   );
                   
                   if (viewModel.state == RegisterState.success) {
-                    // ignore: use_build_context_synchronously
-                    if (mounted) { // mounted kontrolü eklendi
+                    if (mounted) {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

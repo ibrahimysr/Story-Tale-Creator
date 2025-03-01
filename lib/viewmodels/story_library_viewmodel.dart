@@ -9,10 +9,10 @@ class StoryLibraryViewModel extends ChangeNotifier {
   String? _errorMessage;
   List<StoryLibraryModel> _stories = [];
   bool _mounted = true;
-  
+
   static const int pageSize = 10;
   bool _hasMoreStories = true;
-  
+
   final Map<String, DateTime> _cacheTimestamps = {};
   static const Duration cacheValidDuration = Duration(minutes: 5);
 
@@ -34,13 +34,12 @@ class StoryLibraryViewModel extends ChangeNotifier {
     super.dispose();
   }
 
-  
   bool _isCacheValid() {
     if (_cacheTimestamps.isEmpty) return false;
-    
+
     final now = DateTime.now();
     return _cacheTimestamps.values.every(
-      (timestamp) => now.difference(timestamp) < cacheValidDuration
+      (timestamp) => now.difference(timestamp) < cacheValidDuration,
     );
   }
 
@@ -53,11 +52,11 @@ class StoryLibraryViewModel extends ChangeNotifier {
 
   Future<void> loadStories() async {
     if (!_mounted) return;
-    
+
     if (_isCacheValid()) {
       return;
     }
-    
+
     try {
       _isLoading = true;
       _errorMessage = null;
@@ -65,9 +64,9 @@ class StoryLibraryViewModel extends ChangeNotifier {
       notifyListeners();
 
       final stories = await _repository.getAllStories(limit: pageSize);
-      
+
       if (!_mounted) return;
-      
+
       _stories = stories;
       _updateCache();
       _isLoading = false;
@@ -102,7 +101,7 @@ class StoryLibraryViewModel extends ChangeNotifier {
       } else {
         _stories.addAll(moreStories);
         _updateCache();
-        
+
         _loadStoryImages(startIndex: _stories.length - moreStories.length);
       }
 
@@ -119,10 +118,10 @@ class StoryLibraryViewModel extends ChangeNotifier {
   Future<void> _loadStoryImages({int startIndex = 0}) async {
     for (var i = startIndex; i < _stories.length; i++) {
       if (!_mounted) return;
-      
+
       final story = _stories[i];
-      if (story.hasImage && story.imageFilePath != null && story.imageData == null) {
-        story.imageData = await _repository.loadImage(story.imageFilePath!);
+      if (story.hasImage && story.imageFileName != null && story.imageData == null) {
+        story.imageData = await _repository.loadImage(story.imageFileName!);
         if (_mounted) notifyListeners();
       }
     }
@@ -131,13 +130,12 @@ class StoryLibraryViewModel extends ChangeNotifier {
   Future<void> toggleLike(String storyId) async {
     try {
       await _repository.toggleLike(storyId);
-      
+
       final storyIndex = _stories.indexWhere((s) => s.id == storyId);
       if (storyIndex != -1) {
         final currentStory = _stories[storyIndex];
         final updatedStory = await _repository.getStory(storyId);
         if (updatedStory != null) {
-          // Resim verisini koru
           updatedStory.imageData = currentStory.imageData;
           _stories[storyIndex] = updatedStory;
           notifyListeners();
@@ -166,4 +164,4 @@ class StoryLibraryViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
   }
-} 
+}

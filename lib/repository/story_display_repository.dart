@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 import '../model/story/story_display_model.dart';
 
 class StoryDisplayRepository {
@@ -14,16 +15,16 @@ class StoryDisplayRepository {
       final user = _auth.currentUser;
       if (user == null) throw Exception('Kullanıcı giriş yapmamış!');
 
-      String? imageFilePath;
+      String? imageFileName;
       if (story.image != null) {
-        imageFilePath = await _saveImageToExternalStorage(story.image!, user.uid);
+        imageFileName = await _uploadImageToServer(story.image!, user.uid);
       }
 
       final storyData = {
         ...story.toMap(),
         'userId': user.uid,
         'createdAt': FieldValue.serverTimestamp(),
-        'imageFilePath': imageFilePath,
+        'imageFileName': imageFileName, // Sadece dosya adını kaydediyoruz
         'likeCount': 0,
         'likedByUsers': [],
       };
@@ -34,27 +35,41 @@ class StoryDisplayRepository {
     }
   }
 
-  Future<String?> _saveImageToExternalStorage(Uint8List imageData, String userId) async {
+  Future<String?> _uploadImageToServer(Uint8List imageData, String userId) async {
     try {
-      final directory = await getExternalStorageDirectory();
-      if (directory == null) throw Exception('Harici depolama dizini alınamadı');
-
-      final imagesDir = Directory('${directory.path}/story_images');
-      if (!await imagesDir.exists()) {
-        await imagesDir.create(recursive: true);
-      }
-
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final random = DateTime.now().microsecond;
       final fileName = 'story_image_${userId}_${timestamp}_$random.jpg';
-      final filePath = '${imagesDir.path}/$fileName';
 
-      final file = File(filePath);
-      await file.writeAsBytes(imageData);
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://sandbox.temizlikcin.com.tr/api/upload-image'),
+      );
 
-      return filePath;
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'image', // Field adı doğru mu, dökümantasyondan kontrol et
+          imageData,
+          filename: fileName,
+        ),
+      );
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        final responseData = await response.stream.bytesToString();
+        final jsonData = jsonDecode(responseData);
+
+        if (jsonData['status'] == true) {
+          return jsonData['data']; // Sadece dosya adını döndürüyoruz
+        } else {
+          throw Exception('API yükleme başarısız: ${jsonData['message']}');
+        }
+      } else {
+        throw Exception('Resim yüklenemedi, durum kodu: ${response.statusCode}');
+      }
     } catch (e) {
-      throw Exception('Resim kaydedilirken bir hata oluştu: $e');
+      throw Exception('Resim yüklenirken bir hata oluştu: $e');
     }
   }
-} 
+}

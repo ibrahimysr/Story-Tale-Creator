@@ -8,7 +8,7 @@ class HomeStoryModel {
   final String userId;
   final DateTime createdAt;
   final bool hasImage;
-  final String? imageFilePath;
+  final String? imageFileName; // imageFilePath yerine bu
   Uint8List? imageData;
 
   HomeStoryModel({
@@ -18,11 +18,10 @@ class HomeStoryModel {
     required this.userId,
     required this.createdAt,
     required this.hasImage,
-    this.imageFilePath,
+    this.imageFileName,
     this.imageData,
   });
 
-  // Firebase'den gelen veriyi modele dönüştürmek için factory constructor
   factory HomeStoryModel.fromFirebase(String id, Map<String, dynamic> data) {
     return HomeStoryModel(
       id: id,
@@ -31,12 +30,11 @@ class HomeStoryModel {
       userId: data['userId'] as String,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       hasImage: data['hasImage'] as bool? ?? false,
-      imageFilePath: data['imageFilePath'] as String?,
+      imageFileName: data['imageFileName'] as String?, // Yeni alan
     );
   }
 
-  // Önizleme metni
   String get previewText {
     return story.length > 80 ? '${story.substring(0, 80)}...' : story;
   }
-} 
+}

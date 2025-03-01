@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 import '../model/story/story_library_model.dart';
 
 class StoryDiscoverRepository {
@@ -35,8 +35,7 @@ class StoryDiscoverRepository {
       }
 
       final QuerySnapshot snapshot = await query.get();
-      
-      // Eğer hiç hikaye yoksa, tüm hikayeleri getir ve public yap
+
       if (snapshot.docs.isEmpty) {
         final allStoriesQuery = await _firestore
             .collection('userStories')
@@ -44,14 +43,12 @@ class StoryDiscoverRepository {
             .limit(limit)
             .get();
 
-        // Tüm hikayeleri public yap
         for (var doc in allStoriesQuery.docs) {
-          if (!(doc.data()).containsKey('isPublic')) {
+          if (!(doc.data() as Map<String, dynamic>).containsKey('isPublic')) {
             await doc.reference.update({'isPublic': true});
           }
         }
 
-        // Sorguyu tekrar çalıştır
         return getAllStories(
           limit: limit,
           startAfter: startAfter,
@@ -66,7 +63,6 @@ class StoryDiscoverRepository {
         );
       }).toList();
 
-      // Eğer arama sorgusu varsa, başlık ve hikaye içeriğinde arama yap
       if (searchQuery != null && searchQuery.isNotEmpty) {
         final searchLower = searchQuery.toLowerCase();
         stories = stories.where((story) {
@@ -84,7 +80,7 @@ class StoryDiscoverRepository {
             'Bu işlem sadece ilk seferde gereklidir.'
           );
         }
-        
+
         if (e.message?.contains('indexes?create_composite=') ?? false) {
           throw Exception(
             'Sistem ilk kurulum aşamasında. '
@@ -92,17 +88,14 @@ class StoryDiscoverRepository {
           );
         }
       }
-      
+
       throw Exception('Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   }
 
   Future<StoryLibraryModel?> getStory(String storyId) async {
     try {
-      final doc = await _firestore
-          .collection('userStories')
-          .doc(storyId)
-          .get();
+      final doc = await _firestore.collection('userStories').doc(storyId).get();
 
       if (!doc.exists) return null;
 
@@ -116,14 +109,13 @@ class StoryDiscoverRepository {
   }
 
   Future<void> toggleLike(String storyId) async {
-    // Eğer beğeni işlemi devam ediyorsa, yeni işlemi engelle
     if (_likeInProgress[storyId] == true) {
       return;
     }
 
     try {
       _likeInProgress[storyId] = true;
-      
+
       final user = _auth.currentUser;
       if (user == null) throw Exception('Kullanıcı giriş yapmamış!');
 
@@ -138,13 +130,11 @@ class StoryDiscoverRepository {
       final isLiked = likedByUsers.contains(user.uid);
 
       if (isLiked) {
-        // Beğeniyi kaldır
         await storyRef.update({
           'likeCount': FieldValue.increment(-1),
           'likedByUsers': FieldValue.arrayRemove([user.uid]),
         });
       } else {
-        // Beğeni ekle
         await storyRef.update({
           'likeCount': FieldValue.increment(1),
           'likedByUsers': FieldValue.arrayUnion([user.uid]),
@@ -157,16 +147,21 @@ class StoryDiscoverRepository {
     }
   }
 
-  Future<Uint8List?> loadImage(String imageFilePath) async {
+  Future<Uint8List?> loadImage(String imageFileName) async {
     try {
-      final file = File(imageFilePath);
-      if (await file.exists()) {
-        return await file.readAsBytes();
+      final response = await http.get(
+        Uri.parse('https://sandbox.temizlikcin.com.tr/api/get-image/$imageFileName'),
+      );
+
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      } else {
+        log('Resim yükleme hatası: ${response.statusCode}');
+        return null;
       }
-      return null;
     } catch (e) {
       log('Resim yükleme hatası: $e');
       return null;
     }
   }
-} 
+}

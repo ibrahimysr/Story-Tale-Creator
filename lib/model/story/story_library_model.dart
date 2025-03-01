@@ -8,7 +8,7 @@ class StoryLibraryModel {
   final String userId;
   final DateTime createdAt;
   final bool hasImage;
-  final String? imageFilePath;
+  final String? imageFileName; // Yeni isim
   final int likeCount;
   final List<String> likedByUsers;
   Uint8List? imageData;
@@ -20,7 +20,7 @@ class StoryLibraryModel {
     required this.userId,
     required this.createdAt,
     required this.hasImage,
-    this.imageFilePath,
+    this.imageFileName, // Yeni isim
     this.imageData,
     this.likeCount = 0,
     this.likedByUsers = const [],
@@ -34,7 +34,7 @@ class StoryLibraryModel {
       userId: data['userId'] as String,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       hasImage: data['hasImage'] as bool? ?? false,
-      imageFilePath: data['imageFilePath'] as String?,
+      imageFileName: data['imageFileName'] as String?, // Yeni alan
       likeCount: data['likeCount'] as int? ?? 0,
       likedByUsers: List<String>.from(data['likedByUsers'] ?? []),
     );
@@ -51,4 +51,4 @@ class StoryLibraryModel {
   String get formattedDate {
     return '${createdAt.day}.${createdAt.month}.${createdAt.year} ${createdAt.hour}:${createdAt.minute.toString().padLeft(2, '0')}';
   }
-} 
+}

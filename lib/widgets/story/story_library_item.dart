@@ -25,15 +25,15 @@ class StoryLibraryItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha:0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withValues(alpha:0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: SpaceTheme.accentPurple.withValues(alpha:0.2),
+            color: SpaceTheme.accentPurple.withValues(alpha: 0.2),
             blurRadius: 15,
             spreadRadius: 2,
           ),
@@ -45,8 +45,8 @@ class StoryLibraryItem extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
-            splashColor: SpaceTheme.accentPurple.withValues(alpha:0.3),
-            highlightColor: SpaceTheme.accentPurple.withValues(alpha:0.1),
+            splashColor: SpaceTheme.accentPurple.withValues(alpha: 0.3),
+            highlightColor: SpaceTheme.accentPurple.withValues(alpha: 0.1),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -55,7 +55,6 @@ class StoryLibraryItem extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Üst kısım: Tarih, Beğeni ve Silme butonu
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,7 +89,6 @@ class StoryLibraryItem extends StatelessWidget {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Beğeni butonu ve sayacı
                               InkWell(
                                 onTap: onLike,
                                 child: Container(
@@ -100,8 +98,9 @@ class StoryLibraryItem extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color: isLiked
-                                        ? SpaceTheme.accentPurple.withValues(alpha:0.3)
-                                        : Colors.white.withValues(alpha:0.1),
+                                        ? SpaceTheme.accentPurple
+                                            .withValues(alpha: 0.3)
+                                        : Colors.white.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: Row(
@@ -146,11 +145,9 @@ class StoryLibraryItem extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      // Alt kısım: Resim ve Yazı
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Resim
                           if (story.hasImage && story.imageData != null)
                             Container(
                               width: 80,
@@ -159,7 +156,8 @@ class StoryLibraryItem extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: SpaceTheme.accentPurple.withValues(alpha:0.2),
+                                    color: SpaceTheme.accentPurple
+                                        .withValues(alpha: 0.2),
                                     blurRadius: 8,
                                     spreadRadius: 1,
                                   ),
@@ -175,7 +173,6 @@ class StoryLibraryItem extends StatelessWidget {
                             ),
                           if (story.hasImage && story.imageData != null)
                             const SizedBox(width: 16),
-                          // Yazı ve Hikayeyi Oku butonu
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +194,8 @@ class StoryLibraryItem extends StatelessWidget {
                                       vertical: 8,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: SpaceTheme.accentBlue.withValues(alpha:0.3),
+                                      color: SpaceTheme.accentBlue
+                                          .withValues(alpha: 0.3),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     child: const Text(
@@ -225,4 +223,4 @@ class StoryLibraryItem extends StatelessWidget {
       ),
     );
   }
-} 
+}

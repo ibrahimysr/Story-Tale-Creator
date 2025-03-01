@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 import '../model/story/story_library_model.dart';
 
 class StoryLibraryRepository {
@@ -26,10 +27,8 @@ class StoryLibraryRepository {
           .limit(limit);
 
       if (startAfter != null) {
-        final startAfterDoc = await _firestore
-            .collection('userStories')
-            .doc(startAfter)
-            .get();
+        final startAfterDoc =
+            await _firestore.collection('userStories').doc(startAfter).get();
         if (startAfterDoc.exists) {
           query = query.startAfterDocument(startAfterDoc);
         }
@@ -37,7 +36,6 @@ class StoryLibraryRepository {
 
       final QuerySnapshot snapshot = await query.get();
 
-      // Mevcut hikayeleri public yap
       for (var doc in snapshot.docs) {
         if (!(doc.data() as Map<String, dynamic>).containsKey('isPublic')) {
           await doc.reference.update({'isPublic': true});
@@ -57,14 +55,10 @@ class StoryLibraryRepository {
 
   Future<StoryLibraryModel?> getStory(String storyId) async {
     try {
-      final doc = await _firestore
-          .collection('userStories')
-          .doc(storyId)
-          .get();
+      final doc = await _firestore.collection('userStories').doc(storyId).get();
 
       if (!doc.exists) return null;
 
-      // Hikayeyi public yap
       if (!(doc.data() as Map<String, dynamic>).containsKey('isPublic')) {
         await doc.reference.update({'isPublic': true});
       }
@@ -79,14 +73,13 @@ class StoryLibraryRepository {
   }
 
   Future<void> toggleLike(String storyId) async {
-    // Eğer beğeni işlemi devam ediyorsa, yeni işlemi engelle
     if (_likeInProgress[storyId] == true) {
       return;
     }
 
     try {
       _likeInProgress[storyId] = true;
-      
+
       final user = _auth.currentUser;
       if (user == null) throw Exception('Kullanıcı giriş yapmamış!');
 
@@ -97,17 +90,16 @@ class StoryLibraryRepository {
         throw Exception('Hikaye bulunamadı');
       }
 
-      final likedByUsers = List<String>.from(storyDoc.data()?['likedByUsers'] ?? []);
+      final likedByUsers =
+          List<String>.from(storyDoc.data()?['likedByUsers'] ?? []);
       final isLiked = likedByUsers.contains(user.uid);
 
       if (isLiked) {
-        // Beğeniyi kaldır
         await storyRef.update({
           'likeCount': FieldValue.increment(-1),
           'likedByUsers': FieldValue.arrayRemove([user.uid]),
         });
       } else {
-        // Beğeni ekle
         await storyRef.update({
           'likeCount': FieldValue.increment(1),
           'likedByUsers': FieldValue.arrayUnion([user.uid]),
@@ -123,25 +115,24 @@ class StoryLibraryRepository {
   Future<void> deleteStory(StoryLibraryModel story) async {
     try {
       await _firestore.collection('userStories').doc(story.id).delete();
-
-      if (story.hasImage && story.imageFilePath != null) {
-        final file = File(story.imageFilePath!);
-        if (await file.exists()) {
-          await file.delete();
-        }
-      }
+      // Artık yerel dosya silmeye gerek yok, çünkü API kullanıyoruz
     } catch (e) {
       throw Exception('Hikaye silinirken bir hata oluştu: $e');
     }
   }
 
-  Future<Uint8List?> loadImage(String imageFilePath) async {
+  Future<Uint8List?> loadImage(String imageFileName) async {
     try {
-      final file = File(imageFilePath);
-      if (await file.exists()) {
-        return await file.readAsBytes();
+      final response = await http.get(
+        Uri.parse('https://sandbox.temizlikcin.com.tr/api/get-image/$imageFileName'),
+      );
+
+      if (response.statusCode == 200) {
+        return response.bodyBytes; // API’den gelen resmi Uint8List olarak döndürüyoruz
+      } else {
+        log('Resim yükleme hatası: ${response.statusCode}');
+        return null;
       }
-      return null;
     } catch (e) {
       log('Resim yükleme hatası: $e');
       return null;
@@ -159,7 +150,7 @@ class StoryLibraryRepository {
         'userId': user.uid,
         'createdAt': FieldValue.serverTimestamp(),
         'likeCount': 0,
-        'isPublic': true, // Varsayılan olarak public
+        'isPublic': true,
         'likes': [],
       };
 
@@ -169,4 +160,4 @@ class StoryLibraryRepository {
       throw Exception('Hikaye oluşturulurken bir hata oluştu: $e');
     }
   }
-} 
+}

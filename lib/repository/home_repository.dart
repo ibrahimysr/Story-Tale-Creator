@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 import '../model/home/home_story_model.dart';
 
 class HomeRepository {
@@ -48,28 +48,33 @@ class HomeRepository {
           'Bu işlem sadece ilk seferde gereklidir.'
         );
       }
-      
+
       if (e.toString().contains('indexes?create_composite=')) {
         throw Exception(
           'Sistem ilk kurulum aşamasında. '
           'Lütfen birkaç dakika bekleyip tekrar deneyin.'
         );
       }
-      
+
       throw Exception('Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   }
 
-  Future<Uint8List?> loadImage(String imageFilePath) async {
+  Future<Uint8List?> loadImage(String imageFileName) async {
     try {
-      final file = File(imageFilePath);
-      if (await file.exists()) {
-        return await file.readAsBytes();
+      final response = await http.get(
+        Uri.parse('https://sandbox.temizlikcin.com.tr/api/get-image/$imageFileName'),
+      );
+
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      } else {
+        log('Resim yükleme hatası: ${response.statusCode}');
+        return null;
       }
-      return null;
     } catch (e) {
       log('Resim yükleme hatası: $e');
       return null;
     }
   }
-} 
+}

@@ -8,13 +8,11 @@ class HomeViewModel extends ChangeNotifier {
   String? _storyLoadError;
   List<HomeStoryModel> _recentStories = [];
   bool _mounted = true;
-  
-  // Sayfalama için değişkenler
+
   static const int pageSize = 5;
   bool _hasMoreStories = true;
   bool _isLoadingMore = false;
-  
-  // Önbellek için değişkenler
+
   final Map<String, DateTime> _cacheTimestamps = {};
   static const Duration cacheValidDuration = Duration(minutes: 5);
 
@@ -36,17 +34,15 @@ class HomeViewModel extends ChangeNotifier {
     super.dispose();
   }
 
-  // Önbellek kontrolü
   bool _isCacheValid() {
     if (_cacheTimestamps.isEmpty) return false;
-    
+
     final now = DateTime.now();
     return _cacheTimestamps.values.every(
-      (timestamp) => now.difference(timestamp) < cacheValidDuration
+      (timestamp) => now.difference(timestamp) < cacheValidDuration,
     );
   }
 
-  // Önbelleği güncelle
   void _updateCache() {
     final now = DateTime.now();
     for (var story in _recentStories) {
@@ -56,12 +52,11 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> loadRecentStories() async {
     if (!_mounted) return;
-    
-    // Önbellek kontrolü
+
     if (_isCacheValid()) {
       return;
     }
-    
+
     try {
       _isLoadingStories = true;
       _storyLoadError = null;
@@ -69,15 +64,14 @@ class HomeViewModel extends ChangeNotifier {
       notifyListeners();
 
       final stories = await _repository.getRecentStories(limit: pageSize);
-      
+
       if (!_mounted) return;
-      
+
       _recentStories = stories;
       _updateCache();
       _isLoadingStories = false;
       notifyListeners();
 
-      // Resimleri asenkron olarak yükle
       _loadStoryImages();
     } catch (e) {
       if (!_mounted) return;
@@ -87,7 +81,6 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  // Daha fazla hikaye yükle
   Future<void> loadMoreStories() async {
     if (!_mounted || _isLoadingMore || !_hasMoreStories) return;
 
@@ -108,8 +101,6 @@ class HomeViewModel extends ChangeNotifier {
       } else {
         _recentStories.addAll(moreStories);
         _updateCache();
-        
-        // Yeni hikayelerin resimlerini asenkron olarak yükle
         _loadStoryImages(startIndex: _recentStories.length - moreStories.length);
       }
 
@@ -123,14 +114,13 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  // Resimleri asenkron olarak yükle
   Future<void> _loadStoryImages({int startIndex = 0}) async {
     for (var i = startIndex; i < _recentStories.length; i++) {
       if (!_mounted) return;
-      
+
       final story = _recentStories[i];
-      if (story.hasImage && story.imageFilePath != null && story.imageData == null) {
-        story.imageData = await _repository.loadImage(story.imageFilePath!);
+      if (story.hasImage && story.imageFileName != null && story.imageData == null) {
+        story.imageData = await _repository.loadImage(story.imageFileName!);
         if (_mounted) notifyListeners();
       }
     }
@@ -141,4 +131,4 @@ class HomeViewModel extends ChangeNotifier {
     _storyLoadError = null;
     notifyListeners();
   }
-} 
+}

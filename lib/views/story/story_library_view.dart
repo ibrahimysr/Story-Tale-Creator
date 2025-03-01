@@ -164,13 +164,15 @@ class StoryLibraryView extends StatelessWidget {
     );
   }
 
-  Widget _buildStoriesList(BuildContext context, StoryLibraryViewModel viewModel) {
+  Widget _buildStoriesList(
+      BuildContext context, StoryLibraryViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
-          if (!viewModel.isLoadingMore && 
-              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent * 0.8 &&
+          if (!viewModel.isLoadingMore &&
+              scrollInfo.metrics.pixels >=
+                  scrollInfo.metrics.maxScrollExtent * 0.8 &&
               viewModel.canLoadMore) {
             viewModel.loadMoreStories();
           }
@@ -178,7 +180,8 @@ class StoryLibraryView extends StatelessWidget {
         },
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
-          itemCount: viewModel.stories.length + (viewModel.isLoadingMore ? 1 : 0),
+          itemCount:
+              viewModel.stories.length + (viewModel.isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
             if (index == viewModel.stories.length) {
               return Padding(
@@ -220,8 +223,7 @@ class StoryLibraryView extends StatelessWidget {
           story: story.story,
           title: story.title,
           image: story.imageData,
-                    showSaveButton: false,
-
+          showSaveButton: false,
         ),
       ),
     );
@@ -241,7 +243,7 @@ class StoryLibraryView extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(
-              color: SpaceTheme.accentPurple.withValues(alpha:0.5),
+              color: SpaceTheme.accentPurple.withValues(alpha: 0.5),
               width: 2,
             ),
           ),
@@ -263,7 +265,7 @@ class StoryLibraryView extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha:0.2),
+                  color: Colors.grey.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Text(
@@ -281,7 +283,7 @@ class StoryLibraryView extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha:0.6),
+                  color: Colors.red.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Text(
@@ -310,7 +312,8 @@ class StoryLibraryView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      backgroundColor: SpaceTheme.accentPurple.withValues(alpha:0.8),
+                      backgroundColor:
+                          SpaceTheme.accentPurple.withValues(alpha: 0.8),
                       duration: const Duration(seconds: 2),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
@@ -333,7 +336,7 @@ class StoryLibraryView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      backgroundColor: Colors.red.withValues(alpha:0.8),
+                      backgroundColor: Colors.red.withValues(alpha: 0.8),
                       duration: const Duration(seconds: 3),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
