@@ -25,10 +25,8 @@ class StoryDiscoverRepository {
           .limit(limit);
 
       if (startAfter != null) {
-        final startAfterDoc = await _firestore
-            .collection('userStories')
-            .doc(startAfter)
-            .get();
+        final startAfterDoc =
+            await _firestore.collection('userStories').doc(startAfter).get();
         if (startAfterDoc.exists) {
           query = query.startAfterDocument(startAfterDoc);
         }
@@ -44,7 +42,7 @@ class StoryDiscoverRepository {
             .get();
 
         for (var doc in allStoriesQuery.docs) {
-          if (!(doc.data() as Map<String, dynamic>).containsKey('isPublic')) {
+          if (!(doc.data()).containsKey('isPublic')) {
             await doc.reference.update({'isPublic': true});
           }
         }
@@ -67,7 +65,7 @@ class StoryDiscoverRepository {
         final searchLower = searchQuery.toLowerCase();
         stories = stories.where((story) {
           return story.title.toLowerCase().contains(searchLower) ||
-                 story.story.toLowerCase().contains(searchLower);
+              story.story.toLowerCase().contains(searchLower);
         }).toList();
       }
 
@@ -76,20 +74,18 @@ class StoryDiscoverRepository {
       if (e is FirebaseException) {
         if (e.code == 'failed-precondition') {
           throw Exception(
-            'Sistem hazırlanıyor, lütfen biraz bekleyin ve sayfayı yenileyin. '
-            'Bu işlem sadece ilk seferde gereklidir.'
-          );
+              'Sistem hazırlanıyor, lütfen biraz bekleyin ve sayfayı yenileyin. '
+              'Bu işlem sadece ilk seferde gereklidir.');
         }
 
         if (e.message?.contains('indexes?create_composite=') ?? false) {
-          throw Exception(
-            'Sistem ilk kurulum aşamasında. '
-            'Lütfen birkaç dakika bekleyip tekrar deneyin.'
-          );
+          throw Exception('Sistem ilk kurulum aşamasında. '
+              'Lütfen birkaç dakika bekleyip tekrar deneyin.');
         }
       }
 
-      throw Exception('Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+      throw Exception(
+          'Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   }
 
@@ -126,7 +122,8 @@ class StoryDiscoverRepository {
         throw Exception('Hikaye bulunamadı');
       }
 
-      final likedByUsers = List<String>.from(storyDoc.data()?['likedByUsers'] ?? []);
+      final likedByUsers =
+          List<String>.from(storyDoc.data()?['likedByUsers'] ?? []);
       final isLiked = likedByUsers.contains(user.uid);
 
       if (isLiked) {
@@ -150,7 +147,8 @@ class StoryDiscoverRepository {
   Future<Uint8List?> loadImage(String imageFileName) async {
     try {
       final response = await http.get(
-        Uri.parse('https://sandbox.temizlikcin.com.tr/api/get-image/$imageFileName'),
+        Uri.parse(
+            'https://sandbox.temizlikcin.com.tr/api/get-image/$imageFileName'),
       );
 
       if (response.statusCode == 200) {

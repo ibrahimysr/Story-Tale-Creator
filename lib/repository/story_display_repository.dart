@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,7 +34,8 @@ class StoryDisplayRepository {
     }
   }
 
-  Future<String?> _uploadImageToServer(Uint8List imageData, String userId) async {
+  Future<String?> _uploadImageToServer(
+      Uint8List imageData, String userId) async {
     try {
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final random = DateTime.now().microsecond;
@@ -66,7 +66,8 @@ class StoryDisplayRepository {
           throw Exception('API yükleme başarısız: ${jsonData['message']}');
         }
       } else {
-        throw Exception('Resim yüklenemedi, durum kodu: ${response.statusCode}');
+        throw Exception(
+            'Resim yüklenemedi, durum kodu: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Resim yüklenirken bir hata oluştu: $e');
