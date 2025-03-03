@@ -35,7 +35,7 @@ class ProfileViewModel extends ChangeNotifier {
 
     final user = _auth.currentUser;
     if (user == null) {
-      _error = "auth_required"; // Special error code for auth issues
+      _error = "auth_required"; 
       _isLoading = false;
       notifyListeners();
       return;
@@ -146,7 +146,6 @@ Future<void> loadUserStats() async {
 
     final user = _auth.currentUser;
     if (user == null) {
-      // Don't set an error here, just return empty stats
       _totalStories = 0;
       _totalLikes = 0;
       _isLoading = false;

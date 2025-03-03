@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:masal/widgets/navigation/bottom_nav_bar.dart'; 
 
 class LoginViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -23,6 +24,11 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearError() {
+    _error = null;
+    notifyListeners();
+  }
+
   Future<void> login(BuildContext context) async {
     if (_email.isEmpty || _password.isEmpty) {
       _error = 'Lütfen e-posta ve şifrenizi girin';
@@ -42,26 +48,39 @@ class LoginViewModel extends ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
+      
+    
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+      
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
       switch (e.code) {
         case 'user-not-found':
-          _error = 'Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı';
+          _error = 'Bu e-posta ile kayıtlı kullanıcı bulunamadı';
           break;
         case 'wrong-password':
-          _error = 'Hatalı şifre';
+          _error = 'Girdiğiniz şifre hatalı. Lütfen tekrar deneyin';
           break;
         case 'invalid-email':
-          _error = 'Geçersiz e-posta adresi';
+          _error = 'Geçersiz e-posta adresi formatı';
+          break;
+        case 'user-disabled':
+          _error = 'Bu hesap devre dışı bırakılmış';
+          break;
+        case 'too-many-requests':
+          _error = 'Çok fazla başarısız giriş denemesi. Lütfen daha sonra tekrar deneyin';
           break;
         default:
-          _error = 'Giriş yapılırken bir hata oluştu: ${e.message}';
+          _error = 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin';
       }
       notifyListeners();
     } catch (e) {
       _isLoading = false;
-      _error = 'Beklenmeyen bir hata oluştu';
+      _error = 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin';
       notifyListeners();
     }
   }
-} 
+}

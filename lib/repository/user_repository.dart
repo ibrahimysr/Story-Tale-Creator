@@ -1,4 +1,3 @@
-// lib/repositories/user_repository.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:masal/service/auth/auth_service.dart';
@@ -49,7 +48,6 @@ class UserRepository {
         throw Exception('Giriş başarısız oldu.');
       }
 
-      // Kullanıcı bilgilerini Firestore'dan al
       DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
       
       if (!userDoc.exists) {

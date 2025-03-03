@@ -8,7 +8,7 @@ class StoryLibraryModel {
   final String userId;
   final DateTime createdAt;
   final bool hasImage;
-  final String? imageFileName; // Yeni isim
+  final String? imageFileName; 
   final int likeCount;
   final List<String> likedByUsers;
   Uint8List? imageData;
@@ -20,7 +20,7 @@ class StoryLibraryModel {
     required this.userId,
     required this.createdAt,
     required this.hasImage,
-    this.imageFileName, // Yeni isim
+    this.imageFileName,
     this.imageData,
     this.likeCount = 0,
     this.likedByUsers = const [],
@@ -34,7 +34,7 @@ class StoryLibraryModel {
       userId: data['userId'] as String,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       hasImage: data['hasImage'] as bool? ?? false,
-      imageFileName: data['imageFileName'] as String?, // Yeni alan
+      imageFileName: data['imageFileName'] as String?,
       likeCount: data['likeCount'] as int? ?? 0,
       likedByUsers: List<String>.from(data['likedByUsers'] ?? []),
     );

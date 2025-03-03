@@ -11,7 +11,6 @@ class ProfileRepository {
 try {
     final user = _auth.currentUser;
     if (user == null) {
-      // Instead of throwing an exception, return empty stats
       log('Kullanıcı giriş yapmamış, boş istatistikler döndürülüyor');
       return {
         'totalStories': 0,

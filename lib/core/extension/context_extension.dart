@@ -20,7 +20,6 @@ extension MediaQueryExtension on BuildContext {
 }
 
 extension MediaQueryExtensionDynamic on BuildContext {
-  //
   double getDynamicHeight(double percent) => height*(percent/100);
   double getDynamicWidth(double percent) => width*(percent/100);
 }
@@ -33,7 +32,6 @@ extension PaddingExtensionAll on BuildContext {
   EdgeInsets get paddingHuge => EdgeInsets.all(hugeValue);
 }
 
-//
 extension PaddingExtensionSymetric on BuildContext {
   EdgeInsets get paddingLowVertical => EdgeInsets.symmetric(vertical: lowValue);
   EdgeInsets get paddingNormalVertical =>

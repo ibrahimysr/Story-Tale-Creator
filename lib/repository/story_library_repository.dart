@@ -115,7 +115,6 @@ class StoryLibraryRepository {
   Future<void> deleteStory(StoryLibraryModel story) async {
     try {
       await _firestore.collection('userStories').doc(story.id).delete();
-      // Artık yerel dosya silmeye gerek yok, çünkü API kullanıyoruz
     } catch (e) {
       throw Exception('Hikaye silinirken bir hata oluştu: $e');
     }
@@ -128,7 +127,7 @@ class StoryLibraryRepository {
       );
 
       if (response.statusCode == 200) {
-        return response.bodyBytes; // API’den gelen resmi Uint8List olarak döndürüyoruz
+        return response.bodyBytes; 
       } else {
         log('Resim yükleme hatası: ${response.statusCode}');
         return null;

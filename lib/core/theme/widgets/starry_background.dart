@@ -22,7 +22,6 @@ class _StarryBackgroundState extends State<StarryBackground>
       duration: const Duration(seconds: 10),
     )..repeat();
 
-    // Yıldızları oluştur
     for (int i = 0; i < 100; i++) {
       _stars.add(Star(
         x: _random.nextDouble(),
@@ -81,10 +80,8 @@ class StarPainter extends CustomPainter {
     final paint = Paint()..color = Colors.white;
 
     for (var star in stars) {
-      // Yıldız pozisyonunu güncelle
       star.y = (star.y + 0.001 * star.speed) % 1.0;
 
-      // Yanıp sönme efekti
       final flicker = (sin(animation * 2 * pi + star.x * 10) + 1) / 2;
       paint.color = Colors.white.withValues(alpha:star.opacity * (0.5 + flicker * 0.5));
 

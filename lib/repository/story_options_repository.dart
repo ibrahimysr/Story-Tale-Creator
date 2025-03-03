@@ -50,7 +50,6 @@ class StoryOptionsRepository {
     }
   }
 
-  // Çevirileri getirme fonksiyonları
   Future<Map<String, String>> getPlaceTranslations() async {
     try {
       final doc = await _firestore.collection('categories').doc('places').get();

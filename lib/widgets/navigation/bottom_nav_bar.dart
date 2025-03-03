@@ -18,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   late final List<Widget> pages;
 
-  // Uzay teması için ikonlar
   final List<IconData> bottomIcons = [
     Icons.rocket_launch, // Ana sayfa
     Icons.auto_awesome, // Keşfet
@@ -26,7 +25,6 @@ class _MainScreenState extends State<MainScreen> {
     Icons.person_outline, // Profil
   ];
 
-  // Uzay teması için renkler
   final List<Color> iconColors = [
     const Color(0xFF7c4dff), // Mor
     const Color(0xFF00b0ff), // Mavi

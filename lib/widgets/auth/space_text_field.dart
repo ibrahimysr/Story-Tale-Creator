@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/theme/space_theme.dart';
 
-class SpaceTextField extends StatelessWidget {
+class SpaceTextField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final IconData icon;
@@ -31,35 +31,54 @@ class SpaceTextField extends StatelessWidget {
   });
 
   @override
+  State<SpaceTextField> createState() => _SpaceTextFieldState();
+}
+
+class _SpaceTextFieldState extends State<SpaceTextField> {
+  bool _obscureText = true;
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      obscureText: isPassword,
-      validator: validator,
-      onChanged: onChanged,
+      controller: widget.controller,
+      obscureText: widget.isPassword ? _obscureText : false,
+      validator: widget.validator,
+      onChanged: widget.onChanged,
       style: const TextStyle(color: Colors.white),
-      keyboardType: keyboardType ?? (isPassword ? TextInputType.visiblePassword : TextInputType.text),
-      inputFormatters: inputFormatters,
-      focusNode: focusNode,
-      textInputAction: textInputAction ?? TextInputAction.next,
-      onEditingComplete: onEditingComplete ?? () {
-        FocusScope.of(context).nextFocus();
-      },
+      keyboardType: widget.keyboardType ?? 
+          (widget.isPassword ? TextInputType.visiblePassword : TextInputType.text),
+      inputFormatters: widget.inputFormatters,
+      focusNode: widget.focusNode,
+      textInputAction: widget.textInputAction ?? TextInputAction.next,
+      onEditingComplete: widget.onEditingComplete,
       autocorrect: false,
-      enableSuggestions: !isPassword,
+      enableSuggestions: !widget.isPassword,
       decoration: InputDecoration(
-        labelText: label,
+        labelText: widget.label,
         labelStyle: TextStyle(
-          color: Colors.white.withValues(alpha:0.7),
+          color: Colors.white.withValues(alpha: 0.7),
         ),
         prefixIcon: Icon(
-          icon,
-          color: Colors.white.withValues(alpha:0.7),
+          widget.icon,
+          color: Colors.white.withValues(alpha: 0.7),
         ),
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.white.withValues(alpha: 0.7),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
+              )
+            : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: Colors.white.withValues(alpha:0.3),
+            color: Colors.white.withValues(alpha: 0.3),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -83,4 +102,4 @@ class SpaceTextField extends StatelessWidget {
       ),
     );
   }
-} 
+}

@@ -190,18 +190,51 @@ class _LoginViewState extends State<LoginView> with SingleTickerProviderStateMix
                   _buildRegisterButton(),
                   const SizedBox(height: 16),
                   _buildNoAccountButton(),
-                  if (viewModel.error != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        viewModel.error!,
-                        style: TextStyle(
-                          color: Colors.red[300],
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                 if (viewModel.error != null)
+  Padding(
+    padding: const EdgeInsets.symmetric(vertical: 16.0),
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        color: Colors.red.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.red.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: Colors.red[300],
+            size: 24,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              viewModel.error!,
+              style: TextStyle(
+                color: Colors.red[300],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.close,
+              color: Colors.red[300],
+              size: 20,
+            ),
+            onPressed: () => viewModel.clearError(),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          )
+        ],
+      ),
+    ),
+  ),
                 ],
               ),
             ),

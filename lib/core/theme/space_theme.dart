@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class SpaceTheme {
-  // Sihirli Renkler
   static const Color primaryDark = Color(0xFF1A0B2E); // Derin gece mavisi
   static const Color primaryLight = Color(0xFF2C1854); // Mistik mor
   static const Color accentPurple = Color(0xFF9C27B0); // Büyülü mor
@@ -11,7 +10,6 @@ class SpaceTheme {
   static const Color accentPink = Color(0xFFE91E63); // Büyülü pembe
   static const Color accentTurquoise = Color(0xFF00BCD4); // Mistik turkuaz
 
-  // Büyülü Gradyanlar
   static LinearGradient get mainGradient => const LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -33,7 +31,6 @@ class SpaceTheme {
         stops: const [0.2, 0.6, 1.0],
       );
 
-  // Büyülü Gölgeler
   static List<BoxShadow> getMagicalGlow(Color color) => [
         BoxShadow(
           color: color.withValues(alpha:0.5),
@@ -52,7 +49,6 @@ class SpaceTheme {
         ),
       ];
 
-  // Metin Stilleri
   static TextStyle get titleStyle => TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
@@ -111,7 +107,6 @@ class SpaceTheme {
         ],
       );
 
-  // Kart Dekorasyonları
   static BoxDecoration getCardDecoration(Color color) => BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: getMagicalGradient(color),
@@ -122,7 +117,6 @@ class SpaceTheme {
         boxShadow: getMagicalGlow(color),
       );
 
-  // Avatar Dekorasyonu
   static BoxDecoration get avatarDecoration => BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
@@ -136,7 +130,6 @@ class SpaceTheme {
         boxShadow: getMagicalGlow(accentGold),
       );
 
-  // "Yakında" Badge Dekorasyonu
   static BoxDecoration get comingSoonBadgeDecoration => BoxDecoration(
         color: Colors.black.withValues(alpha:0.3),
         borderRadius: BorderRadius.circular(20),
@@ -153,7 +146,6 @@ class SpaceTheme {
         ],
       );
 
-  // İkon Container Dekorasyonu
   static BoxDecoration get iconContainerDecoration => BoxDecoration(
         color: Colors.black.withValues(alpha:0.3),
         borderRadius: BorderRadius.circular(15),
@@ -170,7 +162,6 @@ class SpaceTheme {
         ],
       );
 
-  // Yeni: Büyülü Buton Stili
   static ButtonStyle getMagicalButtonStyle(Color color) => ElevatedButton.styleFrom(
         backgroundColor: color,
         padding: const EdgeInsets.symmetric(

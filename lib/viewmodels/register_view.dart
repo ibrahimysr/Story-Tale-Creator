@@ -1,4 +1,3 @@
-// lib/views/register_view.dart
 import 'package:flutter/material.dart';
 import 'package:masal/viewmodels/register_viewmodel.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
@@ -21,7 +20,7 @@ class _RegisterViewState extends State<RegisterView>
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final String _selectedAvatar = 'boy (1).png'; // Varsayılan avatar
+  final String _selectedAvatar = 'boy (1).png'; 
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -226,7 +225,7 @@ class _RegisterViewState extends State<RegisterView>
                   );
                   
                   if (viewModel.state == RegisterState.success) {
-                   if (mounted) { // mounted kontrolü eklendi
+                   if (mounted) { 
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

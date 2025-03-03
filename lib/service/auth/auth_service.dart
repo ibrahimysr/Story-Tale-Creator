@@ -29,7 +29,6 @@ class FirebaseAuthService {
   }
 
   String _getLocalizedErrorMessage(String message) {
-    // Firebase'den gelen İngilizce hata mesajlarını Türkçeye çevirme
     if (message.contains('network error')) {
       return 'İnternet bağlantınızı kontrol edin ve tekrar deneyin';
     }

@@ -15,7 +15,7 @@ class StoryCreatorView extends StatefulWidget {
 }
 
 class _StoryCreatorViewState extends State<StoryCreatorView> {
-@override
+  @override
   void initState() {
     super.initState();
     Future.microtask(() {
@@ -24,7 +24,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
       }
     });
   }
-
+  
   Widget _buildProgressBar(int currentStep) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -83,86 +83,123 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
     );
   }
 
-  Widget _buildNextButton(StoryViewModel viewModel, int currentStep) {
-    bool canProceed = false;
-    switch (currentStep) {
-      case 1:
-        canProceed = viewModel.selectedPlace != null;
-        break;
-      case 2:
-        canProceed = viewModel.selectedCharacter != null;
-        break;
-      case 3:
-        canProceed = viewModel.selectedTime != null;
-        break;
-      case 4:
-        canProceed = viewModel.selectedEmotion != null;
-        break;
-      case 5:
-        canProceed = viewModel.selectedEvent != null;
-        break;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: AnimatedScaleButton(
-        onPressed: !canProceed || (currentStep == 5 && viewModel.isLoading)
-            ? null
-            : () {
-                if (currentStep == 5) {
-                  viewModel.generateStory().then((_) {
-                    if (viewModel.generatedStory != null && context.mounted) {
-                      if (mounted) {  
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => StoryDisplayView(
-                            story: viewModel.generatedStory!.content,
-                            title: viewModel.generatedStory!.title,
-                            image: viewModel.generatedStory!.image,
-                          ),
-                        ),
-                      );
-                    }
-                    }
-                  });
-                } else {
-                  viewModel.goToNextStep();
-                }
-              },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (currentStep == 5 && viewModel.isLoading)
-                const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
-              else
-                Icon(
-                  currentStep == 5 ? Icons.rocket_launch : Icons.arrow_forward,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              const SizedBox(width: 8),
-              Text(
-                currentStep == 5 
-                  ? (viewModel.isLoading ? 'Oluşturuluyor...' : 'Maceraya Başla')
-                  : 'İlerle',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+  Widget _buildBackButton(StoryViewModel viewModel) {
+    return AnimatedScaleButton(
+      onPressed: viewModel.currentStep > 1 ? () => viewModel.goToPreviousStep() : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: BoxDecoration(
+          color: viewModel.currentStep > 1 
+              ? SpaceTheme.primaryDark.withOpacity(0.6)
+              : SpaceTheme.primaryDark.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: viewModel.currentStep > 1 
+                ? SpaceTheme.accentPurple.withOpacity(0.6)
+                : SpaceTheme.accentPurple.withOpacity(0.3),
+            width: 1.5,
           ),
+          boxShadow: viewModel.currentStep > 1 ? [
+            BoxShadow(
+              color: SpaceTheme.accentPurple.withOpacity(0.2),
+              blurRadius: 8,
+              spreadRadius: 1,
+            ),
+          ] : [],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.arrow_back_rounded,
+              color: viewModel.currentStep > 1 
+                  ? Colors.white 
+                  : Colors.white.withOpacity(0.5),
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Önceki Adım',
+              style: TextStyle(
+                color: viewModel.currentStep > 1 
+                    ? Colors.white 
+                    : Colors.white.withOpacity(0.5),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFinalStepButton(StoryViewModel viewModel) {
+    return AnimatedScaleButton(
+      onPressed: viewModel.selectedEvent != null && !viewModel.isLoading 
+          ? () {
+              viewModel.generateStory().then((_) {
+                if (viewModel.generatedStory != null && context.mounted) {
+                  if (mounted) {  
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StoryDisplayView(
+                          story: viewModel.generatedStory!.content,
+                          title: viewModel.generatedStory!.title,
+                          image: viewModel.generatedStory!.image,
+                        ),
+                      ),
+                    );
+                  }
+                }
+              });
+            }
+          : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        decoration: BoxDecoration(
+          color: viewModel.selectedEvent != null && !viewModel.isLoading
+              ? SpaceTheme.accentPurple
+              : SpaceTheme.accentPurple.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: viewModel.selectedEvent != null && !viewModel.isLoading ? [
+            BoxShadow(
+              color: SpaceTheme.accentPurple.withOpacity(0.3),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ] : [],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (viewModel.isLoading)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            else
+              const Icon(
+                Icons.rocket_launch,
+                color: Colors.white,
+                size: 24,
+              ),
+            const SizedBox(width: 8),
+            Text(
+              viewModel.isLoading ? 'Oluşturuluyor...' : 'Maceraya Başla',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -171,9 +208,11 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
   Widget _buildCurrentStep(BuildContext context, StoryViewModel viewModel) {
     int currentStep = viewModel.currentStep;
     
+    Widget stepContent;
+    
     switch (currentStep) {
       case 1:
-        return Column(
+        stepContent = Column(
           children: [
             _buildStepTitle(
               'Galaktik Mekan',
@@ -186,13 +225,18 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               color: SpaceTheme.accentBlue,
               options: viewModel.places,
               selectedValue: viewModel.selectedPlace,
-              onChanged: (value) => viewModel.updateSelection(place: value),
+              onChanged: (value) {
+                viewModel.updateSelection(place: value);
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  viewModel.goToNextStep();
+                });
+              },
             ),
-            _buildNextButton(viewModel, currentStep),
           ],
         );
+        break;
       case 2:
-        return Column(
+        stepContent = Column(
           children: [
             _buildStepTitle(
               'Uzay Kahramanı',
@@ -205,13 +249,18 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               color: SpaceTheme.accentPurple,
               options: viewModel.characters,
               selectedValue: viewModel.selectedCharacter,
-              onChanged: (value) => viewModel.updateSelection(character: value),
+              onChanged: (value) {
+                viewModel.updateSelection(character: value);
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  viewModel.goToNextStep();
+                });
+              },
             ),
-            _buildNextButton(viewModel, currentStep),
           ],
         );
+        break;
       case 3:
-        return Column(
+        stepContent = Column(
           children: [
             _buildStepTitle(
               'Zaman Boyutu',
@@ -224,13 +273,18 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               color: SpaceTheme.accentEmerald,
               options: viewModel.times,
               selectedValue: viewModel.selectedTime,
-              onChanged: (value) => viewModel.updateSelection(time: value),
+              onChanged: (value) {
+                viewModel.updateSelection(time: value);
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  viewModel.goToNextStep();
+                });
+              },
             ),
-            _buildNextButton(viewModel, currentStep),
           ],
         );
+        break;
       case 4:
-        return Column(
+        stepContent = Column(
           children: [
             _buildStepTitle(
               'Kozmik Duygu',
@@ -243,13 +297,18 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               color: SpaceTheme.accentGold,
               options: viewModel.emotions,
               selectedValue: viewModel.selectedEmotion,
-              onChanged: (value) => viewModel.updateSelection(emotion: value),
+              onChanged: (value) {
+                viewModel.updateSelection(emotion: value);
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  viewModel.goToNextStep();
+                });
+              },
             ),
-            _buildNextButton(viewModel, currentStep),
           ],
         );
+        break;
       case 5:
-        return Column(
+        stepContent = Column(
           children: [
             _buildStepTitle(
               'Yıldızlararası Olay',
@@ -264,12 +323,24 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
               selectedValue: viewModel.selectedEvent,
               onChanged: (value) => viewModel.updateSelection(event: value),
             ),
-            _buildNextButton(viewModel, currentStep),
+            const SizedBox(height: 20),
+            _buildFinalStepButton(viewModel),
           ],
         );
+        break;
       default:
-        return const SizedBox.shrink();
+        stepContent = const SizedBox.shrink();
     }
+    
+    return Column(
+      children: [
+        stepContent,
+        const SizedBox(height: 40),
+        if (viewModel.currentStep > 1)
+          Center(child: _buildBackButton(viewModel)),
+        const SizedBox(height: 20),
+      ],
+    );
   }
 
   @override
@@ -342,4 +413,4 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
       ),
     );
   }
-} 
+}

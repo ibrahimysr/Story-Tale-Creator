@@ -7,7 +7,6 @@ class StoryOptionsService {
       : _repository = repository ?? StoryOptionsRepository();
 
  
-  // Kategorileri getirme fonksiyonları
   Future<List<String>> getPlaces() async {
     return await _repository.getPlaces();
   }
@@ -28,7 +27,6 @@ class StoryOptionsService {
     return await _repository.getEvents();
   }
 
-  // Çevirileri getirme fonksiyonları
   Future<Map<String, String>> getPlaceTranslations() async {
     return await _repository.getPlaceTranslations();
   }

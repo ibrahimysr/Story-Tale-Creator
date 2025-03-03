@@ -152,18 +152,16 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
     );
   }
 
-  Future<void> _saveStory(BuildContext context, StoryDisplayViewModel viewModel) async {
-    try {
-      final storyModel = StoryDisplayModel(
-        story: widget.story,
-        title: widget.title,
-        image: widget.image,
-      );
-
-      await viewModel.saveStory(storyModel);
-
-      if (!context.mounted) return;
-
+ Future<void> _saveStory(BuildContext context, StoryDisplayViewModel viewModel) async {
+  try {
+    final storyModel = StoryDisplayModel(
+      story: widget.story,
+      title: widget.title,
+      image: widget.image,
+    );
+    final success = await viewModel.saveStory(storyModel, context: context);
+    
+    if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Container(
@@ -187,30 +185,31 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
           ),
         ),
       );
-    } catch (e) {
-      if (!context.mounted) return;
+    }
+  } catch (e) {
+    if (!context.mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              'Bir hata oluştu: ${e.toString()}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: viewModel.textColor,
-                fontSize: 16,
-              ),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            'Bir hata oluştu: ${e.toString()}',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: viewModel.textColor,
+              fontSize: 16,
             ),
           ),
-          backgroundColor: Colors.red.withValues(alpha:0.8),
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
         ),
-      );
-    }
+        backgroundColor: Colors.red.withValues(alpha:0.8),
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+    );
   }
+}
 }

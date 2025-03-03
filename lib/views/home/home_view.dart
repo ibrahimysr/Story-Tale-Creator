@@ -8,9 +8,9 @@ import 'package:masal/views/story/story_display_view.dart';
 import 'package:masal/views/story/story_library_view.dart';
 import '../../viewmodels/home_viewmodel.dart';
 import '../../widgets/home/home_story_item.dart';
-import 'package:device_info_plus/device_info_plus.dart'; // Cihaz ID'si için
-import 'package:shared_preferences/shared_preferences.dart'; // Locale kayıt için
-import 'package:firebase_auth/firebase_auth.dart'; // Firebase auth kontrolü için
+import 'package:device_info_plus/device_info_plus.dart'; 
+import 'package:shared_preferences/shared_preferences.dart'; 
+import 'package:firebase_auth/firebase_auth.dart'; 
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -49,7 +49,6 @@ class HomeView extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Column(
                                 children: [
-                                  // Profil resmi
                                   Center(
                                     child: Container(
                                       height: 80,
@@ -65,7 +64,6 @@ class HomeView extends StatelessWidget {
                                   
                                   const SizedBox(height: 12),
                                   
-                                  // Kullanıcı ismi
                                   Text(
                                     'Hoş Geldin Kaşif!',
                                     style: SpaceTheme.titleStyle,
@@ -88,7 +86,6 @@ class HomeView extends StatelessWidget {
                             
                             const SizedBox(height: 30),
                             
-                            // Son Hikayeler Bölümü
                             Padding(
                               padding: const EdgeInsets.only(left: 16),
                               child: Column(
@@ -129,7 +126,6 @@ class HomeView extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 12),
                                   
-                                  // Hikaye kartları listesi
                                   SizedBox(
                                     height: 210,
                                     child: _buildRecentStoriesList(),
@@ -189,7 +185,6 @@ class HomeView extends StatelessWidget {
   return 'unknown';
 }
 
-  // Hikaye oluşturucuya yönlendirme
   void _navigateToStoryCreator(BuildContext context) {
     Navigator.push(
       context,
@@ -251,7 +246,6 @@ class HomeView extends StatelessWidget {
   Widget _buildRecentStoriesList() {
     return Consumer<HomeViewModel>(
       builder: (context, viewModel, _) {
-        // İlk yükleme sırasında tam ekran loading göster
         if (viewModel.isLoadingStories && !viewModel.hasStories) {
           return Center(
             child: CircularProgressIndicator(
@@ -380,7 +374,6 @@ class HomeView extends StatelessWidget {
             decoration: SpaceTheme.getCardDecoration(color),
             child: Stack(
               children: [
-                // Parlama efekti
                 Positioned(
                   top: -20,
                   right: -20,

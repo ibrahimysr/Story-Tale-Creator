@@ -54,7 +54,6 @@ class HabitTrackerViewModel extends ChangeNotifier {
   final int _longestStreak = 7;
   String _todayProgress = "2/3"; 
 
-  // Getters
   List<Habit> get habits => _habits;
   int get userLevel => _userLevel;
   int get userXp => _userXp;

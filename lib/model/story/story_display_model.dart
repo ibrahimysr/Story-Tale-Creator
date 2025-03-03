@@ -13,7 +13,6 @@ class StoryDisplayModel {
     this.imageFilePath,
   });
 
-  // Firebase'den gelen veriyi modele dönüştürmek için factory constructor
   factory StoryDisplayModel.fromFirebase(Map<String, dynamic> data) {
     return StoryDisplayModel(
       story: data['story'] as String,
@@ -22,7 +21,6 @@ class StoryDisplayModel {
     );
   }
 
-  // Modeli Firebase'e kaydetmek için Map'e dönüştürme
   Map<String, dynamic> toMap() {
     return {
       'story': story,

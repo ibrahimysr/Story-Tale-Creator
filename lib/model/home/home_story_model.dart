@@ -8,7 +8,7 @@ class HomeStoryModel {
   final String userId;
   final DateTime createdAt;
   final bool hasImage;
-  final String? imageFileName; // imageFilePath yerine bu
+  final String? imageFileName; 
   Uint8List? imageData;
 
   HomeStoryModel({
@@ -30,7 +30,7 @@ class HomeStoryModel {
       userId: data['userId'] as String,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       hasImage: data['hasImage'] as bool? ?? false,
-      imageFileName: data['imageFileName'] as String?, // Yeni alan
+      imageFileName: data['imageFileName'] as String?, 
     );
   }
 

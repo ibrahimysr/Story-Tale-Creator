@@ -20,14 +20,12 @@ class StoryViewModel extends ChangeNotifier {
   StoryModel? generatedStory;
   int _currentStep = 1;
 
-  // Kategori listeleri
   List<String> places = [];
   List<String> characters = [];
   List<String> times = [];
   List<String> emotions = [];
   List<String> events = [];
 
-  // Çeviriler
   Map<String, String> placeTranslations = {};
   Map<String, String> characterTranslations = {};
   Map<String, String> eventTranslations = {};
@@ -44,6 +42,7 @@ class StoryViewModel extends ChangeNotifier {
     resetSelections();
     loadCategories();
   }
+  
 
   Future<void> loadCategories() async {
     try {
@@ -51,14 +50,12 @@ class StoryViewModel extends ChangeNotifier {
       errorMessage = null;
       notifyListeners();
 
-      // Kategorileri yükle
       places = await _optionsService.getPlaces();
       characters = await _optionsService.getCharacters();
       times = await _optionsService.getTimes();
       emotions = await _optionsService.getEmotions();
       events = await _optionsService.getEvents();
 
-      // Çevirileri yükle
       placeTranslations = await _optionsService.getPlaceTranslations();
       characterTranslations = await _optionsService.getCharacterTranslations();
       eventTranslations = await _optionsService.getEventTranslations();
@@ -90,6 +87,13 @@ class StoryViewModel extends ChangeNotifier {
   void goToNextStep() {
     if (_currentStep < 5) {
       _currentStep++;
+      notifyListeners();
+    }
+  }
+
+  void goToPreviousStep() {
+    if (_currentStep > 1) {
+      _currentStep--;
       notifyListeners();
     }
   }
@@ -170,4 +174,4 @@ class StoryViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
-} 
+}

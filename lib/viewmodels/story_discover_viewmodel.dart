@@ -78,6 +78,7 @@ class StoryDiscoverViewModel extends ChangeNotifier {
       if (!_mounted) return;
 
       _stories = stories;
+      _hasMoreStories = stories.length >= pageSize;
       _updateCache();
       _isLoading = false;
       notifyListeners();
@@ -87,16 +88,26 @@ class StoryDiscoverViewModel extends ChangeNotifier {
       if (!_mounted) return;
       _isLoading = false;
       _errorMessage = e.toString();
+      _hasMoreStories = false; 
       notifyListeners();
     }
   }
 
   Future<void> loadMoreStories() async {
-    if (!_mounted || _isLoadingMore || !_hasMoreStories || _isSearching) return;
+    if (!_mounted || _isLoadingMore || !_hasMoreStories || _isSearching) {
+      return; 
+    }
 
     try {
       _isLoadingMore = true;
       notifyListeners();
+
+      if (_stories.isEmpty) {
+        _isLoadingMore = false;
+        _hasMoreStories = false;
+        notifyListeners();
+        return;
+      }
 
       final lastStory = _stories.last;
       final moreStories = await _repository.getAllStories(
@@ -107,12 +118,11 @@ class StoryDiscoverViewModel extends ChangeNotifier {
 
       if (!_mounted) return;
 
-      if (moreStories.isEmpty) {
-        _hasMoreStories = false;
-      } else {
+      _hasMoreStories = moreStories.length >= pageSize;
+      
+      if (moreStories.isNotEmpty) {
         _stories.addAll(moreStories);
         _updateCache();
-
         _loadStoryImages(startIndex: _stories.length - moreStories.length);
       }
 
@@ -132,8 +142,12 @@ class StoryDiscoverViewModel extends ChangeNotifier {
 
       final story = _stories[i];
       if (story.hasImage && story.imageFileName != null && story.imageData == null) {
-        story.imageData = await _repository.loadImage(story.imageFileName!);
-        if (_mounted) notifyListeners();
+        try {
+          story.imageData = await _repository.loadImage(story.imageFileName!);
+          if (_mounted) notifyListeners();
+        } catch (e) {
+         
+        }
       }
     }
   }

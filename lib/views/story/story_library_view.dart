@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/views/auth/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Auth ekledik
 import '../../core/theme/space_theme.dart';
@@ -10,16 +11,17 @@ import 'story_display_view.dart';
 class StoryLibraryView extends StatelessWidget {
   const StoryLibraryView({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    // Firebase Auth durumunu kontrol et
-    final currentUser = FirebaseAuth.instance.currentUser;
-    final bool isAuthenticated = currentUser != null;
+ @override
+Widget build(BuildContext context) {
+  final currentUser = FirebaseAuth.instance.currentUser;
+  final bool isAuthenticated = currentUser != null;
 
-    return Scaffold(
+  return ChangeNotifierProvider(
+    create: (_) => StoryLibraryViewModel(),
+    child: Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: SpaceTheme.primaryDark,
-      appBar: _buildAppBar(context),
+      appBar: _buildAppBar(context, isAuthenticated),
       body: Container(
         decoration: BoxDecoration(
           gradient: SpaceTheme.mainGradient,
@@ -29,45 +31,42 @@ class StoryLibraryView extends StatelessWidget {
             const Positioned.fill(
               child: StarryBackground(),
             ),
-            // Kullanıcı giriş yapmamışsa Login ekranı göster
+            
             if (!isAuthenticated)
               SafeArea(
                 child: _buildLoginPrompt(context),
               )
             else
               SafeArea(
-                child: ChangeNotifierProvider(
-                  create: (_) => StoryLibraryViewModel(),
-                  child: Consumer<StoryLibraryViewModel>(
-                    builder: (context, viewModel, _) {
-                      if (viewModel.isLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: SpaceTheme.accentPurple,
-                          ),
-                        );
-                      }
+                child: Consumer<StoryLibraryViewModel>(
+                  builder: (context, viewModel, _) {
+                    if (viewModel.isLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: SpaceTheme.accentPurple,
+                        ),
+                      );
+                    }
 
-                      if (viewModel.errorMessage != null) {
-                        return _buildErrorView(context, viewModel);
-                      }
+                    if (viewModel.errorMessage != null) {
+                      return _buildErrorView(context, viewModel);
+                    }
 
-                      if (!viewModel.hasStories) {
-                        return _buildEmptyView();
-                      }
+                    if (!viewModel.hasStories) {
+                      return _buildEmptyView();
+                    }
 
-                      return _buildStoriesList(context, viewModel);
-                    },
-                  ),
+                    return _buildStoriesList(context, viewModel);
+                  },
                 ),
               ),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
-  // Yeni eklenen login mesajı penceresi
   Widget _buildLoginPrompt(BuildContext context) {
     return Center(
       child: Column(
@@ -100,7 +99,7 @@ class StoryLibraryView extends StatelessWidget {
           const SizedBox(height: 30),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginView()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: SpaceTheme.accentBlue,
@@ -123,44 +122,37 @@ class StoryLibraryView extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    // Firebase Auth durumunu kontrol et
-    final currentUser = FirebaseAuth.instance.currentUser;
-    final bool isAuthenticated = currentUser != null;
-
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      title: Text(
-        'Hikaye Kütüphanem',
-        style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
-      ),
-      actions: [
-        // Sadece giriş yapmış kullanıcılar için yenileme butonunu göster
-        if (isAuthenticated)
-          Consumer<StoryLibraryViewModel>(
-            builder: (context, viewModel, _) {
-              return IconButton(
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: SpaceTheme.iconContainerDecoration,
-                  child: const Icon(
-                    Icons.refresh,
-                    color: Colors.white,
-                  ),
+  PreferredSizeWidget _buildAppBar(BuildContext context, bool isAuthenticated) {
+  return AppBar(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    title: Text(
+      'Hikaye Kütüphanem',
+      style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
+    ),
+    actions: [
+      if (isAuthenticated)
+        Consumer<StoryLibraryViewModel>(
+          builder: (context, viewModel, _) {
+            return IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: SpaceTheme.iconContainerDecoration,
+                child: const Icon(
+                  Icons.refresh,
+                  color: Colors.white,
                 ),
-                onPressed: viewModel.loadStories,
-              );
-            },
-          ),
-        const SizedBox(width: 8),
-      ],
-    );
-  }
+              ),
+              onPressed: viewModel.loadStories,
+            );
+          },
+        ),
+      const SizedBox(width: 8),
+    ],
+  );
+}
 
-  // Geri kalan metotlar aynı kalacak
   Widget _buildErrorView(BuildContext context, StoryLibraryViewModel viewModel) {
-    // Mevcut kodla aynı
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -209,7 +201,6 @@ class StoryLibraryView extends StatelessWidget {
   }
 
   Widget _buildEmptyView() {
-    // Mevcut kodla aynı
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -242,7 +233,6 @@ class StoryLibraryView extends StatelessWidget {
 
   Widget _buildStoriesList(
       BuildContext context, StoryLibraryViewModel viewModel) {
-    // Mevcut kodla aynı
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: NotificationListener<ScrollNotification>(
@@ -293,7 +283,6 @@ class StoryLibraryView extends StatelessWidget {
   }
 
   void _viewStoryDetail(BuildContext context, story) {
-    // Mevcut kodla aynı
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -312,7 +301,6 @@ class StoryLibraryView extends StatelessWidget {
     StoryLibraryViewModel viewModel,
     story,
   ) async {
-    // Mevcut kodla aynı ancak withValues yerine withOpacity kullanıyoruz
     return showDialog<void>(
       context: context,
       barrierDismissible: false,

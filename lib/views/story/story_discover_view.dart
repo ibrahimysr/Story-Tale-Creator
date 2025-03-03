@@ -211,11 +211,11 @@ class StoryDiscoverView extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
-          if (!viewModel.isLoadingMore && 
-              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent * 0.8 &&
-              viewModel.canLoadMore) {
-            viewModel.loadMoreStories();
-          }
+       if (!viewModel.isLoadingMore && 
+    scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent * 0.8 &&
+      viewModel.canLoadMore) {  // This condition is key
+   viewModel.loadMoreStories();
+} 
           return true;
         },
         child: ListView.builder(

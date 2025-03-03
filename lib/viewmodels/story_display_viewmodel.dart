@@ -23,25 +23,20 @@ class StoryDisplayViewModel extends ChangeNotifier {
   Color get textColor => _textColor;
   List<Color> get colorPalette => _colorPalette;
 
-  // Rengin parlaklığını kontrol eden yardımcı fonksiyon
   bool _isColorLight(Color color) {
     return color.computeLuminance() > 0.5;
   }
 
-  // Kontrast renk seçen yardımcı fonksiyon
   Color _getContrastingTextColor(Color backgroundColor) {
     return _isColorLight(backgroundColor) 
         ? Colors.black.withValues(alpha:0.8)
         : Colors.white;
   }
 
-  // Renk paletinden en iyi rengi seçen yardımcı fonksiyon
   Color _getBestColor(List<PaletteColor?> colors) {
-    // Null olmayan renkleri filtrele
     final validColors = colors.where((c) => c != null).map((c) => c!).toList();
     if (validColors.isEmpty) return Colors.black;
 
-    // Önce vibrant renkleri dene
     final vibrantColors = validColors.where((c) => 
       c.color.computeLuminance() > 0.2 && 
       c.color.computeLuminance() < 0.8
@@ -51,7 +46,6 @@ class StoryDisplayViewModel extends ChangeNotifier {
       return vibrantColors.first.color;
     }
 
-    // Vibrant renk bulunamazsa en iyi kontrastı veren rengi seç
     return validColors.first.color;
   }
 
@@ -60,12 +54,11 @@ class StoryDisplayViewModel extends ChangeNotifier {
       final imageProvider = MemoryImage(imageData);
       _palette = await PaletteGenerator.fromImageProvider(
         imageProvider,
-        size: const Size(200, 200), // Performans için küçük boyut
-        maximumColorCount: 8, // Daha fazla renk seçeneği
+        size: const Size(200, 200), 
+        maximumColorCount: 8, 
       );
       
       if (_palette != null) {
-        // En iyi arka plan rengini seç
         final colors = [
           _palette!.dominantColor,
           _palette!.vibrantColor,
@@ -77,7 +70,6 @@ class StoryDisplayViewModel extends ChangeNotifier {
         _dominantColor = _getBestColor(colors);
         _textColor = _getContrastingTextColor(_dominantColor);
         
-        // Renk paletini oluştur
         final paletteColors = [
           _palette!.dominantColor?.color,
           _palette!.vibrantColor?.color,
@@ -86,7 +78,6 @@ class StoryDisplayViewModel extends ChangeNotifier {
           _palette!.darkMutedColor?.color,
         ].where((color) => color != null).map((color) => color!).toList();
 
-        // Renkleri parlaklığa göre sırala
         paletteColors.sort((a, b) => 
           b.computeLuminance().compareTo(a.computeLuminance())
         );
@@ -104,26 +95,26 @@ class StoryDisplayViewModel extends ChangeNotifier {
     }
   }
 
-  // Hikayeyi kaydetme
-  Future<void> saveStory(StoryDisplayModel story) async {
-    try {
-      _isLoading = true;
-      _errorMessage = null;
-      notifyListeners();
+Future<bool> saveStory(StoryDisplayModel story, {BuildContext? context}) async {
+  try {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
 
-      await _repository.saveStory(story);
+    final success = await _repository.saveStory(story, context: context);
 
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      _errorMessage = e.toString();
-      notifyListeners();
-      rethrow;
-    }
+    _isLoading = false;
+    notifyListeners();
+    
+    return success; 
+  } catch (e) {
+    _isLoading = false;
+    _errorMessage = e.toString();
+    notifyListeners();
+    rethrow;
   }
+}
 
-  // Hata mesajını temizleme
   void clearError() {
     _errorMessage = null;
     notifyListeners();
