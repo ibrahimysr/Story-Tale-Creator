@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -137,25 +138,63 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Yeni eklenen cihaz ve erişim kontrol fonksiyonları
   Future<bool> canAccessStoryCreator() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
+    final prefs = await SharedPreferences.getInstance();
 
     if (currentUser != null) {
-      return true;
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        throw Exception('Kullanıcı bilgileri bulunamadı.');
+      }
+
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      bool isSubscribed = userData['subscribed'] ?? false;
+
+      if (isSubscribed) {
+        // Abone ise sınırsız erişim
+        return true;
+      } else {
+        // Abone değilse günlük limit kontrolü
+        const int dailyLimit = 2;
+        final String todayKey = 'story_creation_count_${DateTime.now().toIso8601String().substring(0, 10)}';
+        final String lastCreationDateKey = 'last_creation_date';
+
+        final String? lastCreationDate = prefs.getString(lastCreationDateKey);
+        final int currentCount = prefs.getInt(todayKey) ?? 0;
+        final String today = DateTime.now().toIso8601String().substring(0, 10);
+
+        if (lastCreationDate != today) {
+          // Yeni gün başladıysa sayacı sıfırla
+          await prefs.setInt(todayKey, 0);
+          await prefs.setString(lastCreationDateKey, today);
+        }
+
+        if (currentCount < dailyLimit) {
+          // Limit aşılmadıysa erişime izin ver ve sayacı artır
+          await prefs.setInt(todayKey, currentCount + 1);
+          return true;
+        } else {
+          // Limit aşıldıysa false döndür (abonelik dialogu tetiklenir)
+          return false;
+        }
+      }
+    } else {
+      // Giriş yapmamış kullanıcılar için mevcut mantık
+      final hasUsedFreeAccess = prefs.getBool('has_used_free_access') ?? false;
+
+      if (!hasUsedFreeAccess) {
+        final deviceId = await _getDeviceId();
+        await prefs.setBool('has_used_free_access', true);
+        await prefs.setString('device_id', deviceId);
+        return true;
+      }
+      return false;
     }
-
-    final prefs = await SharedPreferences.getInstance();
-    final hasUsedFreeAccess = prefs.getBool('has_used_free_access') ?? false;
-
-    if (!hasUsedFreeAccess) {
-      final deviceId = await _getDeviceId();
-      await prefs.setBool('has_used_free_access', true);
-      await prefs.setString('device_id', deviceId);
-      return true;
-    }
-
-    return false;
   }
 
   Future<String> _getDeviceId() async {
@@ -172,7 +211,9 @@ class HomeViewModel extends ChangeNotifier {
     } catch (e) {
       return 'unknown';
     }
-
     return 'unknown';
   }
+
+
+  
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../model/user_profile_model.dart';
+import '../model/user/user_profile_model.dart';
 import '../repository/profile_repository.dart';
 
 class ProfileViewModel extends ChangeNotifier {

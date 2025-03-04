@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
@@ -138,14 +139,120 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Future<void> _handleStoryCreatorTap(BuildContext context, HomeViewModel viewModel) async {
-    final canAccess = await viewModel.canAccessStoryCreator();
-    if (canAccess) {
-      _navigateToStoryCreator(context);
+Future<void> _handleStoryCreatorTap(BuildContext context, HomeViewModel viewModel) async {
+  final canAccess = await viewModel.canAccessStoryCreator();
+  if (canAccess) {
+    _navigateToStoryCreator(context);
+  } else {
+    if (FirebaseAuth.instance.currentUser != null) {
+      _showSubscriptionRequiredDialog(context);
     } else {
       _showLoginRequiredDialog(context);
     }
   }
+}
+
+void _showSubscriptionRequiredDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) => Dialog(
+      backgroundColor: Colors.transparent, 
+      child: Container(
+        padding: context.paddingLowVertical * 1.5,
+        decoration: BoxDecoration(
+          gradient: SpaceTheme.mainGradient, 
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: SpaceTheme.accentPurple.withOpacity(0.5),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+         crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Başlık
+            Text(
+              'Günlük Limit Aşıldı',
+              style: SpaceTheme.titleStyle.copyWith(
+                fontSize: 22,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: context.getDynamicHeight(2)),
+            Padding(
+              padding: context.paddingLowHorizontal * 1.3,
+              child: Text(
+                'Günlük 2 hikaye oluşturma limitine ulaştınız. Daha fazla hikaye oluşturmak için lütfen abone olunuz.',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: context.getDynamicHeight(3)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: SpaceTheme.primaryDark.withOpacity(0.8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.lowValue * 2,
+                      vertical: context.lowValue,
+                    ),
+                  ),
+                  child: Text(
+                    'Tamam',
+                    style: TextStyle(
+                      color: SpaceTheme.accentBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Abonelik sayfasına yönlendirme 
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => SubscriptionView()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: SpaceTheme.accentPurple,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.lowValue * 2,
+                      vertical: context.lowValue,
+                    ),
+                  ),
+                  child: const Text(
+                    'Abone Ol',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 
   void _navigateToStoryCreator(BuildContext context) {
     Navigator.push(

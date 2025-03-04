@@ -29,6 +29,7 @@ class UserRepository {
         'username': username,
         'email': email,
         'avatar': avatar,
+        'subscribed': false,
       };
       
       await _firestore.collection('users').doc(user.uid).set(userData);

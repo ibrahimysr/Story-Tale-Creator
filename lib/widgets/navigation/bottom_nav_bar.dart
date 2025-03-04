@@ -19,17 +19,17 @@ class _MainScreenState extends State<MainScreen> {
   late final List<Widget> pages;
 
   final List<IconData> bottomIcons = [
-    Icons.rocket_launch, // Ana sayfa
-    Icons.auto_awesome, // Keşfet
-    Icons.favorite, // Favoriler
-    Icons.person_outline, // Profil
+    Icons.rocket_launch, 
+    Icons.auto_awesome,
+    Icons.favorite, 
+    Icons.person_outline, 
   ];
 
   final List<Color> iconColors = [
-    const Color(0xFF7c4dff), // Mor
-    const Color(0xFF00b0ff), // Mavi
-    const Color(0xFFff4081), // Pembe
-    const Color(0xFF64ffda), // Turkuaz
+    const Color(0xFF7c4dff), 
+    const Color(0xFF00b0ff), 
+    const Color(0xFFff4081), 
+    const Color(0xFF64ffda), 
   ];
 
   @override
