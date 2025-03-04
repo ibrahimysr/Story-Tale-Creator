@@ -1,7 +1,7 @@
 
   import 'package:flutter/material.dart';
 import 'package:masal/core/theme/space_theme.dart';
-import 'package:masal/viewmodels/register_view.dart';
+import 'package:masal/views/auth/register_view.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 
 Widget buildRegisterButton(BuildContext context) {
@@ -9,7 +9,7 @@ Widget buildRegisterButton(BuildContext context) {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const RegisterView()),
+          MaterialPageRoute(builder: (context) =>  RegisterView()),
         );
       },
       child: Text(

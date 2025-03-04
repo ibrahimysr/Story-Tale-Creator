@@ -2,7 +2,7 @@
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 
-Widget buildHeader(BuildContext context) {
+Widget buildHeader(BuildContext context,IconData icon, String title) {
     return Column(
       children: [
         Container(
@@ -17,15 +17,15 @@ Widget buildHeader(BuildContext context) {
             ),
             boxShadow: SpaceTheme.getMagicalGlow(SpaceTheme.accentGold),
           ),
-          child: const Icon(
-            Icons.rocket_launch,
+          child:  Icon(
+          icon,
             size: 50,
             color: Colors.white,
           ),
         ),
         SizedBox(height: context.getDynamicHeight(4)),
         Text(
-          'Galaktik Giriş',
+    title,
           style: SpaceTheme.titleStyle,
         ),
       ],

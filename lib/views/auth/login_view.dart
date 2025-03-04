@@ -71,7 +71,7 @@ class _LoginViewState extends State<LoginView>
                     child: Column(
                       children: [
                         SizedBox(height: context.getDynamicHeight(8)),
-                        buildHeader(context),
+                        buildHeader(context,Icons.rocket_launch, 'Galaktik Giriş'),
                         SizedBox(height: context.getDynamicHeight(5)),
                         FadeTransition(
                           opacity: _fadeAnimation,

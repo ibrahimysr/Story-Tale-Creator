@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:masal/viewmodels/register_viewmodel.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+                ChangeNotifierProvider(create: (_) => RegisterViewModel()),
+
         ChangeNotifierProvider(create: (_) => StoryViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()..loadUserProfile()),
       ],
