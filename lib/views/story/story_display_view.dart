@@ -194,6 +194,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context, StoryDisplayViewModel viewModel) {
     return AppBar(
+      centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
       title: Text(

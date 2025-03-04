@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:liquid_swipe/liquid_swipe.dart';
+import 'package:masal/core/extension/context_extension.dart';
 
 class StoryDisplayContent extends StatefulWidget {
   final String story;
@@ -46,31 +47,27 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
   }
 
   List<String> _splitIntoPages(String story) {
-    final paragraphs = story.split('\n\n').where((p) => p.trim().isNotEmpty).toList();
+    final paragraphs =
+        story.split('\n\n').where((p) => p.trim().isNotEmpty).toList();
     return paragraphs;
   }
 
   List<Color> _generatePageColors() {
-    // AppBar'da olduğu gibi renkleri ayarla
     final List<Color> colors = [];
-    
+
     if (widget.colorPalette.isEmpty || widget.colorPalette.length < 2) {
-      // Eğer palet yoksa, dominant rengin çeşitlemelerini kullan
       Color baseColor = widget.dominantColor;
-      
+
       for (int i = 0; i < _pages.length; i++) {
-        // AppBar'da olduğu gibi gradyan için iki renk kullan
         colors.add(baseColor);
       }
     } else {
-      // Paletteki renkleri dönüşümlü olarak kullan
       for (int i = 0; i < _pages.length; i++) {
-        // Sayfaların renklerini palette'den al
         int colorIndex = i % widget.colorPalette.length;
         colors.add(widget.colorPalette[colorIndex]);
       }
     }
-    
+
     return colors;
   }
 
@@ -78,33 +75,28 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
   Widget build(BuildContext context) {
     return LiquidSwipe(
       pages: _buildPages(),
-      fullTransitionValue: 500, // Adjust for swipe sensitivity
+      fullTransitionValue: 800,
       enableLoop: false,
       enableSideReveal: true,
       liquidController: widget.liquidController,
       ignoreUserGestureWhileAnimating: true,
       slideIconWidget: Icon(
         Icons.arrow_back_ios,
-        color: widget.textColor.withOpacity(0.5),
+        color: widget.textColor.withValues(alpha: 0.5),
         size: 20,
       ),
       positionSlideIcon: 0.8,
       waveType: WaveType.liquidReveal,
       onPageChangeCallback: widget.onPageChanged,
-      currentUpdateTypeCallback: (updateType) {
-        // Optional callback for update type (manual, auto, etc)
-      },
+      currentUpdateTypeCallback: (updateType) {},
     );
   }
 
   List<Widget> _buildPages() {
     return List.generate(_pages.length, (index) {
-      // Add a cover page as the first item if needed
       if (index == 0 && widget.image != null) {
         return _buildCoverPage(index);
       }
-      
-      // Regular content pages
       return _buildContentPage(index);
     });
   }
@@ -114,32 +106,25 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
       color: _pageColors[index],
       child: Stack(
         children: [
-          // Background gradients or designs - AppBar'la aynı gradient mantığını kullan
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: widget.colorPalette.length >= 2
-                    ? [
-                        widget.colorPalette[0],
-                        widget.colorPalette[1],
-                      ]
+                    ? [widget.colorPalette[0], widget.colorPalette[1]]
                     : [
                         _pageColors[index],
-                        _pageColors[index].withOpacity(0.7),
+                        _pageColors[index].withValues(alpha: 0.7)
                       ],
               ),
             ),
           ),
-          
-          // Content
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Story image
                 if (widget.image != null) ...[
                   Container(
                     width: double.infinity,
@@ -148,7 +133,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 15,
                           spreadRadius: 5,
                         ),
@@ -156,16 +141,11 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.memory(
-                        widget.image!,
-                        fit: BoxFit.cover,
-                      ),
+                      child: Image.memory(widget.image!, fit: BoxFit.cover),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: context.getDynamicHeight(5)),
                 ],
-                
-                // Title
                 Text(
                   widget.title,
                   style: TextStyle(
@@ -176,14 +156,13 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
-                const SizedBox(height: 20),
-                
-                // Swipe instruction
+                SizedBox(height: context.getDynamicHeight(2)),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: context.lowValue * 1.5,
+                      vertical: context.lowValue * 0.8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -191,14 +170,14 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
                     children: [
                       Icon(
                         Icons.swipe,
-                        color: widget.textColor.withOpacity(0.8),
+                        color: widget.textColor.withValues(alpha: 0.8),
                         size: 18,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: context.getDynamicWidth(3)),
                       Text(
                         'Okumak için kaydırın',
                         style: TextStyle(
-                          color: widget.textColor.withOpacity(0.8),
+                          color: widget.textColor.withValues(alpha: 0.8),
                           fontSize: 14,
                         ),
                       ),
@@ -208,8 +187,6 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
               ],
             ),
           ),
-          
-          // Decorative elements
           Positioned(
             bottom: -50,
             right: -50,
@@ -218,7 +195,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
               height: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _pageColors[index].withOpacity(0.3),
+                color: _pageColors[index].withValues(alpha: 0.3),
               ),
             ),
           ),
@@ -228,33 +205,26 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
   }
 
   Widget _buildContentPage(int index) {
-    // Check if we should use a closing page
     bool isLastPage = index == _pages.length - 1;
-    
+
     return Container(
       color: _pageColors[index],
       child: Stack(
         children: [
-          // Background gradient - AppBar gibi gradient kullan
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: widget.colorPalette.length >= 2
-                    ? [
-                        widget.colorPalette[0],
-                        widget.colorPalette[1],
-                      ]
+                    ? [widget.colorPalette[0], widget.colorPalette[1]]
                     : [
                         _pageColors[index],
-                        _pageColors[index].withOpacity(0.7),
+                        _pageColors[index].withValues(alpha: 0.7)
                       ],
               ),
             ),
           ),
-          
-          // Decorative circles
           Positioned(
             top: -80,
             right: -80,
@@ -263,11 +233,10 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
               height: 160,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
               ),
             ),
           ),
-          
           Positioned(
             bottom: -40,
             left: -40,
@@ -276,42 +245,54 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
               height: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
               ),
             ),
           ),
-          
-          // Content container
-          Container(
-            margin: const EdgeInsets.fromLTRB(20, 80, 20, 80),
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 10,
-                  spreadRadius: 1,
+          isLastPage
+              ? Container(
+                  margin: const EdgeInsets.fromLTRB(20, 80, 20, 80),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: _buildLastPageContent())
+              : Container(
+                  margin: const EdgeInsets.fromLTRB(20, 80, 20, 80),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.15),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: _buildRegularPageContent(index),
                 ),
-              ],
-            ),
-            child: isLastPage ? _buildLastPageContent() : _buildRegularPageContent(index),
-          ),
-          
-          // Her sayfada resim olsun
           if (widget.image != null && !isLastPage) ...[
             Positioned(
               top: 20,
               right: 20,
               child: Container(
-                width: 100,
-                height: 100,
+                width: context.getDynamicWidth(35),
+                height: context.getDynamicHeight(15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 8,
                       spreadRadius: 2,
                     ),
@@ -319,35 +300,11 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.memory(
-                    widget.image!,
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.memory(widget.image!, fit: BoxFit.cover),
                 ),
               ),
             ),
           ],
-          
-          // Page number
-          Positioned(
-            bottom: 50,
-            right: 50,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Text(
-                '${index + 1}',
-                style: TextStyle(
-                  color: widget.textColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -360,7 +317,6 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.image != null) const SizedBox(height: 60),
-          
           Text(
             _pages[index],
             style: TextStyle(
@@ -376,76 +332,76 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
   }
 
   Widget _buildLastPageContent() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Son sayfada resim ekle
-        if (widget.image != null) ...[
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(60),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 10,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: Image.memory(
-                widget.image!,
-                fit: BoxFit.cover,
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (widget.image != null) ...[
+            Container(
+              width: context.getDynamicWidth(50),
+              height: context.getDynamicHeight(30),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(60),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(60),
+                child: Image.memory(widget.image!, fit: BoxFit.cover),
               ),
             ),
+            const SizedBox(height: 24),
+          ],
+          const Icon(
+            Icons.auto_stories,
+            size: 60,
+            color: Colors.white70,
           ),
           const SizedBox(height: 24),
-        ],
-        
-        const Icon(
-          Icons.auto_stories,
-          size: 60,
-          color: Colors.white70,
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'Hikaye Sonu',
-          style: TextStyle(
-            color: widget.textColor,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+          Text(
+            'Hikaye Sonu',
+            style: TextStyle(
+              color: widget.textColor,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 30),
-        if (widget.showSaveButton) ...[
-          ElevatedButton.icon(
-            onPressed: widget.isLoading ? null : widget.onSave,
-            icon: widget.isLoading 
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.save),
-            label: Text(widget.isLoading ? 'Kaydediliyor...' : 'Kütüphaneme Kaydet'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.2),
-              foregroundColor: widget.textColor,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          const SizedBox(height: 30),
+          if (widget.showSaveButton) ...[
+            ElevatedButton.icon(
+              onPressed: widget.isLoading ? null : widget.onSave,
+              icon: widget.isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.save),
+              label: Text(
+                  widget.isLoading ? 'Kaydediliyor...' : 'Kütüphaneme Kaydet'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
+                foregroundColor: widget.textColor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
-          ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

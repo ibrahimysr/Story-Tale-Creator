@@ -122,7 +122,7 @@ class _ProfileViewState extends State<ProfileView> {
                               Text(
                                 viewModel.error!,
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.7),
+                                  color: Colors.white.withValues(alpha:0.7),
                                 ),
                               ),
                                SizedBox(height: context.getDynamicHeight(5)),
@@ -188,15 +188,15 @@ class _ProfileViewState extends State<ProfileView> {
                                         vertical: context.normalValue,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.05),
+                                        color: Colors.white.withValues(alpha:0.05),
                                         borderRadius: BorderRadius.circular(15),
                                         border: Border.all(
-                                          color: Colors.white.withOpacity(0.1),
+                                          color: Colors.white.withValues(alpha:0.1),
                                           width: 1,
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: SpaceTheme.accentPurple.withOpacity(0.1),
+                                            color: SpaceTheme.accentPurple.withValues(alpha:0.1),
                                             blurRadius: 10,
                                             spreadRadius: 1,
                                           ),

@@ -15,7 +15,8 @@ class StoryViewModel extends ChangeNotifier {
   String? selectedEmotion;
   String? selectedEvent;
 
-  bool isLoading = false;
+  bool isLoading = false; // Hikaye oluşturma için yükleme durumu
+  bool _isLoadingCategories = true; // Yeni: Kategoriler için yükleme durumu
   String? errorMessage;
   StoryModel? generatedStory;
   int _currentStep = 1;
@@ -31,6 +32,7 @@ class StoryViewModel extends ChangeNotifier {
   Map<String, String> eventTranslations = {};
 
   int get currentStep => _currentStep;
+  bool get isLoadingCategories => _isLoadingCategories; // Yeni getter
 
   StoryViewModel({
     StoryService? storyService,
@@ -42,11 +44,10 @@ class StoryViewModel extends ChangeNotifier {
     resetSelections();
     loadCategories();
   }
-  
 
   Future<void> loadCategories() async {
     try {
-      isLoading = true;
+      _isLoadingCategories = true; // Kategoriler yüklenirken true
       errorMessage = null;
       notifyListeners();
 
@@ -60,12 +61,10 @@ class StoryViewModel extends ChangeNotifier {
       characterTranslations = await _optionsService.getCharacterTranslations();
       eventTranslations = await _optionsService.getEventTranslations();
 
-    
-
-      isLoading = false;
+      _isLoadingCategories = false; // Yükleme bitince false
       notifyListeners();
     } catch (e) {
-      isLoading = false;
+      _isLoadingCategories = false;
       errorMessage = e.toString();
       notifyListeners();
     }

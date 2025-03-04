@@ -68,7 +68,7 @@ class StoryDisplayRepository {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha:0.3),
                   blurRadius: 15,
                   spreadRadius: 5,
                 ),
@@ -95,7 +95,7 @@ class StoryDisplayRepository {
                   'Hikayeyi kaydetmek için lütfen giriş yapınız.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha:0.9),
                     fontSize: 16,
                   ),
                 ),
@@ -108,7 +108,7 @@ class StoryDisplayRepository {
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.white.withOpacity(0.7),
+                        foregroundColor: Colors.white.withValues(alpha:0.7),
                       ),
                       child: const Text(
                         'İptal',

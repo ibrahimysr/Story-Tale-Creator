@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/space_theme.dart';
-import '../../model/story/story_library_model.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/theme/space_theme.dart';
+import 'package:masal/model/story/story_library_model.dart';
 
 class StoryLibraryItem extends StatelessWidget {
   final StoryLibraryModel story;
@@ -23,7 +25,7 @@ class StoryLibraryItem extends StatelessWidget {
     final isLiked = story.isLikedByUser(currentUser?.uid ?? '');
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin:  EdgeInsets.only(bottom: context.lowValue),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
@@ -51,7 +53,7 @@ class StoryLibraryItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: context.paddingLow,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -74,7 +76,7 @@ class StoryLibraryItem extends StatelessWidget {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 4),
+                                 SizedBox(height: context.getDynamicHeight(2)),
                                 Text(
                                   story.formattedDate,
                                   style: TextStyle(
@@ -85,7 +87,7 @@ class StoryLibraryItem extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
+                           SizedBox(width: 8),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -150,8 +152,8 @@ class StoryLibraryItem extends StatelessWidget {
                         children: [
                           if (story.hasImage && story.imageData != null)
                             Container(
-                              width: 80,
-                              height: 80,
+                              width: 100,
+                              height: 100,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
