@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:masal/views/auth/login_view.dart';
-import 'package:provider/provider.dart';
-import 'package:masal/views/story/story_creator_view.dart';
+import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
-import 'package:masal/views/story/story_display_view.dart';
+import 'package:masal/viewmodels/home_viewmodel.dart';
+import 'package:masal/views/story/story_creator_view.dart';
 import 'package:masal/views/story/story_library_view.dart';
-import '../../viewmodels/home_viewmodel.dart';
-import '../../widgets/home/home_story_item.dart';
-import 'package:device_info_plus/device_info_plus.dart'; 
-import 'package:shared_preferences/shared_preferences.dart'; 
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:masal/widgets/home/activity_card.dart';
+import 'package:masal/widgets/home/login_required_dialog.dart';
+import 'package:masal/widgets/home/recent_stories_list.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -26,33 +24,32 @@ class HomeView extends StatelessWidget {
             child: SafeArea(
               child: Stack(
                 children: [
-                  const Positioned.fill(
-                    child: StarryBackground(),
-                  ),
+                  const Positioned.fill(child: StarryBackground()),
                   RefreshIndicator(
                     onRefresh: () => viewModel.loadRecentStories(),
                     color: SpaceTheme.accentPurple,
-                    backgroundColor: SpaceTheme.primaryDark.withValues(alpha:0.8),
+                    backgroundColor: SpaceTheme.primaryDark.withValues(alpha: 0.8),
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: context.paddingLowVertical * 1.4,
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height - 
-                            MediaQuery.of(context).padding.top - 
-                            MediaQuery.of(context).padding.bottom - 32,
+                          minHeight: MediaQuery.of(context).size.height -
+                              MediaQuery.of(context).padding.top -
+                              MediaQuery.of(context).padding.bottom -
+                              32,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: context.paddingLowHorizontal * 1.3,
                               child: Column(
                                 children: [
                                   Center(
                                     child: Container(
-                                      height: 80,
-                                      width: 80,
+                                      height: context.getDynamicHeight(15),
+                                      width: context.getDynamicWidth(20),
                                       decoration: SpaceTheme.avatarDecoration,
                                       child: const Icon(
                                         Icons.auto_awesome,
@@ -61,33 +58,28 @@ class HomeView extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  
-                                  const SizedBox(height: 12),
-                                  
+                                  SizedBox(height: context.getDynamicHeight(2)),
                                   Text(
                                     'Hoş Geldin Kaşif!',
                                     style: SpaceTheme.titleStyle,
                                   ),
-                                  
-                                  const SizedBox(height: 24),
-                                  
-                                  _buildActivityCard(
+                                  SizedBox(height: context.getDynamicHeight(2)),
+                                  ActivityCard(
                                     title: 'Sihirli Hikaye Yaratıcısı',
-                                    description: 'Hayal gücünün sınırlarını zorla ve kendi evrenini yarat!',
+                                    description:
+                                        'Hayal gücünün sınırlarını zorla ve kendi evrenini yarat!',
                                     icon: Icons.auto_awesome_motion,
                                     color: SpaceTheme.accentPurple,
                                     onTap: () async {
-                                      await _handleStoryCreatorTap(context);
+                                      await _handleStoryCreatorTap(context, viewModel);
                                     },
                                   ),
                                 ],
                               ),
                             ),
-                            
-                            const SizedBox(height: 30),
-                            
+                            SizedBox(height: context.getDynamicHeight(3)),
                             Padding(
-                              padding: const EdgeInsets.only(left: 16),
+                              padding: EdgeInsets.only(left: context.lowValue * 1.5),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -103,7 +95,7 @@ class HomeView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 16),
+                                        padding: EdgeInsets.only(right: context.lowValue * 1.5),
                                         child: TextButton(
                                           onPressed: () {
                                             Navigator.push(
@@ -124,11 +116,10 @@ class HomeView extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 12),
-                                  
+                                  SizedBox(height: context.getDynamicHeight(1)),
                                   SizedBox(
-                                    height: 210,
-                                    child: _buildRecentStoriesList(),
+                                    height: context.getDynamicHeight(26),
+                                    child: const RecentStoriesList(),
                                   ),
                                 ],
                               ),
@@ -147,43 +138,14 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Future<void> _handleStoryCreatorTap(BuildContext context) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    
-    if (currentUser != null) {
+  Future<void> _handleStoryCreatorTap(BuildContext context, HomeViewModel viewModel) async {
+    final canAccess = await viewModel.canAccessStoryCreator();
+    if (canAccess) {
       _navigateToStoryCreator(context);
-      return;
-    }
-    
-    final prefs = await SharedPreferences.getInstance();
-    final hasUsedFreeAccess = prefs.getBool('has_used_free_access') ?? false;
-    
-    if (hasUsedFreeAccess) {
-      _showLoginRequiredDialog(context);
     } else {
-      
-    final deviceId = await _getDeviceId(context);
-      
-      await prefs.setBool('has_used_free_access', true);
-      await prefs.setString('device_id', deviceId);
-      
-      _navigateToStoryCreator(context);
+      _showLoginRequiredDialog(context);
     }
   }
-  
- Future<String> _getDeviceId(BuildContext context) async {
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  
-  if (Theme.of(context).platform == TargetPlatform.android) {
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    return androidInfo.id;
-  } else if (Theme.of(context).platform == TargetPlatform.iOS) {
-    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-    return iosInfo.identifierForVendor ?? 'unknown';
-  }
-  
-  return 'unknown';
-}
 
   void _navigateToStoryCreator(BuildContext context) {
     Navigator.push(
@@ -193,266 +155,11 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
-  
+
   void _showLoginRequiredDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: SpaceTheme.primaryDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Text(
-            'Giriş Yapmanız Gerekiyor',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          content: const Text(
-            'Hikaye oluşturma özelliğini kullanmak için lütfen giriş yapın veya kayıt olun.',
-            style: TextStyle(color: Colors.white70),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'İptal',
-                style: TextStyle(color: SpaceTheme.accentBlue),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-               
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginView()));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: SpaceTheme.accentPurple,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Giriş Yap',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildRecentStoriesList() {
-    return Consumer<HomeViewModel>(
-      builder: (context, viewModel, _) {
-        if (viewModel.isLoadingStories && !viewModel.hasStories) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: SpaceTheme.accentPurple,
-            ),
-          );
-        }
-
-        if (viewModel.storyLoadError != null && !viewModel.hasStories) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error_outline, color: Colors.amber[100], size: 32),
-                const SizedBox(height: 8),
-                Text(
-                  viewModel.storyLoadError!,
-                  style: const TextStyle(color: Colors.white70),
-                  textAlign: TextAlign.center,
-                ),
-                TextButton(
-                  onPressed: viewModel.loadRecentStories,
-                  child: Text(
-                    'Tekrar Dene',
-                    style: TextStyle(color: SpaceTheme.accentBlue),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (!viewModel.hasStories) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.book, color: Colors.amber[100], size: 32),
-                const SizedBox(height: 8),
-                const Text(
-                  'Henüz bir hikaye oluşturmadınız',
-                  style: TextStyle(color: Colors.white70),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification scrollInfo) {
-            if (!viewModel.isLoadingMore && 
-                scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
-                viewModel.canLoadMore) {
-              viewModel.loadMoreStories();
-            }
-            return true;
-          },
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: viewModel.recentStories.length + (viewModel.isLoadingMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == viewModel.recentStories.length) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: SpaceTheme.accentPurple,
-                      ),
-                    ),
-                  ),
-                );
-              }
-
-              final story = viewModel.recentStories[index];
-              return HomeStoryItem(
-                story: story,
-                onTap: () => _viewStoryDetail(context, story),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  void _viewStoryDetail(BuildContext context, story) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => StoryDisplayView(
-          story: story.story,
-          title: story.title ?? "Hikayem",
-          image: story.imageData,
-          showSaveButton: false,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActivityCard({
-    required String title,
-    required String description,
-    required IconData icon,
-    required Color color,
-    bool isComingSoon = false,
-    VoidCallback? onTap,
-  }) {
-    return SizedBox(
-      height: 220,
-      width: double.infinity,
-      child: Card(
-        elevation: 8,
-        shadowColor: color.withValues(alpha:0.4),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: InkWell(
-          onTap: isComingSoon ? null : onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            decoration: SpaceTheme.getCardDecoration(color),
-            child: Stack(
-              children: [
-                Positioned(
-                  top: -20,
-                  right: -20,
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [
-                          Colors.white.withValues(alpha:0.2),
-                          Colors.white.withValues(alpha:0),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                if (isComingSoon)
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: SpaceTheme.comingSoonBadgeDecoration,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.rocket_launch,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Yakında',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha:0.9),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: SpaceTheme.iconContainerDecoration,
-                        child: Icon(
-                          icon,
-                          size: 40,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        title,
-                        style: SpaceTheme.cardTitleStyle,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        description,
-                        style: SpaceTheme.cardDescriptionStyle,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      builder: (BuildContext context) => const LoginRequiredDialog(),
     );
   }
 }

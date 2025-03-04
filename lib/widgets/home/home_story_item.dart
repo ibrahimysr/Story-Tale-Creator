@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/context_extension.dart';
 import '../../core/theme/space_theme.dart';
 import '../../model/home/home_story_model.dart';
 
@@ -15,8 +16,8 @@ class HomeStoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 16),
+      width: context.getDynamicWidth(40),
+      margin:  EdgeInsets.only(right: context.lowValue*1.5),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
@@ -44,7 +45,7 @@ class HomeStoryItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 100,
+                  height: context.getDynamicHeight(13),
                   width: double.infinity,
                   child: story.hasImage && story.imageData != null
                       ? Image.memory(
@@ -80,7 +81,7 @@ class HomeStoryItem extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                         SizedBox(height: context.getDynamicHeight(0.5)),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,

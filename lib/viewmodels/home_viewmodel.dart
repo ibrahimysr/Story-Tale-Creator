@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../model/home/home_story_model.dart';
-import '../repository/home_repository.dart';
+import 'package:masal/model/home/home_story_model.dart';
+import 'package:masal/repository/home_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final HomeRepository _repository;
@@ -130,5 +135,44 @@ class HomeViewModel extends ChangeNotifier {
     if (!_mounted) return;
     _storyLoadError = null;
     notifyListeners();
+  }
+
+  // Yeni eklenen cihaz ve erişim kontrol fonksiyonları
+  Future<bool> canAccessStoryCreator() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      return true;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final hasUsedFreeAccess = prefs.getBool('has_used_free_access') ?? false;
+
+    if (!hasUsedFreeAccess) {
+      final deviceId = await _getDeviceId();
+      await prefs.setBool('has_used_free_access', true);
+      await prefs.setString('device_id', deviceId);
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<String> _getDeviceId() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    try {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        return androidInfo.id;
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        return iosInfo.identifierForVendor ?? 'unknown';
+      }
+    } catch (e) {
+      return 'unknown';
+    }
+
+    return 'unknown';
   }
 }
