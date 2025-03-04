@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/context_extension.dart';
 import '../../../core/theme/space_theme.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -17,7 +18,7 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 20),
+         SizedBox(height: context.getDynamicHeight(2)),
         Container(
           decoration: SpaceTheme.avatarDecoration,
           padding: const EdgeInsets.all(4),
@@ -26,12 +27,12 @@ class ProfileHeader extends StatelessWidget {
             backgroundImage: AssetImage('assets/avatar/$avatar'),
           ),
         ),
-        const SizedBox(height: 15),
+         SizedBox(height: context.getDynamicHeight(2)),
         Text(
           name,
           style: SpaceTheme.titleStyle,
         ),
-        const SizedBox(height: 5),
+         SizedBox(height: context.getDynamicHeight(0.5)),
         Text(
           '@$username',
           style: SpaceTheme.subtitleStyle,

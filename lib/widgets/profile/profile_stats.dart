@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/context_extension.dart';
 import '../../../core/theme/space_theme.dart';
 
 class ProfileStats extends StatelessWidget {
@@ -14,7 +15,7 @@ class ProfileStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: context.paddingLow*1.5,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha:0.05),
         borderRadius: BorderRadius.circular(20),
@@ -46,7 +47,7 @@ class ProfileStats extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+           SizedBox(height: context.getDynamicHeight(2)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -88,7 +89,7 @@ class ProfileStats extends StatelessWidget {
             size: 24,
           ),
         ),
-        const SizedBox(height: 8),
+         SizedBox(height: 8),
         Text(
           value,
           style: TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/context_extension.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/space_theme.dart';
 import '../../../core/theme/widgets/starry_background.dart';
@@ -54,12 +55,12 @@ class _EditProfileViewState extends State<EditProfileView> {
             SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: context.paddingNormal*1.3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildHeader(context),
-                      const SizedBox(height: 30),
+                       SizedBox(height: context.getDynamicHeight(3)),
                       _buildForm(),
                     ],
                   ),
@@ -104,7 +105,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: context.paddingNormal*1.3,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha:0.05),
               borderRadius: BorderRadius.circular(20),
@@ -116,7 +117,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildAvatarSelector(),
-                const SizedBox(height: 20),
+                 SizedBox(height: context.getDynamicHeight(2)),
                 _buildInputField(
                   'İsim',
                   'Görünen adınızı girin',
@@ -131,7 +132,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                 SizedBox(height: context.getDynamicHeight(2)),
                 _buildInputField(
                   'Kullanıcı Adı',
                   'Benzersiz kullanıcı adınızı girin',
@@ -152,19 +153,20 @@ class _EditProfileViewState extends State<EditProfileView> {
               ],
             ),
           ),
-          const SizedBox(height: 30),
+                 SizedBox(height: context.getDynamicHeight(3)),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _saveChanges,
               style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentBlue),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
+              child:  Padding(
+                padding: context.paddingNormalVertical,
                 child: Text(
                   'Değişiklikleri Kaydet',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white
                   ),
                 ),
               ),

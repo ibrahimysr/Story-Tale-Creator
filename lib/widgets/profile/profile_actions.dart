@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/context_extension.dart';
 import '../../../core/theme/space_theme.dart';
 
 class ProfileActions extends StatelessWidget {
@@ -18,20 +19,16 @@ class ProfileActions extends StatelessWidget {
     return Column(
       children: [
         _buildActionButton(
+          context,
           'Profili Düzenle',
           Icons.edit,
           SpaceTheme.accentBlue,
           onEditProfile,
         ),
-        const SizedBox(height: 10),
+     
+         SizedBox(height: context.getDynamicHeight(2)),
         _buildActionButton(
-          'Ayarlar',
-          Icons.settings,
-          SpaceTheme.accentPurple,
-          onSettings,
-        ),
-        const SizedBox(height: 10),
-        _buildActionButton(
+          context,
           'Yardım ve Destek',
           Icons.help_outline,
           SpaceTheme.accentEmerald,
@@ -41,19 +38,19 @@ class ProfileActions extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(BuildContext context, title, IconData icon, Color color, VoidCallback onTap) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      margin:  EdgeInsets.symmetric(vertical: 3),
       child: ElevatedButton(
         onPressed: onTap,
         style: SpaceTheme.getMagicalButtonStyle(color),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: context.paddingLow*1.5,
           child: Row(
             children: [
               Icon(icon, color: Colors.white),
-              const SizedBox(width: 15),
+               SizedBox(width: context.getDynamicWidth(3)),
               Text(
                 title,
                 style: const TextStyle(

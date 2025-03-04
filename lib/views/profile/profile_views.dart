@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:masal/views/auth/login_view.dart';
+import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/widgets/profile/auth_required.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../core/theme/space_theme.dart';
@@ -94,7 +95,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                 )
               : !_isAuthenticated
-                ? _buildAuthRequiredView(context)
+                ? buildAuthRequiredView(context)
                 : Consumer<ProfileViewModel>(
                     builder: (context, viewModel, child) {
                       if (viewModel.isLoading) {
@@ -124,7 +125,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   color: Colors.white.withOpacity(0.7),
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                               SizedBox(height: context.getDynamicHeight(5)),
                               ElevatedButton(
                                 onPressed: () => viewModel.loadUserProfile(),
                                 style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentBlue),
@@ -147,7 +148,7 @@ class _ProfileViewState extends State<ProfileView> {
 
                       return SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          padding:  context.paddingNormalHorizontal,
                           child: Column(
                             children: [
                               ProfileHeader(
@@ -155,12 +156,12 @@ class _ProfileViewState extends State<ProfileView> {
                                 username: profile.username,
                                 avatar: profile.avatar,
                               ),
-                              const SizedBox(height: 30),
+                               SizedBox(height: context.getDynamicHeight(2)),
                               ProfileStats(
                                 stories: viewModel.totalStories,
                                 totalLikes: viewModel.totalLikes,
                               ),
-                              const SizedBox(height: 30),
+                               SizedBox(height: context.getDynamicHeight(3)),
                               ProfileActions(
                                 onEditProfile: () {
                                   Navigator.push(
@@ -173,18 +174,18 @@ class _ProfileViewState extends State<ProfileView> {
                                 onSettings: () {},
                                 onHelp: () {},
                               ),
-                              const SizedBox(height: 20),
+                               SizedBox(height: context.getDynamicHeight(2)),
                               Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 20),
+                                margin: context.paddingNormalHorizontal,
                                 child: Material(
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () => _signOut(context),
                                     borderRadius: BorderRadius.circular(15),
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 16,
+                                      padding:  EdgeInsets.symmetric(
+                                        horizontal: context.normalValue,
+                                        vertical: context.normalValue,
                                       ),
                                       decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(0.05),
@@ -209,7 +210,7 @@ class _ProfileViewState extends State<ProfileView> {
                                               Container(
                                                 padding: const EdgeInsets.all(10),
                                                 decoration: BoxDecoration(
-                                                  color: SpaceTheme.accentPurple.withOpacity(0.1),
+                                                  color: SpaceTheme.accentPurple.withValues(alpha:0.1),
                                                   borderRadius: BorderRadius.circular(12),
                                                 ),
                                                 child: Icon(
@@ -218,11 +219,11 @@ class _ProfileViewState extends State<ProfileView> {
                                                   size: 24,
                                                 ),
                                               ),
-                                              const SizedBox(width: 16),
+                                               SizedBox(width: context.getDynamicWidth(4)),
                                               Text(
                                                 'Çıkış Yap',
                                                 style: TextStyle(
-                                                  color: Colors.white.withOpacity(0.9),
+                                                  color: Colors.white.withValues(alpha: 0.9),
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -231,7 +232,7 @@ class _ProfileViewState extends State<ProfileView> {
                                           ),
                                           Icon(
                                             Icons.arrow_forward_ios_rounded,
-                                            color: Colors.white.withOpacity(0.5),
+                                            color: Colors.white.withValues(alpha:0.5),
                                             size: 20,
                                           ),
                                         ],
@@ -240,7 +241,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 40),
+                               SizedBox(height: context.getDynamicHeight(2)),
                             ],
                           ),
                         ),
@@ -253,36 +254,5 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _buildAuthRequiredView(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.account_circle_outlined,
-            size: 80,
-            color: SpaceTheme.accentGold,
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Profil Sayfasını Görmek İçin Lütfen Giriş Yapınız',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 30),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginView()));
-            },
-            style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentBlue),
-            child: const Text('Giriş Yap', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
-  }
+  
 }
