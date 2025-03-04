@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:liquid_swipe/liquid_swipe.dart';
 import '../../core/theme/space_theme.dart';
 import '../../model/story/story_display_model.dart';
 import '../../viewmodels/story_display_viewmodel.dart';
@@ -26,11 +27,14 @@ class StoryDisplayView extends StatefulWidget {
 
 class _StoryDisplayViewState extends State<StoryDisplayView> {
   late StoryDisplayViewModel viewModel;
+  late LiquidController liquidController;
+  int currentPage = 0;
 
   @override
   void initState() {
     super.initState();
     viewModel = StoryDisplayViewModel();
+    liquidController = LiquidController();
     if (widget.image != null) {
       viewModel.generatePaletteFromImage(widget.image!);
     }
@@ -46,64 +50,146 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
             extendBodyBehindAppBar: true,
             backgroundColor: viewModel.dominantColor,
             appBar: _buildAppBar(context, viewModel),
-            body: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: viewModel.colorPalette.length >= 2
-                      ? [
-                          viewModel.colorPalette[0],
-                          viewModel.colorPalette[1],
-                        ]
-                      : [
-                          viewModel.dominantColor,
-                          viewModel.dominantColor.withValues(alpha:0.7),
-                        ],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  if (viewModel.colorPalette.isNotEmpty)
-                    ...viewModel.colorPalette.take(3).map((color) {
-                      return Positioned(
-                        left: -50 + (viewModel.colorPalette.indexOf(color) * 100),
-                        top: -100 + (viewModel.colorPalette.indexOf(color) * 50),
-                        child: Container(
-                          width: 200,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: color.withValues(alpha:0.3),
-                            boxShadow: [
-                              BoxShadow(
-                                color: color.withValues(alpha:0.2),
-                                blurRadius: 50,
-                                spreadRadius: 20,
-                              ),
+            body: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: viewModel.colorPalette.length >= 2
+                          ? [
+                              viewModel.colorPalette[0],
+                              viewModel.colorPalette[1],
+                            ]
+                          : [
+                              viewModel.dominantColor,
+                              viewModel.dominantColor.withValues(alpha:0.7),
                             ],
-                          ),
-                        ),
-                      );
-                    }),
-                  SafeArea(
-                    child: StoryDisplayContent(
-                      story: widget.story,
-                      title: widget.title,
-                      image: widget.image,
-                      onSave: () => _saveStory(context, viewModel),
-                      isLoading: viewModel.isLoading,
-                      showSaveButton: widget.showSaveButton,
-                      textColor: viewModel.textColor,
                     ),
                   ),
-                ],
-              ),
+                  child: _buildBackgroundElements(viewModel),
+                ),
+                SafeArea(
+                  child: StoryDisplayContent(
+                    story: widget.story,
+                    title: widget.title,
+                    image: widget.image,
+                    onSave: () => _saveStory(context, viewModel),
+                    isLoading: viewModel.isLoading,
+                    showSaveButton: widget.showSaveButton,
+                    textColor: viewModel.textColor,
+                    liquidController: liquidController,
+                    dominantColor: viewModel.dominantColor,
+                    colorPalette: viewModel.colorPalette,
+                    onPageChanged: (page) {
+                      setState(() {
+                        currentPage = page;
+                      });
+                    },
+                  ),
+                ),
+                _buildNavigationControls(viewModel),
+              ],
             ),
           );
         },
       ),
     );
+  }
+
+  Widget _buildBackgroundElements(StoryDisplayViewModel viewModel) {
+    if (viewModel.colorPalette.isEmpty) return const SizedBox.shrink();
+    
+    return Stack(
+      children: viewModel.colorPalette.take(3).map((color) {
+        return Positioned(
+          left: -50 + (viewModel.colorPalette.indexOf(color) * 100),
+          top: -100 + (viewModel.colorPalette.indexOf(color) * 50),
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withValues(alpha:0.3),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha:0.2),
+                  blurRadius: 50,
+                  spreadRadius: 20,
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildNavigationControls(StoryDisplayViewModel viewModel) {
+    final pages = _splitIntoPages(widget.story);
+    
+    return Positioned(
+      bottom: 20,
+      left: 0,
+      right: 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha:0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.arrow_back,
+                color: currentPage > 0 
+                    ? viewModel.textColor 
+                    : viewModel.textColor.withValues(alpha:0.3),
+                size: 20,
+              ),
+            ),
+            onPressed: currentPage > 0 
+                ? () => liquidController.jumpToPage(page: currentPage - 1)
+                : null,
+          ),
+          Text(
+            '${currentPage + 1} / ${pages.length}',
+            style: TextStyle(
+              color: viewModel.textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha:0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.arrow_forward,
+                color: currentPage < pages.length - 1 
+                    ? viewModel.textColor 
+                    : viewModel.textColor.withValues(alpha:0.3),
+                size: 20,
+              ),
+            ),
+            onPressed: currentPage < pages.length - 1 
+                ? () => liquidController.jumpToPage(page: currentPage + 1)
+                : null,
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<String> _splitIntoPages(String story) {
+    final paragraphs = story.split('\n\n').where((p) => p.trim().isNotEmpty).toList();
+    return paragraphs;
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context, StoryDisplayViewModel viewModel) {
