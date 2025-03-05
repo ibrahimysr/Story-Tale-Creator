@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/login_viewmodel.dart';
+import 'package:masal/views/auth/reset_password_view.dart';
 import 'package:masal/widgets/auth/register_button.dart';
 import 'package:masal/widgets/auth/space_text_field.dart';
 import 'package:provider/provider.dart';
@@ -71,6 +72,25 @@ Widget buildLoginForm(TextEditingController emailController,
                     },
                   ),
                   SizedBox(height: context.getDynamicHeight(2)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetScreen(),));
+                        },
+                        child: Text(
+                          'Şifremi Unuttum',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   _buildLoginButton(viewModel,formKey,context),
                   SizedBox(height: context.getDynamicHeight(1)),
                   buildRegisterButton(context),

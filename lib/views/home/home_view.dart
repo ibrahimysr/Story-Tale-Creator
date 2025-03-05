@@ -6,6 +6,7 @@ import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/views/story/story_creator_view.dart';
 import 'package:masal/views/story/story_library_view.dart';
+import 'package:masal/views/subscription/subscription_view.dart';
 import 'package:masal/widgets/home/activity_card.dart';
 import 'package:masal/widgets/home/login_required_dialog.dart';
 import 'package:masal/widgets/home/recent_stories_list.dart';
@@ -29,7 +30,8 @@ class HomeView extends StatelessWidget {
                   RefreshIndicator(
                     onRefresh: () => viewModel.loadRecentStories(),
                     color: SpaceTheme.accentPurple,
-                    backgroundColor: SpaceTheme.primaryDark.withValues(alpha: 0.8),
+                    backgroundColor:
+                        SpaceTheme.primaryDark.withValues(alpha: 0.8),
                     child: SingleChildScrollView(
                       padding: context.paddingLowVertical * 1.4,
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -72,7 +74,8 @@ class HomeView extends StatelessWidget {
                                     icon: Icons.auto_awesome_motion,
                                     color: SpaceTheme.accentPurple,
                                     onTap: () async {
-                                      await _handleStoryCreatorTap(context, viewModel);
+                                      await _handleStoryCreatorTap(
+                                          context, viewModel);
                                     },
                                   ),
                                 ],
@@ -80,12 +83,14 @@ class HomeView extends StatelessWidget {
                             ),
                             SizedBox(height: context.getDynamicHeight(3)),
                             Padding(
-                              padding: EdgeInsets.only(left: context.lowValue * 1.5),
+                              padding:
+                                  EdgeInsets.only(left: context.lowValue * 1.5),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       const Text(
                                         'Son Hikayelerim',
@@ -96,15 +101,18 @@ class HomeView extends StatelessWidget {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(right: context.lowValue * 1.5),
+                                        padding: EdgeInsets.only(
+                                            right: context.lowValue * 1.5),
                                         child: TextButton(
                                           onPressed: () {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => const StoryLibraryView(),
+                                                builder: (context) =>
+                                                    const StoryLibraryView(),
                                               ),
-                                            ).then((_) => viewModel.loadRecentStories());
+                                            ).then((_) =>
+                                                viewModel.loadRecentStories());
                                           },
                                           child: Text(
                                             'Tümünü Gör',
@@ -139,121 +147,125 @@ class HomeView extends StatelessWidget {
     );
   }
 
-Future<void> _handleStoryCreatorTap(BuildContext context, HomeViewModel viewModel) async {
-  final canAccess = await viewModel.canAccessStoryCreator();
-   if (!context.mounted) return;
-  if (canAccess) {
-    _navigateToStoryCreator(context);
-  } else {
-    if (FirebaseAuth.instance.currentUser != null) {
-      _showSubscriptionRequiredDialog(context);
+  Future<void> _handleStoryCreatorTap(
+      BuildContext context, HomeViewModel viewModel) async {
+    final canAccess = await viewModel.canAccessStoryCreator();
+    if (!context.mounted) return;
+    if (canAccess) {
+      _navigateToStoryCreator(context);
     } else {
-      _showLoginRequiredDialog(context);
+      if (FirebaseAuth.instance.currentUser != null) {
+        _showSubscriptionRequiredDialog(context);
+      } else {
+        _showLoginRequiredDialog(context);
+      }
     }
   }
-}
 
-void _showSubscriptionRequiredDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) => Dialog(
-      backgroundColor: Colors.transparent, 
-      child: Container(
-        padding: context.paddingLowVertical * 1.5,
-        decoration: BoxDecoration(
-          gradient: SpaceTheme.mainGradient, 
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: SpaceTheme.accentPurple.withValues(alpha:  0.5),
-              blurRadius: 10,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-         crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Başlık
-            Text(
-              'Günlük Limit Aşıldı',
-              style: SpaceTheme.titleStyle.copyWith(
-                fontSize: 22,
-                color: Colors.white,
+  void _showSubscriptionRequiredDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: context.paddingLowVertical * 1.5,
+          decoration: BoxDecoration(
+            gradient: SpaceTheme.mainGradient,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: SpaceTheme.accentPurple.withValues(alpha: 0.5),
+                blurRadius: 10,
+                spreadRadius: 2,
               ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: context.getDynamicHeight(2)),
-            Padding(
-              padding: context.paddingLowHorizontal * 1.3,
-              child: Text(
-                'Günlük 2 hikaye oluşturma limitine ulaştınız. Daha fazla hikaye oluşturmak için lütfen abone olunuz.',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 16,
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Başlık
+              Text(
+                'Günlük Limit Aşıldı',
+                style: SpaceTheme.titleStyle.copyWith(
+                  fontSize: 22,
+                  color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(height: context.getDynamicHeight(3)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SpaceTheme.primaryDark.withValues(alpha:  0.8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.lowValue * 2,
-                      vertical: context.lowValue,
-                    ),
+              SizedBox(height: context.getDynamicHeight(2)),
+              Padding(
+                padding: context.paddingLowHorizontal * 1.3,
+                child: Text(
+                  'Günlük 2 hikaye oluşturma limitine ulaştınız. Daha fazla hikaye oluşturmak için lütfen abone olunuz.',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontSize: 16,
                   ),
-                  child: Text(
-                    'Tamam',
-                    style: TextStyle(
-                      color: SpaceTheme.accentBlue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  textAlign: TextAlign.center,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    // Abonelik sayfasına yönlendirme 
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => SubscriptionView()));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: SpaceTheme.accentPurple,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              ),
+              SizedBox(height: context.getDynamicHeight(3)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          SpaceTheme.primaryDark.withValues(alpha: 0.8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.lowValue * 2,
+                        vertical: context.lowValue,
+                      ),
                     ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.lowValue * 2,
-                      vertical: context.lowValue,
+                    child: Text(
+                      'Tamam',
+                      style: TextStyle(
+                        color: SpaceTheme.accentBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  child: const Text(
-                    'Abone Ol',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SubscriptionView()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SpaceTheme.accentPurple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.lowValue * 2,
+                        vertical: context.lowValue,
+                      ),
+                    ),
+                    child: const Text(
+                      'Abone Ol',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   void _navigateToStoryCreator(BuildContext context) {
     Navigator.push(
