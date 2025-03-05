@@ -26,6 +26,27 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
     });
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Hata'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.read<StoryViewModel>().errorMessage = null;
+              },
+              child: const Text('Tamam'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +69,12 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
             SafeArea(
               child: Consumer<StoryViewModel>(
                 builder: (context, viewModel, child) {
+                  if (viewModel.errorMessage != null) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _showErrorDialog(viewModel.errorMessage!);
+                    });
+                  }
+
                   if (viewModel.isLoadingCategories) {
                     return Center(
                       child: Column(
@@ -85,24 +112,10 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                                 if (viewModel.currentStep > 1)
                                   Center(child: CreatorBackButton(viewModel: viewModel)),
                                 SizedBox(height: context.getDynamicHeight(2)),
-                                if (viewModel.errorMessage != null)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 16.0),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.red.withValues(alpha: 0.3),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      viewModel.errorMessage!,
-                                      style: const TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 16,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                if (viewModel.isLoading)
+                                  Center(
+                                    child: CircularProgressIndicator(
+                                      color: SpaceTheme.accentPurple,
                                     ),
                                   ),
                               ],

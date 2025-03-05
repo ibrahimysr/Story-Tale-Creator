@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:masal/widgets/navigation/bottom_nav_bar.dart'; 
+import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -48,13 +48,13 @@ class LoginViewModel extends ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
-      
-    
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
-      
+
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
       switch (e.code) {
@@ -71,7 +71,8 @@ class LoginViewModel extends ChangeNotifier {
           _error = 'Bu hesap devre dışı bırakılmış';
           break;
         case 'too-many-requests':
-          _error = 'Çok fazla başarısız giriş denemesi. Lütfen daha sonra tekrar deneyin';
+          _error =
+              'Çok fazla başarısız giriş denemesi. Lütfen daha sonra tekrar deneyin';
           break;
         default:
           _error = 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin';

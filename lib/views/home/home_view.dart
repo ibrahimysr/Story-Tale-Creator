@@ -141,6 +141,7 @@ class HomeView extends StatelessWidget {
 
 Future<void> _handleStoryCreatorTap(BuildContext context, HomeViewModel viewModel) async {
   final canAccess = await viewModel.canAccessStoryCreator();
+   if (!context.mounted) return;
   if (canAccess) {
     _navigateToStoryCreator(context);
   } else {
@@ -164,7 +165,7 @@ void _showSubscriptionRequiredDialog(BuildContext context) {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: SpaceTheme.accentPurple.withOpacity(0.5),
+              color: SpaceTheme.accentPurple.withValues(alpha:  0.5),
               blurRadius: 10,
               spreadRadius: 2,
             ),
@@ -189,7 +190,7 @@ void _showSubscriptionRequiredDialog(BuildContext context) {
               child: Text(
                 'Günlük 2 hikaye oluşturma limitine ulaştınız. Daha fazla hikaye oluşturmak için lütfen abone olunuz.',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   fontSize: 16,
                 ),
                 textAlign: TextAlign.center,
@@ -204,7 +205,7 @@ void _showSubscriptionRequiredDialog(BuildContext context) {
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: SpaceTheme.primaryDark.withOpacity(0.8),
+                    backgroundColor: SpaceTheme.primaryDark.withValues(alpha:  0.8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

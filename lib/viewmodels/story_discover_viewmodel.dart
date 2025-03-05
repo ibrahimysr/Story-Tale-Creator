@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import '../model/story/story_library_model.dart';
 import '../repository/story_discover_repository.dart';
@@ -146,7 +148,7 @@ class StoryDiscoverViewModel extends ChangeNotifier {
           story.imageData = await _repository.loadImage(story.imageFileName!);
           if (_mounted) notifyListeners();
         } catch (e) {
-         
+         log('Failed to load image for story ${story.id}: $e');
         }
       }
     }

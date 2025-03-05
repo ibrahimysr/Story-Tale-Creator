@@ -22,7 +22,6 @@ class ImageService {
       request.fields['aspect_ratio'] = '1:1';
 
       var response = await request.send();
-
       var responseData = await response.stream.toBytes();
 
       if (response.statusCode != 200) {

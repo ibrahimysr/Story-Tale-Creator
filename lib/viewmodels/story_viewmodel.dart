@@ -15,8 +15,8 @@ class StoryViewModel extends ChangeNotifier {
   String? selectedEmotion;
   String? selectedEvent;
 
-  bool isLoading = false; // Hikaye oluşturma için yükleme durumu
-  bool _isLoadingCategories = true; // Yeni: Kategoriler için yükleme durumu
+  bool isLoading = false;
+  bool _isLoadingCategories = true;
   String? errorMessage;
   StoryModel? generatedStory;
   int _currentStep = 1;
@@ -32,7 +32,7 @@ class StoryViewModel extends ChangeNotifier {
   Map<String, String> eventTranslations = {};
 
   int get currentStep => _currentStep;
-  bool get isLoadingCategories => _isLoadingCategories; // Yeni getter
+  bool get isLoadingCategories => _isLoadingCategories;
 
   StoryViewModel({
     StoryService? storyService,
@@ -47,7 +47,7 @@ class StoryViewModel extends ChangeNotifier {
 
   Future<void> loadCategories() async {
     try {
-      _isLoadingCategories = true; // Kategoriler yüklenirken true
+      _isLoadingCategories = true;
       errorMessage = null;
       notifyListeners();
 
@@ -61,11 +61,11 @@ class StoryViewModel extends ChangeNotifier {
       characterTranslations = await _optionsService.getCharacterTranslations();
       eventTranslations = await _optionsService.getEventTranslations();
 
-      _isLoadingCategories = false; // Yükleme bitince false
+      _isLoadingCategories = false;
       notifyListeners();
     } catch (e) {
       _isLoadingCategories = false;
-      errorMessage = e.toString();
+      errorMessage = 'Kategoriler yüklenirken bir hata oluştu: $e';
       notifyListeners();
     }
   }
@@ -122,7 +122,7 @@ class StoryViewModel extends ChangeNotifier {
 
   Future<void> generateStory() async {
     if (!canGenerateStory) {
-      errorMessage = 'Lütfen tüm seçimleri yapın';
+      errorMessage = 'Lütfen tüm seçimleri yapın.';
       notifyListeners();
       return;
     }
@@ -157,7 +157,19 @@ class StoryViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       isLoading = false;
-      errorMessage = e.toString();
+      String error = e.toString().replaceFirst('Exception: ', '');
+      
+      if (error.contains('Görsel oluşturulamadı')) {
+        errorMessage = '$error\nBu sorunun çözümü için destek ekibinden yardım alabilirsiniz.';
+      } else if (error.contains('Çok fazla istek')) {
+        errorMessage = error; 
+      } else if (error.contains('API anahtarı geçersiz')) {
+        errorMessage = error; 
+      } else if (error.contains('Hikaye oluşturulamadı')) {
+        errorMessage = error; 
+      } else {
+        errorMessage = 'Hikaye veya görsel oluşturulurken bir hata oluştu: $error\nLütfen tekrar deneyin veya destek ekibinden yardım alın.';
+      }
       notifyListeners();
     }
   }
