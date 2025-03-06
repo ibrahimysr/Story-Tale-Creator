@@ -12,53 +12,149 @@ class StoryPreviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
-      value: context.read<StoryViewModel>(), // Mevcut StoryViewModel’i kullan
+      value: context.read<StoryViewModel>(),
       child: Consumer<StoryViewModel>(
         builder: (context, viewModel, child) {
-          return Scaffold(
-            extendBody: true,
-            backgroundColor: SpaceTheme.primaryDark,
-            appBar: AppBar(
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Text(
-                'Hikayeni Önizle',
-                style: SpaceTheme.titleStyle.copyWith(fontSize: 24),
+          return WillPopScope(
+            onWillPop: () async {
+              if (viewModel.isLoading) {
+                // Loading durumundayken dialog göster
+                final shouldCancel = await showDialog<bool>(
+                  context: context,
+                  barrierDismissible: false, // Dışarı tıklayınca kapanmasın
+                  builder: (context) => AlertDialog(
+                    backgroundColor: SpaceTheme.primaryDark,
+                    title: Text(
+                      'İptal Etmek İstiyor musunuz?',
+                      style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
+                    ),
+                    content: Text(
+                      'Hikaye oluşturma işlemi devam ediyor. İptal etmek istediğinize emin misiniz?',
+                      style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false), // Hayır
+                        child: Text(
+                          'Hayır',
+                          style: TextStyle(color: SpaceTheme.accentGold),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true), // Evet
+                        child: Text(
+                          'Evet',
+                          style: TextStyle(color: SpaceTheme.accentPurple),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                // Dialog sonucu null olabilir (örneğin dışarı tıklanırsa), bunu da kontrol et
+                if (shouldCancel == true) {
+                  viewModel.cancelStoryGeneration(); // İsteği iptal et
+                  return true; // Geri dön
+                }
+                return false; // Geri dönme
+              }
+              // Loading değilse her zaman geri dön
+              return true;
+            },
+            child: Scaffold(
+              extendBody: true,
+              backgroundColor: SpaceTheme.primaryDark,
+              appBar: AppBar(
+                centerTitle: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Text(
+                  'Hikayeni Önizle',
+                  style: SpaceTheme.titleStyle.copyWith(fontSize: 24),
+                ),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () {
+                    if (!viewModel.isLoading) {
+                      Navigator.pop(context);
+                    } else {
+                      // Loading sırasında geri tuşuna basıldığında da dialog’u tetikle
+                      _showCancelDialog(context, viewModel);
+                    }
+                  },
+                ),
               ),
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-            body: Container(
-              decoration: BoxDecoration(gradient: SpaceTheme.mainGradient),
-              child: Stack(
-                children: [
-                  const Positioned.fill(child: StarryBackground()),
-                  SafeArea(
-                    child: Padding(
-                      padding: context.paddingNormal,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: context.getDynamicHeight(3)),
-                          _buildPreviewHeader(context),
-                          SizedBox(height: context.getDynamicHeight(3)),
-                          _buildSelections(viewModel, context),
-                          SizedBox(height: context.getDynamicHeight(3)),
-                          _buildCreateButton(viewModel, context),
-                        ],
+              body: Container(
+                decoration: BoxDecoration(gradient: SpaceTheme.mainGradient),
+                child: Stack(
+                  children: [
+                    const Positioned.fill(child: StarryBackground()),
+                    SafeArea(
+                      child: Padding(
+                        padding: context.paddingNormal,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: context.getDynamicHeight(3)),
+                            _buildPreviewHeader(context),
+                            SizedBox(height: context.getDynamicHeight(3)),
+                            _buildSelections(viewModel, context),
+                            SizedBox(height: context.getDynamicHeight(3)),
+                            _buildCreateButton(viewModel, context),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
         },
       ),
     );
+  }
+
+  // Dialog’u ayrı bir metoda taşıdım ki AppBar’daki geri tuşu da kullanabilsin
+  Future<void> _showCancelDialog(BuildContext context, StoryViewModel viewModel) async {
+    final shouldCancel = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: SpaceTheme.primaryDark,
+        title: Text(
+          'İptal Etmek İstiyor musunuz?',
+          style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
+        ),
+        content: Text(
+          'Hikaye oluşturma işlemi devam ediyor. İptal etmek istediğinize emin misiniz?',
+          style: TextStyle(color: Colors.white.withOpacity(0.8)),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // Hayır
+            child: Text(
+              'Hayır',
+              style: TextStyle(color: SpaceTheme.accentGold),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true), // Evet
+            child: Text(
+              'Evet',
+              style: TextStyle(color: SpaceTheme.accentPurple),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldCancel == true) {
+      viewModel.cancelStoryGeneration();
+      if (context.mounted) {
+        Navigator.pop(context); // Geri dön
+      }
+    }
   }
 
   Widget _buildPreviewHeader(BuildContext context) {
@@ -85,7 +181,7 @@ class StoryPreviewView extends StatelessWidget {
         Text(
           'Seçtiklerinle galaktik bir hikaye oluşturmaya hazır mısın?',
           style: TextStyle(
-            color: Colors.white.withValues(alpha:0.8),
+            color: Colors.white.withValues(alpha: 0.8),
             fontSize: 16,
           ),
           textAlign: TextAlign.center,
@@ -96,11 +192,11 @@ class StoryPreviewView extends StatelessWidget {
 
   Widget _buildSelections(StoryViewModel viewModel, BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: SpaceTheme.primaryDark.withValues(alpha:0.3),
+        color: SpaceTheme.primaryDark.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: SpaceTheme.accentPurple.withValues(alpha:0.5)),
+        border: Border.all(color: SpaceTheme.accentPurple.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +221,7 @@ class StoryPreviewView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w500,
@@ -133,7 +229,7 @@ class StoryPreviewView extends StatelessWidget {
         ),
         Text(
           value,
-          style: TextStyle(
+          style: const TextStyle(
             color: SpaceTheme.accentGold,
             fontSize: 18,
           ),
@@ -144,7 +240,7 @@ class StoryPreviewView extends StatelessWidget {
 
   Widget _buildCreateButton(StoryViewModel viewModel, BuildContext context) {
     return viewModel.isLoading
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(
               color: SpaceTheme.accentPurple,
             ),
@@ -171,7 +267,7 @@ class StoryPreviewView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
               elevation: 5,
-              shadowColor: SpaceTheme.accentPurple.withValues(alpha:0.5),
+              shadowColor: SpaceTheme.accentPurple.withValues(alpha: 0.5),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -181,10 +277,10 @@ class StoryPreviewView extends StatelessWidget {
                   color: SpaceTheme.accentGold,
                   size: 24,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Hikayemi Oluştur!',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

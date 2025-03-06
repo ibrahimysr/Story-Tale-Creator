@@ -17,6 +17,7 @@ class StoryViewModel extends ChangeNotifier {
 
   bool isLoading = false;
   bool _isLoadingCategories = true;
+  bool _isCancelled = false; // İptal flag’i
   String? errorMessage;
   StoryModel? generatedStory;
   int _currentStep = 1;
@@ -33,6 +34,7 @@ class StoryViewModel extends ChangeNotifier {
 
   int get currentStep => _currentStep;
   bool get isLoadingCategories => _isLoadingCategories;
+  bool get isCancelled => _isCancelled;
 
   StoryViewModel({
     StoryService? storyService,
@@ -80,6 +82,7 @@ class StoryViewModel extends ChangeNotifier {
     errorMessage = null;
     isLoading = false;
     _currentStep = 1;
+    _isCancelled = false; // İptal flag’ini de sıfırla
     notifyListeners();
   }
 
@@ -129,6 +132,7 @@ class StoryViewModel extends ChangeNotifier {
 
     try {
       isLoading = true;
+      _isCancelled = false; // Yeni işlemde iptal durumunu sıfırla
       errorMessage = null;
       notifyListeners();
 
@@ -140,12 +144,16 @@ class StoryViewModel extends ChangeNotifier {
         event: selectedEvent!,
       );
 
+      if (_isCancelled) return; // İptal edildiyse devam etme
+
       final image = await _imageService.generateImage(
         place: placeTranslations[selectedPlace!] ?? selectedPlace!,
         character: characterTranslations[selectedCharacter!] ?? selectedCharacter!,
         event: eventTranslations[selectedEvent!] ?? selectedEvent!,
         title: story.title,
       );
+
+      if (_isCancelled) return; // İptal edildiyse devam etme
 
       generatedStory = StoryModel(
         title: story.title,
@@ -156,22 +164,29 @@ class StoryViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     } catch (e) {
+      if (_isCancelled) return; // İptal edildiyse hata mesajı verme
       isLoading = false;
       String error = e.toString().replaceFirst('Exception: ', '');
-      
+
       if (error.contains('Görsel oluşturulamadı')) {
         errorMessage = '$error\nBu sorunun çözümü için destek ekibinden yardım alabilirsiniz.';
       } else if (error.contains('Çok fazla istek')) {
-        errorMessage = error; 
+        errorMessage = error;
       } else if (error.contains('API anahtarı geçersiz')) {
-        errorMessage = error; 
+        errorMessage = error;
       } else if (error.contains('Hikaye oluşturulamadı')) {
-        errorMessage = error; 
+        errorMessage = error;
       } else {
         errorMessage = 'Hikaye veya görsel oluşturulurken bir hata oluştu: $error\nLütfen tekrar deneyin veya destek ekibinden yardım alın.';
       }
       notifyListeners();
     }
+  }
+
+  void cancelStoryGeneration() {
+    _isCancelled = true;
+    isLoading = false;
+    notifyListeners();
   }
 
   void reset() {
@@ -183,6 +198,7 @@ class StoryViewModel extends ChangeNotifier {
     generatedStory = null;
     errorMessage = null;
     isLoading = false;
+    _isCancelled = false; // Reset sırasında da sıfırla
     notifyListeners();
   }
 }

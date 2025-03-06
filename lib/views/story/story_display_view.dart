@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import '../../core/theme/space_theme.dart';
@@ -64,7 +65,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
                             ]
                           : [
                               viewModel.dominantColor,
-                              viewModel.dominantColor.withValues(alpha:0.7),
+                              viewModel.dominantColor.withValues(alpha: 0.7),
                             ],
                     ),
                   ),
@@ -100,7 +101,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
 
   Widget _buildBackgroundElements(StoryDisplayViewModel viewModel) {
     if (viewModel.colorPalette.isEmpty) return const SizedBox.shrink();
-    
+
     return Stack(
       children: viewModel.colorPalette.take(3).map((color) {
         return Positioned(
@@ -111,10 +112,10 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
             height: 200,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withValues(alpha:0.3),
+              color: color.withValues(alpha: 0.3),
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha:0.2),
+                  color: color.withValues(alpha: 0.2),
                   blurRadius: 50,
                   spreadRadius: 20,
                 ),
@@ -128,7 +129,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
 
   Widget _buildNavigationControls(StoryDisplayViewModel viewModel) {
     final pages = _splitIntoPages(widget.story);
-    
+
     return Positioned(
       bottom: 20,
       left: 0,
@@ -140,18 +141,18 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
             icon: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha:0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 Icons.arrow_back,
-                color: currentPage > 0 
-                    ? viewModel.textColor 
-                    : viewModel.textColor.withValues(alpha:0.3),
+                color: currentPage > 0
+                    ? viewModel.textColor
+                    : viewModel.textColor.withValues(alpha: 0.3),
                 size: 20,
               ),
             ),
-            onPressed: currentPage > 0 
+            onPressed: currentPage > 0
                 ? () => liquidController.jumpToPage(page: currentPage - 1)
                 : null,
           ),
@@ -167,18 +168,18 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
             icon: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha:0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 Icons.arrow_forward,
-                color: currentPage < pages.length - 1 
-                    ? viewModel.textColor 
-                    : viewModel.textColor.withValues(alpha:0.3),
+                color: currentPage < pages.length - 1
+                    ? viewModel.textColor
+                    : viewModel.textColor.withValues(alpha: 0.3),
                 size: 20,
               ),
             ),
-            onPressed: currentPage < pages.length - 1 
+            onPressed: currentPage < pages.length - 1
                 ? () => liquidController.jumpToPage(page: currentPage + 1)
                 : null,
           ),
@@ -188,12 +189,21 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
   }
 
   List<String> _splitIntoPages(String story) {
-    final paragraphs = story.split('\n\n').where((p) => p.trim().isNotEmpty).toList();
+    final paragraphs =
+        story.split('\n\n').where((p) => p.trim().isNotEmpty).toList();
     return paragraphs;
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, StoryDisplayViewModel viewModel) {
+  PreferredSizeWidget _buildAppBar(
+      BuildContext context, StoryDisplayViewModel viewModel) {
     return AppBar(
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => MainScreen()));
+        },
+      ),
       centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -212,8 +222,8 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: viewModel.colorPalette.isNotEmpty
-                    ? viewModel.colorPalette[0].withValues(alpha:0.3)
-                    : Colors.white.withValues(alpha:0.1),
+                    ? viewModel.colorPalette[0].withValues(alpha: 0.3)
+                    : Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: viewModel.isLoading
@@ -239,22 +249,50 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
     );
   }
 
- Future<void> _saveStory(BuildContext context, StoryDisplayViewModel viewModel) async {
-  try {
-    final storyModel = StoryDisplayModel(
-      story: widget.story,
-      title: widget.title,
-      image: widget.image,
-    );
-    final success = await viewModel.saveStory(storyModel, context: context);
-    
-    if (success && context.mounted) {
+  Future<void> _saveStory(
+      BuildContext context, StoryDisplayViewModel viewModel) async {
+    try {
+      final storyModel = StoryDisplayModel(
+        story: widget.story,
+        title: widget.title,
+        image: widget.image,
+      );
+      final success = await viewModel.saveStory(storyModel, context: context);
+
+      if (success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(
+                'Hikaye kütüphanenize kaydedildi! ✨',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: viewModel.textColor,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            backgroundColor: viewModel.colorPalette.isNotEmpty
+                ? viewModel.colorPalette[0].withValues(alpha: 0.8)
+                : SpaceTheme.accentPurple.withValues(alpha: 0.8),
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
-              'Hikaye kütüphanenize kaydedildi! ✨',
+              'Bir hata oluştu: ${e.toString()}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: viewModel.textColor,
@@ -262,10 +300,8 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
               ),
             ),
           ),
-          backgroundColor: viewModel.colorPalette.isNotEmpty
-              ? viewModel.colorPalette[0].withValues(alpha:0.8)
-              : SpaceTheme.accentPurple.withValues(alpha:0.8),
-          duration: const Duration(seconds: 2),
+          backgroundColor: Colors.red.withValues(alpha: 0.8),
+          duration: const Duration(seconds: 3),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -273,30 +309,5 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
         ),
       );
     }
-  } catch (e) {
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text(
-            'Bir hata oluştu: ${e.toString()}',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: viewModel.textColor,
-              fontSize: 16,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.red.withValues(alpha:0.8),
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-    );
   }
-}
 }
