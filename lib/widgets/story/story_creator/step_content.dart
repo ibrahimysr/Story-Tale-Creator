@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:masal/viewmodels/story_viewmodel.dart';
 import 'package:masal/widgets/common/selector_card.dart';
 import 'package:masal/core/theme/space_theme.dart';
-import 'package:masal/widgets/story/story_creator/final_step_button.dart';
 import 'package:masal/widgets/story/story_creator/step_title.dart';
+import 'package:masal/views/story/story_preview_view.dart'; // Yeni import
 
 class StepContent extends StatelessWidget {
   final StoryViewModel viewModel;
@@ -122,10 +121,14 @@ class StepContent extends StatelessWidget {
               color: SpaceTheme.accentPurple,
               options: viewModel.events,
               selectedValue: viewModel.selectedEvent,
-              onChanged: (value) => viewModel.updateSelection(event: value),
+              onChanged: (value) {
+                viewModel.updateSelection(event: value);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StoryPreviewView()),
+                );
+                            },
             ),
-            const SizedBox(height: 20),
-            FinalStepButton(viewModel: viewModel),
           ],
         );
       default:

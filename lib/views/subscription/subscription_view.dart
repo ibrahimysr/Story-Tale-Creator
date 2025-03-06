@@ -75,7 +75,7 @@ class SubscriptionView extends StatelessWidget {
         Text(
           'Uzaycık Masalları ile sınırsız masal yarat, yıldızlarla dolu bir dünyaya katıl!',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha:0.8),
             fontSize: 16,
           ),
           textAlign: TextAlign.center,
@@ -146,7 +146,7 @@ class SubscriptionView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         elevation: 5,
-        shadowColor: SpaceTheme.accentPurple.withOpacity(0.5),
+        shadowColor: SpaceTheme.accentPurple.withValues(alpha:0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:masal/core/theme/space_theme.dart'; // Tema renklerinden ilham alabiliriz (opsiyonel)
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

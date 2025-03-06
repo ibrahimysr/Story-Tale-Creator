@@ -4,11 +4,13 @@ import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/reset_password_viewmodel.dart';
 import 'package:provider/provider.dart';
-import 'package:masal/views/auth/login_view.dart'; // LoginView import et
+import 'package:masal/views/auth/login_view.dart'; 
 
 class PasswordResetScreen extends StatefulWidget {
+  const PasswordResetScreen({super.key});
+
   @override
-  _PasswordResetScreenState createState() => _PasswordResetScreenState();
+  State<PasswordResetScreen> createState() => _PasswordResetScreenState();
 }
 
 class _PasswordResetScreenState extends State<PasswordResetScreen> {
@@ -108,7 +110,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
         Text(
           'E-posta adresini gir, uzay maceralarına geri dön!',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha:0.8),
             fontSize: 16,
           ),
           textAlign: TextAlign.center,
@@ -123,18 +125,18 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       onChanged: (value) => viewModel.updateEmail(value),
       decoration: InputDecoration(
         labelText: 'E-posta Adresi',
-        labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
+        labelStyle: TextStyle(color: Colors.white.withValues(alpha:0.8)),
         hintText: 'örneğin: uzayci@masal.com',
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+        hintStyle: TextStyle(color: Colors.white.withValues(alpha:0.6)),
         prefixIcon: Icon(
           Icons.email_outlined,
           color: SpaceTheme.accentPurple,
         ),
         filled: true,
-        fillColor: SpaceTheme.primaryDark.withOpacity(0.3),
+        fillColor: SpaceTheme.primaryDark.withValues(alpha:0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: SpaceTheme.accentPurple.withOpacity(0.5)),
+          borderSide: BorderSide(color: SpaceTheme.accentPurple.withValues(alpha:0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
@@ -160,7 +162,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
               elevation: 5,
-              shadowColor: SpaceTheme.accentPurple.withOpacity(0.5),
+              shadowColor: SpaceTheme.accentPurple.withValues(alpha:0.5),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
