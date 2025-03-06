@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Kayıt işlemi
   Future<User?> registerWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
@@ -18,7 +17,6 @@ class FirebaseAuthService {
     }
   }
 
-  // Giriş işlemi
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -33,7 +31,6 @@ class FirebaseAuthService {
     }
   }
 
-  // Şifre sıfırlama
   Future<void> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
@@ -44,7 +41,6 @@ class FirebaseAuthService {
     }
   }
 
-  // Genel hata işleme
   Exception _handleFirebaseAuthException(FirebaseAuthException e,
       {bool isRegistration = false, bool isReset = false}) {
     String baseMessage = e.message ?? 'Bilinmeyen bir hata oluştu';
@@ -90,7 +86,6 @@ class FirebaseAuthService {
     }
   }
 
-  // Yerelleştirilmiş hata mesajları
   String _getLocalizedErrorMessage(String message) {
     if (message.contains('network error')) {
       return 'İnternet bağlantını kontrol et, uzay sinyalin zayıf olabilir!';
@@ -107,7 +102,6 @@ class FirebaseAuthService {
     return message;
   }
 
-  // Kullanıcı çıkış yapma
   Future<void> signOut() async {
     try {
       await _auth.signOut();
@@ -116,6 +110,5 @@ class FirebaseAuthService {
     }
   }
 
-  // Mevcut kullanıcıyı kontrol etme
   User? get currentUser => _auth.currentUser;
 }

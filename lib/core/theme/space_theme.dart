@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SpaceTheme {
-  static const Color primaryDark = Color(0xFF1A0B2E); // Derin gece mavisi
-  static const Color primaryLight = Color(0xFF2C1854); // Mistik mor
-  static const Color accentPurple = Color(0xFF9C27B0); // Büyülü mor
-  static const Color accentBlue = Color(0xFF0288D1); // Büyü mavisi
-  static const Color accentGold = Color(0xFFFFD700); // Sihirli altın
-  static const Color accentEmerald = Color(0xFF00BFA5); // Mistik zümrüt
-  static const Color accentPink = Color(0xFFE91E63); // Büyülü pembe
-  static const Color accentTurquoise = Color(0xFF00BCD4); // Mistik turkuaz
+  static const Color primaryDark = Color(0xFF1A0B2E); 
+  static const Color primaryLight = Color(0xFF2C1854); 
+  static const Color accentPurple = Color(0xFF9C27B0); 
+  static const Color accentBlue = Color(0xFF0288D1); 
+  static const Color accentGold = Color(0xFFFFD700); 
+  static const Color accentEmerald = Color(0xFF00BFA5); 
+  static const Color accentPink = Color(0xFFE91E63); 
+  static const Color accentTurquoise = Color(0xFF00BCD4); 
 
   static LinearGradient get mainGradient => const LinearGradient(
         begin: Alignment.topLeft,

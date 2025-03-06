@@ -15,13 +15,14 @@ class StoryPreviewView extends StatelessWidget {
       value: context.read<StoryViewModel>(),
       child: Consumer<StoryViewModel>(
         builder: (context, viewModel, child) {
-          return WillPopScope(
-            onWillPop: () async {
+          return PopScope(
+            canPop: !viewModel.isLoading,
+            onPopInvokedWithResult: (didPop, result) async {
+              if (didPop) return; 
               if (viewModel.isLoading) {
-                // Loading durumundayken dialog göster
                 final shouldCancel = await showDialog<bool>(
                   context: context,
-                  barrierDismissible: false, // Dışarı tıklayınca kapanmasın
+                  barrierDismissible: false,
                   builder: (context) => AlertDialog(
                     backgroundColor: SpaceTheme.primaryDark,
                     title: Text(
@@ -30,18 +31,18 @@ class StoryPreviewView extends StatelessWidget {
                     ),
                     content: Text(
                       'Hikaye oluşturma işlemi devam ediyor. İptal etmek istediğinize emin misiniz?',
-                      style: TextStyle(color: Colors.white.withValues(alpha:  0.8)),
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context, false), 
+                        onPressed: () => Navigator.pop(context, false),
                         child: Text(
                           'Hayır',
                           style: TextStyle(color: SpaceTheme.accentGold),
                         ),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.pop(context, true), 
+                        onPressed: () => Navigator.pop(context, true),
                         child: Text(
                           'Evet',
                           style: TextStyle(color: SpaceTheme.accentPurple),
@@ -52,12 +53,12 @@ class StoryPreviewView extends StatelessWidget {
                 );
 
                 if (shouldCancel == true) {
-                  viewModel.cancelStoryGeneration(); 
-                  return true; 
+                  viewModel.cancelStoryGeneration();
+                  if (context.mounted) {
+                    Navigator.pop(context); 
+                  }
                 }
-                return false; 
               }
-              return true;
             },
             child: Scaffold(
               extendBody: true,
@@ -76,7 +77,6 @@ class StoryPreviewView extends StatelessWidget {
                     if (!viewModel.isLoading) {
                       Navigator.pop(context);
                     } else {
-                      // Loading sırasında geri tuşuna basıldığında da dialog’u tetikle
                       _showCancelDialog(context, viewModel);
                     }
                   },
@@ -112,8 +112,6 @@ class StoryPreviewView extends StatelessWidget {
       ),
     );
   }
-
-  // Dialog’u ayrı bir metoda taşıdım ki AppBar’daki geri tuşu da kullanabilsin
   Future<void> _showCancelDialog(BuildContext context, StoryViewModel viewModel) async {
     final shouldCancel = await showDialog<bool>(
       context: context,
@@ -130,14 +128,14 @@ class StoryPreviewView extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false), 
+            onPressed: () => Navigator.pop(context, false),
             child: Text(
               'Hayır',
               style: TextStyle(color: SpaceTheme.accentGold),
             ),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true), 
+            onPressed: () => Navigator.pop(context, true),
             child: Text(
               'Evet',
               style: TextStyle(color: SpaceTheme.accentPurple),
@@ -150,7 +148,7 @@ class StoryPreviewView extends StatelessWidget {
     if (shouldCancel == true) {
       viewModel.cancelStoryGeneration();
       if (context.mounted) {
-        Navigator.pop(context); 
+        Navigator.pop(context);
       }
     }
   }
@@ -225,11 +223,17 @@ class StoryPreviewView extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        Text(
-          value,
-          style: const TextStyle(
-            color: SpaceTheme.accentGold,
-            fontSize: 18,
+        const SizedBox(width: 8), 
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              color: SpaceTheme.accentGold,
+              fontSize: 18,
+            ),
+            textAlign: TextAlign.end, 
+            overflow: TextOverflow.ellipsis, 
+            maxLines: 2,
           ),
         ),
       ],

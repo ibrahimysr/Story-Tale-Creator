@@ -17,7 +17,7 @@ class StoryViewModel extends ChangeNotifier {
 
   bool isLoading = false;
   bool _isLoadingCategories = true;
-  bool _isCancelled = false; // İptal flag’i
+  bool _isCancelled = false; 
   String? errorMessage;
   StoryModel? generatedStory;
   int _currentStep = 1;
@@ -82,7 +82,7 @@ class StoryViewModel extends ChangeNotifier {
     errorMessage = null;
     isLoading = false;
     _currentStep = 1;
-    _isCancelled = false; // İptal flag’ini de sıfırla
+    _isCancelled = false; 
     notifyListeners();
   }
 
@@ -132,7 +132,7 @@ class StoryViewModel extends ChangeNotifier {
 
     try {
       isLoading = true;
-      _isCancelled = false; // Yeni işlemde iptal durumunu sıfırla
+      _isCancelled = false; 
       errorMessage = null;
       notifyListeners();
 
@@ -144,7 +144,7 @@ class StoryViewModel extends ChangeNotifier {
         event: selectedEvent!,
       );
 
-      if (_isCancelled) return; // İptal edildiyse devam etme
+      if (_isCancelled) return; 
 
       final image = await _imageService.generateImage(
         place: placeTranslations[selectedPlace!] ?? selectedPlace!,
@@ -153,7 +153,7 @@ class StoryViewModel extends ChangeNotifier {
         title: story.title,
       );
 
-      if (_isCancelled) return; // İptal edildiyse devam etme
+      if (_isCancelled) return; 
 
       generatedStory = StoryModel(
         title: story.title,
@@ -164,7 +164,7 @@ class StoryViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     } catch (e) {
-      if (_isCancelled) return; // İptal edildiyse hata mesajı verme
+      if (_isCancelled) return; 
       isLoading = false;
       String error = e.toString().replaceFirst('Exception: ', '');
 
@@ -198,7 +198,7 @@ class StoryViewModel extends ChangeNotifier {
     generatedStory = null;
     errorMessage = null;
     isLoading = false;
-    _isCancelled = false; // Reset sırasında da sıfırla
+    _isCancelled = false; 
     notifyListeners();
   }
 }

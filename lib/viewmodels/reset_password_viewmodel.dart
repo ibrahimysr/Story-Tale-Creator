@@ -37,7 +37,7 @@ class PasswordResetViewModel extends ChangeNotifier {
       await _authService.resetPassword(_email!);
       _successMessage = 'Şifre sıfırlama bağlantısı e-postanıza gönderildi!';
       _errorMessage = null;
-      _shouldNavigateToLogin = true; // Yönlendirme için flag’i true yap
+      _shouldNavigateToLogin = true; 
     } on Exception catch (e) {
       _errorMessage = e.toString();
       _successMessage = null;
@@ -48,7 +48,6 @@ class PasswordResetViewModel extends ChangeNotifier {
     }
   }
 
-  // Yönlendirme sonrası flag’i sıfırlamak için
   void resetNavigation() {
     _shouldNavigateToLogin = false;
     notifyListeners();

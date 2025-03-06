@@ -184,7 +184,6 @@ class HomeView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Başlık
               Text(
                 'Günlük Limit Aşıldı',
                 style: SpaceTheme.titleStyle.copyWith(

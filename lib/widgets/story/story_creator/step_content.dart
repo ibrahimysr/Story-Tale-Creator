@@ -3,7 +3,7 @@ import 'package:masal/viewmodels/story_viewmodel.dart';
 import 'package:masal/widgets/common/selector_card.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/widgets/story/story_creator/step_title.dart';
-import 'package:masal/views/story/story_preview_view.dart'; // Yeni import
+import 'package:masal/views/story/story_preview_view.dart'; 
 
 class StepContent extends StatelessWidget {
   final StoryViewModel viewModel;
