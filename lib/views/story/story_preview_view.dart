@@ -30,18 +30,18 @@ class StoryPreviewView extends StatelessWidget {
                     ),
                     content: Text(
                       'Hikaye oluşturma işlemi devam ediyor. İptal etmek istediğinize emin misiniz?',
-                      style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                      style: TextStyle(color: Colors.white.withValues(alpha:  0.8)),
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context, false), // Hayır
+                        onPressed: () => Navigator.pop(context, false), 
                         child: Text(
                           'Hayır',
                           style: TextStyle(color: SpaceTheme.accentGold),
                         ),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.pop(context, true), // Evet
+                        onPressed: () => Navigator.pop(context, true), 
                         child: Text(
                           'Evet',
                           style: TextStyle(color: SpaceTheme.accentPurple),
@@ -51,14 +51,12 @@ class StoryPreviewView extends StatelessWidget {
                   ),
                 );
 
-                // Dialog sonucu null olabilir (örneğin dışarı tıklanırsa), bunu da kontrol et
                 if (shouldCancel == true) {
-                  viewModel.cancelStoryGeneration(); // İsteği iptal et
-                  return true; // Geri dön
+                  viewModel.cancelStoryGeneration(); 
+                  return true; 
                 }
-                return false; // Geri dönme
+                return false; 
               }
-              // Loading değilse her zaman geri dön
               return true;
             },
             child: Scaffold(
@@ -132,14 +130,14 @@ class StoryPreviewView extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false), // Hayır
+            onPressed: () => Navigator.pop(context, false), 
             child: Text(
               'Hayır',
               style: TextStyle(color: SpaceTheme.accentGold),
             ),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true), // Evet
+            onPressed: () => Navigator.pop(context, true), 
             child: Text(
               'Evet',
               style: TextStyle(color: SpaceTheme.accentPurple),
@@ -152,7 +150,7 @@ class StoryPreviewView extends StatelessWidget {
     if (shouldCancel == true) {
       viewModel.cancelStoryGeneration();
       if (context.mounted) {
-        Navigator.pop(context); // Geri dön
+        Navigator.pop(context); 
       }
     }
   }

@@ -3,7 +3,6 @@ import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
-import 'package:masal/widgets/story/story_creator/back_button.dart';
 import 'package:masal/widgets/story/story_creator/progress_bar.dart';
 import 'package:masal/widgets/story/story_creator/step_content.dart';
 import 'package:provider/provider.dart';
@@ -53,12 +52,24 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
       extendBody: true,
       backgroundColor: SpaceTheme.primaryDark,
       appBar: AppBar(
+        leadingWidth: 70,
+        
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           'Galaktik Hikaye Yaratıcısı',
           style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
+        ),
+        leading: Consumer<StoryViewModel>(
+          builder: (context, viewModel, child) {
+            return viewModel.currentStep > 1
+                ? IconButton(
+              icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 24),
+              onPressed: () => viewModel.goToPreviousStep(),
+            )
+                : const SizedBox.shrink();
+          },
         ),
       ),
       body: Container(
@@ -108,9 +119,6 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 StepContent(viewModel: viewModel),
-                                SizedBox(height: context.getDynamicHeight(2)),
-                                if (viewModel.currentStep > 1)
-                                  Center(child: CreatorBackButton(viewModel: viewModel)),
                                 SizedBox(height: context.getDynamicHeight(2)),
                                 if (viewModel.isLoading)
                                   Center(
