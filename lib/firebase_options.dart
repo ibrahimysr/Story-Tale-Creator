@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '738778424613',
     projectId: 'masal-hikaye',
     storageBucket: 'masal-hikaye.firebasestorage.app',
-    iosBundleId: 'com.example.masal',
+    iosBundleId: 'com.temizlikcin.masal',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '738778424613',
     projectId: 'masal-hikaye',
     storageBucket: 'masal-hikaye.firebasestorage.app',
-    iosBundleId: 'com.example.masal',
+    iosBundleId: 'com.temizlikcin.masal',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

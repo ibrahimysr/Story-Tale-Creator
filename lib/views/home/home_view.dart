@@ -237,7 +237,7 @@ class HomeView extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SubscriptionView()));
+                              builder: (context) => PremiumPurchaseView()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: SpaceTheme.accentPurple,

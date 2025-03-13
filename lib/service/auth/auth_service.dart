@@ -41,8 +41,22 @@ class FirebaseAuthService {
     }
   }
 
+  Future<void> deleteAccount(String email, String password) async {
+    try {
+      UserCredential credential = await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+      await credential.user!.delete();
+    } on FirebaseAuthException catch (e) {
+      throw _handleFirebaseAuthException(e, isDelete: true);
+    } catch (e) {
+      throw Exception('Hesap silme sırasında beklenmeyen bir hata oluştu: $e');
+    }
+  }
+
   Exception _handleFirebaseAuthException(FirebaseAuthException e,
-      {bool isRegistration = false, bool isReset = false}) {
+      {bool isRegistration = false, bool isReset = false, bool isDelete = false}) {
     String baseMessage = e.message ?? 'Bilinmeyen bir hata oluştu';
     String localizedMessage = _getLocalizedErrorMessage(baseMessage);
 
@@ -61,7 +75,7 @@ class FirebaseAuthService {
             'E-posta/şifre ile kayıt şu anda galakside kapalı. Lütfen daha sonra dene.');
       case 'user-not-found':
         return Exception(
-            'Bu e-posta ile bir kaşif bulunamadı. Önce uzay limanında kaydol!');
+            'Bu e-posta ile bir kaşif bulunamadı. Lütfen doğru bilgilerini gir!');
       case 'wrong-password':
         return Exception(
             'Hatalı şifre! Lütfen yıldız şifreni kontrol et ve tekrar dene.');
@@ -80,6 +94,9 @@ class FirebaseAuthService {
       case 'timeout':
         return Exception(
             'İşlem yıldızlar arasında kayboldu! Lütfen tekrar dene.');
+      case 'requires-recent-login':
+        return Exception(
+            'Güvenlik için tekrar giriş yapman gerekiyor. Lütfen giriş yap ve tekrar dene.');
       default:
         return Exception(
             'Üzgünüz, bir galaktik hata oluştu: $localizedMessage. Lütfen daha sonra yıldızlara dön.');
