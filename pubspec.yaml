@@ -1,10 +1,10 @@
 name: masal
-description: "A new Flutter project."
+description: "Yeni Masallar Üretin ve Okuyun"
 
 publish_to: 'none' 
 
 
-version: 1.0.0+6
+version: 1.0.1+7
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
