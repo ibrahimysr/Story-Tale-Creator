@@ -3,6 +3,7 @@ import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/delete_account_viewmodel.dart';
+
 import 'package:provider/provider.dart';
 
 class DeleteAccountView extends StatefulWidget {
@@ -230,6 +231,39 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                                         fontSize: 16,
                                       ),
                                     ),
+                                  ),
+                                  SizedBox(height: context.getDynamicHeight(3)),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                         Navigator.pushNamed(context, '/privacy-policy');
+                                        },
+                                        child: Text(
+                                          'Gizlilik Politikası',
+                                          style: TextStyle(
+                                            color: SpaceTheme.accentGold,
+                                            fontSize: 16,
+                                            decoration: TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: context.getDynamicWidth(5)),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(context, '/support');
+                                        },
+                                        child: Text(
+                                          'Destek',
+                                          style: TextStyle(
+                                            color: SpaceTheme.accentGold,
+                                            fontSize: 16,
+                                            decoration: TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

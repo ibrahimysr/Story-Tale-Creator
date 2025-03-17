@@ -4,13 +4,11 @@ import '../../../core/theme/space_theme.dart';
 
 class ProfileActions extends StatelessWidget {
   final VoidCallback onEditProfile;
-  final VoidCallback onSettings;
   final VoidCallback onHelp;
 
   const ProfileActions({
     super.key,
     required this.onEditProfile,
-    required this.onSettings,
     required this.onHelp,
   });
 

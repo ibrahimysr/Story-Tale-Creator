@@ -7,9 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
-import 'package:collection/collection.dart'; // firstWhereOrNull için
+import 'package:collection/collection.dart';
 
-const String _premiumUnlock = 'com.your_company.masal.premium_unlock';
+const String _premiumUnlock = 'com.your_company.masal.premium_unlock'; 
 
 class PremiumPurchaseView extends StatefulWidget {
   const PremiumPurchaseView({super.key});
@@ -29,7 +29,7 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
   bool _purchasePending = false;
   bool _loading = true;
   bool _isPurchased = false;
-  String? _queryProductError;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -39,17 +39,18 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
   }
 
   void _initializePurchaseStream() {
-    final Stream<List<PurchaseDetails>> purchaseUpdated = _inAppPurchase.purchaseStream;
+    final purchaseUpdated = _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen(
       _listenToPurchaseUpdated,
       onDone: () => _subscription?.cancel(),
       onError: (error) {
-        _showSnackBar('Satın alma akışında bir hata oluştu: $error', Colors.red);
+        _showSnackBar('Satın alma akışında bir hata oluştu.', Colors.red);
       },
     );
   }
 
   Future<void> _initStoreAndPurchaseStatus() async {
+    setState(() => _loading = true);
     try {
       await _checkPurchaseStatus();
 
@@ -57,17 +58,17 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
       if (!isAvailable) {
         setState(() {
           _isAvailable = false;
+          _errorMessage = 'Mağaza bağlantısı kurulamadı. Lütfen internetinizi kontrol edin.';
           _loading = false;
         });
-        _showSnackBar('Mağaza bağlantısı kurulamadı. Lütfen tekrar deneyin.', Colors.red);
         return;
       }
 
       final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails({_premiumUnlock});
-      if (response.error != null) {
+      if (response.error != null || response.productDetails.isEmpty) {
         setState(() {
-          _queryProductError = 'Ürünler yüklenirken bir hata oluştu.';
           _isAvailable = isAvailable;
+          _errorMessage = 'Ürün bilgileri alınamadı. Lütfen daha sonra tekrar deneyin.';
           _products = response.productDetails;
           _loading = false;
         });
@@ -77,28 +78,33 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
       setState(() {
         _isAvailable = isAvailable;
         _products = response.productDetails;
+        _errorMessage = null;
         _loading = false;
       });
     } catch (e) {
       setState(() {
-        _queryProductError = 'Mağaza başlatılırken bir hata oluştu.';
+        _errorMessage = 'Bağlantı hatası oluştu. Lütfen internetinizi kontrol edin.';
         _loading = false;
       });
-      _showSnackBar('Mağaza başlatılamadı. Lütfen tekrar deneyin.', Colors.red);
     }
   }
 
   Future<void> _checkPurchaseStatus() async {
     try {
-      User? currentUser = _auth.currentUser;
-      if (currentUser != null) {
-        DocumentSnapshot userDoc = await _firestore.collection('users').doc(currentUser.uid).get();
-        setState(() {
-          _isPurchased = userDoc.exists && userDoc.data() != null && userDoc['subscribed'] == true;
-        });
+      final User? currentUser = _auth.currentUser;
+      if (currentUser == null) {
+        setState(() => _isPurchased = false);
+        return;
       }
+      final DocumentSnapshot userDoc = await _firestore.collection('users').doc(currentUser.uid).get();
+      setState(() {
+        _isPurchased = userDoc.exists && userDoc['subscribed'] == true;
+      });
     } catch (e) {
-      print('Satın alma durumu kontrol edilirken hata: $e');
+      setState(() {
+        _errorMessage = 'Satın alma durumu kontrol edilemedi.';
+        _isPurchased = false; 
+      });
     }
   }
 
@@ -131,13 +137,14 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
 
   Future<void> _deliverProduct(PurchaseDetails purchaseDetails) async {
     try {
-      User? currentUser = _auth.currentUser;
+      final User? currentUser = _auth.currentUser;
       if (currentUser == null) {
-        throw Exception('Kullanıcı oturum açmamış!');
+        setState(() => _purchasePending = false);
+        _showSnackBar('Satın alma için oturum açmanız gerekiyor.', Colors.red);
+        return;
       }
 
-      String userId = currentUser.uid;
-
+      final String userId = currentUser.uid;
       await _firestore.collection('users').doc(userId).set({
         'subscribed': true,
         'purchaseDate': FieldValue.serverTimestamp(),
@@ -157,25 +164,28 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
       });
       _showSnackBar('Premium erişim başarıyla satın alındı!', SpaceTheme.accentPurple);
     } catch (e) {
-      print('Satın alma verisi güncellenirken hata: $e');
-      _showSnackBar(
-        'Satın alma başarılı, ancak hesap güncellenirken hata oluştu. Lütfen destekle iletişime geçin.',
-        Colors.orange,
-      );
       setState(() => _purchasePending = false);
+      _showSnackBar('Satın alma başarılı, ancak hesap güncellenirken hata oluştu.', Colors.orange);
     }
   }
 
   Future<void> _buyProduct(ProductDetails productDetails) async {
+    final User? currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      _showSnackBar('Satın alma için lütfen oturum açın.', Colors.red);
+      return;
+    }
+
     try {
       final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
       await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
     } catch (e) {
-      _showSnackBar('Satın alma başlatılırken hata oluştu. Lütfen tekrar deneyin.', Colors.red);
+      _showSnackBar('Satın alma başlatılamadı. Lütfen tekrar deneyin.', Colors.red);
     }
   }
 
   void _showSnackBar(String message, Color backgroundColor) {
+    if (!mounted) return; 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: backgroundColor),
     );
@@ -196,10 +206,7 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: Text(
-          'Premium Erişim',
-          style: SpaceTheme.titleStyle.copyWith(fontSize: 24),
-        ),
+        title: Text('Premium Erişim', style: SpaceTheme.titleStyle.copyWith(fontSize: 24)),
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -223,27 +230,13 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
                           _buildPricing(context),
                           SizedBox(height: context.getDynamicHeight(3)),
                           _buildPurchaseButton(context),
-                          SizedBox(height: context.getDynamicHeight(2)),
-                          if (!_isAvailable)
-                            const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Center(
-                                child: Text(
-                                  'Mağaza bağlantısı kurulamadı. Lütfen daha sonra tekrar deneyin.',
-                                  style: TextStyle(color: Colors.red),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          if (_queryProductError != null)
+                          if (_errorMessage != null)
                             Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: Center(
-                                child: Text(
-                                  'Hata: $_queryProductError',
-                                  style: const TextStyle(color: Colors.red),
-                                  textAlign: TextAlign.center,
-                                ),
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                         ],
@@ -288,7 +281,6 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
     ];
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: benefits.map((benefit) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -300,7 +292,6 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
               Text(
                 benefit['text'] as String,
                 style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
-                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -312,7 +303,7 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
   Widget _buildPricing(BuildContext context) {
     final product = _products.firstWhereOrNull((p) => p.id == _premiumUnlock);
     return Text(
-      product != null ? '${product.price} / Tek Seferlik' : 'Fiyat yükleniyor...',
+      product != null ? '${product.price} / Tek Seferlik' : 'Fiyat bilgisi yüklenemedi',
       style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
     );
@@ -327,10 +318,14 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
     }
 
     final product = _products.firstWhereOrNull((p) => p.id == _premiumUnlock);
+    final bool canPurchase = product != null && !_purchasePending;
+
     return ElevatedButton(
-      onPressed: product != null && !_purchasePending
-          ? () async => await _buyProduct(product)
-          : null,
+      onPressed: canPurchase
+          ? () async => await _buyProduct(product!)
+          : _errorMessage != null
+              ? () async => await _initStoreAndPurchaseStatus()
+              : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: SpaceTheme.accentPurple,
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
@@ -343,9 +338,9 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
         children: [
           Icon(Icons.star, color: SpaceTheme.accentGold, size: 24),
           SizedBox(width: context.getDynamicWidth(2)),
-          const Text(
-            'Satın Al!',
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          Text(
+            canPurchase ? 'Satın Al!' : 'Yeniden Dene',
+            style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ],
       ),
