@@ -25,7 +25,6 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
 
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   List<ProductDetails> _products = [];
-  bool _isAvailable = false;
   bool _purchasePending = false;
   bool _loading = true;
   bool _isPurchased = false;
@@ -57,7 +56,6 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
       final bool isAvailable = await _inAppPurchase.isAvailable();
       if (!isAvailable) {
         setState(() {
-          _isAvailable = false;
           _errorMessage = 'Mağaza bağlantısı kurulamadı. Lütfen internetinizi kontrol edin.';
           _loading = false;
         });
@@ -67,7 +65,6 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
       final ProductDetailsResponse response = await _inAppPurchase.queryProductDetails({_premiumUnlock});
       if (response.error != null || response.productDetails.isEmpty) {
         setState(() {
-          _isAvailable = isAvailable;
           _errorMessage = 'Ürün bilgileri alınamadı. Lütfen daha sonra tekrar deneyin.';
           _products = response.productDetails;
           _loading = false;
@@ -76,7 +73,6 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
       }
 
       setState(() {
-        _isAvailable = isAvailable;
         _products = response.productDetails;
         _errorMessage = null;
         _loading = false;

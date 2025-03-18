@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/story_library_viewmodel.dart';
+import 'package:masal/viewmodels/story_display_viewmodel.dart'; 
 import 'package:masal/views/story/story_display_view.dart';
 import 'package:masal/widgets/story/story_library/story_library_item.dart';
 
 class StoriesList extends StatelessWidget {
-  final StoryLibraryViewModel viewModel;
+  final StoryLibraryViewModel libraryViewModel;
+  final StoryDisplayViewModel displayViewModel; 
 
-  const StoriesList({super.key, required this.viewModel});
+  const StoriesList({
+    super.key,
+    required this.libraryViewModel,
+    required this.displayViewModel, 
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,18 +22,18 @@ class StoriesList extends StatelessWidget {
       padding: context.paddingNormal,
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
-          if (!viewModel.isLoadingMore &&
+          if (!libraryViewModel.isLoadingMore &&
               scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent * 0.8 &&
-              viewModel.canLoadMore) {
-            viewModel.loadMoreStories();
+              libraryViewModel.canLoadMore) {
+            libraryViewModel.loadMoreStories();
           }
           return true;
         },
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
-          itemCount: viewModel.stories.length + (viewModel.isLoadingMore ? 1 : 0),
+          itemCount: libraryViewModel.stories.length + (libraryViewModel.isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
-            if (index == viewModel.stories.length) {
+            if (index == libraryViewModel.stories.length) {
               return Padding(
                 padding: context.paddingNormalVertical,
                 child: Center(
@@ -43,14 +49,15 @@ class StoriesList extends StatelessWidget {
               );
             }
 
-            final story = viewModel.stories[index];
+            final story = libraryViewModel.stories[index];
             return Padding(
-              padding: EdgeInsets.only(bottom: context.lowValue),
+              padding: EdgeInsets.all(context.lowValue),
               child: StoryLibraryItem(
                 story: story,
                 onTap: () => _viewStoryDetail(context, story),
-                onDelete: () => _confirmDelete(context, viewModel, story),
-                onLike: () => viewModel.toggleLike(story.id),
+                onDelete: () => _confirmDelete(context, libraryViewModel, story),
+                onLike: () => libraryViewModel.toggleLike(story.id),
+                viewModel: displayViewModel, 
               ),
             );
           },
@@ -73,7 +80,8 @@ class StoriesList extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context, StoryLibraryViewModel viewModel, story) async {
+  Future<void> _confirmDelete(
+      BuildContext context, StoryLibraryViewModel viewModel, story) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -83,7 +91,7 @@ class StoriesList extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(
-              color: SpaceTheme.accentPurple.withValues(alpha:0.5),
+              color: SpaceTheme.accentPurple.withValues(alpha: 0.5),
               width: 2,
             ),
           ),
@@ -100,7 +108,7 @@ class StoriesList extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha:0.2),
+                  color: Colors.grey.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Text(
@@ -114,7 +122,7 @@ class StoriesList extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha:0.6),
+                  color: Colors.red.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Text(
@@ -134,7 +142,7 @@ class StoriesList extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      backgroundColor: SpaceTheme.accentPurple.withValues(alpha:0.8),
+                      backgroundColor: SpaceTheme.accentPurple.withValues(alpha: 0.8),
                       duration: const Duration(seconds: 2),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -149,7 +157,7 @@ class StoriesList extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      backgroundColor: Colors.red.withValues(alpha:0.8),
+                      backgroundColor: Colors.red.withValues(alpha: 0.8),
                       duration: const Duration(seconds: 3),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),

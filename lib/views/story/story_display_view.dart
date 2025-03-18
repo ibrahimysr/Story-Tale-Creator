@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
+import 'package:masal/widgets/report_button.dart';
 import 'package:provider/provider.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import '../../core/theme/space_theme.dart';
@@ -194,29 +195,34 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
     return paragraphs;
   }
 
-  PreferredSizeWidget _buildAppBar(
-      BuildContext context, StoryDisplayViewModel viewModel) {
-    return AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainScreen()));
-        },
+ PreferredSizeWidget _buildAppBar(
+    BuildContext context, StoryDisplayViewModel viewModel) {
+  return AppBar(
+    leading: IconButton(
+      icon: const Icon(Icons.arrow_back, color: Colors.white),
+      onPressed: () {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
+      },
+    ),
+    centerTitle: true,
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    title: Text(
+      widget.title,
+      style: SpaceTheme.titleStyle.copyWith(
+        fontSize: 20,
+        color: viewModel.textColor,
       ),
-      centerTitle: true,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      title: Text(
-        widget.title,
-        style: SpaceTheme.titleStyle.copyWith(
-          fontSize: 20,
-          color: viewModel.textColor,
-        ),
+    ),
+    iconTheme: IconThemeData(color: viewModel.textColor),
+    actions: [
+      ReportButton(
+        viewModel: viewModel,
+        storyTitle: widget.title,
+        storyContent: widget.story,
       ),
-      iconTheme: IconThemeData(color: viewModel.textColor),
-      actions: [
-        // Rapor Et Butonu
+      if (widget.showSaveButton)
         IconButton(
           icon: Container(
             padding: const EdgeInsets.all(8),
@@ -226,45 +232,28 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
                   : Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              Icons.report,
-              color: viewModel.textColor,
-            ),
-          ),
-          onPressed: () => _reportStory(context, viewModel),
-        ),
-        if (widget.showSaveButton)
-          IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: viewModel.colorPalette.isNotEmpty
-                    ? viewModel.colorPalette[0].withValues(alpha: 0.3)
-                    : Colors.white.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: viewModel.isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : Icon(
-                      Icons.save,
-                      color: viewModel.textColor,
+            child: viewModel.isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
                     ),
-            ),
-            onPressed: viewModel.isLoading
-                ? null
-                : () => _saveStory(context, viewModel),
+                  )
+                : Icon(
+                    Icons.save,
+                    color: viewModel.textColor,
+                  ),
           ),
-        const SizedBox(width: 8),
-      ],
-    );
-  }
+          onPressed: viewModel.isLoading
+              ? null
+              : () => _saveStory(context, viewModel),
+        ),
+      const SizedBox(width: 8),
+    ],
+  );
+}
 
   Future<void> _saveStory(
       BuildContext context, StoryDisplayViewModel viewModel) async {
@@ -328,199 +317,4 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
     }
   }
 
-  Future<void> _reportStory(
-    BuildContext context, StoryDisplayViewModel viewModel) async {
-  String reportReason = '';
-  
-  final result = await showDialog<bool>(
-    context: context,
-    builder: (context) => Dialog(
-      backgroundColor: viewModel.dominantColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: viewModel.colorPalette.length >= 2
-                ? [
-                    viewModel.colorPalette[0],
-                    viewModel.colorPalette[1],
-                  ]
-                : [
-                    viewModel.dominantColor,
-                    viewModel.dominantColor.withValues(alpha: 0.7),
-                  ],
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: viewModel.colorPalette.isNotEmpty
-                  ? viewModel.colorPalette[0].withValues(alpha: 0.3)
-                  : Colors.black.withValues(alpha: 0.2),
-              blurRadius: 15,
-              spreadRadius: 5,
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'İçeriği Bildir',
-              style: SpaceTheme.titleStyle.copyWith(
-                color: viewModel.textColor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Lütfen bu içeriği neden bildirdiğinizi belirtin:',
-              style: TextStyle(
-                color: viewModel.textColor,
-                fontSize: 16,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: TextField(
-                onChanged: (value) => reportReason = value,
-                style: TextStyle(
-                  color: viewModel.textColor,
-                  fontSize: 16,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Rapor nedeni',
-                  hintStyle: TextStyle(
-                    color: viewModel.textColor.withValues(alpha: 0.6),
-                  ),
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                ),
-                maxLines: 3,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.white.withValues(alpha: 0.1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    child: Text(
-                      'İptal',
-                      style: TextStyle(
-                        color: viewModel.textColor.withValues(alpha: 0.8),
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.white.withValues(alpha: 0.2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    child: Text(
-                      'Gönder',
-                      style: TextStyle(
-                        color: viewModel.textColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-
-  if (result != true || reportReason.trim().isEmpty) return;
-
-  try {
-    final success = await viewModel.reportStory(
-      storyTitle: widget.title,
-      storyContent: widget.story,
-      reason: reportReason,
-      context: context,
-    );
-
-    if (success && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              'Raporunuz gönderildi. Teşekkür ederiz!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: viewModel.textColor,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          backgroundColor: viewModel.colorPalette.isNotEmpty
-              ? viewModel.colorPalette[0].withValues(alpha: 0.8)
-              : Colors.green.withValues(alpha: 0.8),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      );
-    }
-  } catch (e) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              'Rapor gönderilemedi: $e',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: viewModel.textColor,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          backgroundColor: Colors.red.withValues(alpha: 0.8),
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      );
-    }
-  }
-} }
+   }

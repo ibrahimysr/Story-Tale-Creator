@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/model/story/story_library_model.dart';
+import 'package:masal/viewmodels/story_display_viewmodel.dart';
+import 'package:masal/widgets/report_button.dart'; 
 
 class StoryLibraryItem extends StatelessWidget {
   final StoryLibraryModel story;
   final VoidCallback onTap;
   final VoidCallback? onDelete;
   final VoidCallback onLike;
+  final StoryDisplayViewModel viewModel; 
 
   const StoryLibraryItem({
     super.key,
@@ -17,6 +19,7 @@ class StoryLibraryItem extends StatelessWidget {
     required this.onTap,
     this.onDelete,
     required this.onLike,
+    required this.viewModel, 
   });
 
   @override
@@ -25,7 +28,7 @@ class StoryLibraryItem extends StatelessWidget {
     final isLiked = story.isLikedByUser(currentUser?.uid ?? '');
 
     return Container(
-      margin:  EdgeInsets.only(bottom: context.lowValue),
+      margin: EdgeInsets.all( context.lowValue),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
@@ -76,7 +79,7 @@ class StoryLibraryItem extends StatelessWidget {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                 SizedBox(height: context.getDynamicHeight(2)),
+                                SizedBox(height: context.getDynamicHeight(2)),
                                 Text(
                                   story.formattedDate,
                                   style: TextStyle(
@@ -87,7 +90,7 @@ class StoryLibraryItem extends StatelessWidget {
                               ],
                             ),
                           ),
-                           SizedBox(width: 8),
+                          SizedBox(width: 8),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -142,6 +145,12 @@ class StoryLibraryItem extends StatelessWidget {
                                   onPressed: onDelete,
                                 ),
                               ],
+                              const SizedBox(width: 8),
+                              ReportButton(
+                                viewModel: viewModel,
+                                storyTitle: story.title,
+                                storyContent: story.previewText, 
+                              ),
                             ],
                           ),
                         ],

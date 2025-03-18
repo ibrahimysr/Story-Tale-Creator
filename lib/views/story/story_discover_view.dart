@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/story_discover_viewmodel.dart';
+import 'package:masal/viewmodels/story_display_viewmodel.dart'; 
 import 'package:masal/widgets/story/story_discover/empty_view.dart';
 import 'package:masal/widgets/story/story_discover/error_view.dart';
 import 'package:masal/widgets/story/story_discover/search_bar.dart';
@@ -15,8 +15,11 @@ class StoryDiscoverView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => StoryDiscoverViewModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => StoryDiscoverViewModel()),
+        ChangeNotifierProvider(create: (_) => StoryDisplayViewModel()), 
+      ],
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: SpaceTheme.primaryDark,
@@ -31,22 +34,24 @@ class StoryDiscoverView extends StatelessWidget {
                   children: [
                     DiscoverSearchBar(),
                     Expanded(
-                      child: Consumer<StoryDiscoverViewModel>(
-                        builder: (context, viewModel, _) {
-                          if (viewModel.isLoading) {
+                      child: Consumer2<StoryDiscoverViewModel, StoryDisplayViewModel>(
+                        builder: (context, discoverViewModel, displayViewModel, _) {
+                          if (discoverViewModel.isLoading) {
                             return const Center(
                               child: CircularProgressIndicator(
                                   color: SpaceTheme.accentPurple),
                             );
                           }
-                          if (viewModel.errorMessage != null) {
-                            return ErrorView(viewModel: viewModel);
+                          if (discoverViewModel.errorMessage != null) {
+                            return ErrorView(viewModel: discoverViewModel);
                           }
-                          if (!viewModel.hasStories) {
-                            return EmptyView(
-                                isSearching: viewModel.isSearching);
+                          if (!discoverViewModel.hasStories) {
+                            return EmptyView(isSearching: discoverViewModel.isSearching);
                           }
-                          return StoriesList(viewModel: viewModel);
+                          return StoriesList(
+                            discoverViewModel: discoverViewModel,
+                            displayViewModel: displayViewModel,
+                          );
                         },
                       ),
                     ),

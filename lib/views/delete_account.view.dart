@@ -10,7 +10,7 @@ class DeleteAccountView extends StatefulWidget {
   const DeleteAccountView({super.key});
 
   @override
-  _DeleteAccountViewState createState() => _DeleteAccountViewState();
+  State<DeleteAccountView> createState() => _DeleteAccountViewState();
 }
 
 class _DeleteAccountViewState extends State<DeleteAccountView> {
@@ -45,7 +45,7 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                         ),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 500, // Web için maksimum genişlik
+                            maxWidth: 500, 
                           ),
                           child: Card(
                             color: SpaceTheme.primaryDark.withOpacity(0.8),
