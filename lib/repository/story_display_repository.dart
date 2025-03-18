@@ -67,6 +67,36 @@ class StoryDisplayRepository {
     }
   }
 
+  Future<bool> reportStory({
+    required String storyTitle,
+    required String storyContent,
+    required String reason,
+    BuildContext? context,
+  }) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        if (context != null) {
+          _showLoginDialog(context);
+        }
+        return false;
+      }
+
+      final reportData = {
+        'storyTitle': storyTitle,
+        'storyContent': storyContent,
+        'reason': reason,
+        'userId': user.uid,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await _firestore.collection('reports').add(reportData);
+      return true;
+    } catch (e) {
+      throw Exception('Rapor kaydedilirken bir hata oluştu: $e');
+    }
+  }
+
   void _showAlreadyExistsDialog(BuildContext context) {
     final accentColor = SpaceTheme.accentPurple;
 
@@ -174,7 +204,7 @@ class StoryDisplayRepository {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   blurRadius: 15,
                   spreadRadius: 5,
                 ),
@@ -201,7 +231,7 @@ class StoryDisplayRepository {
                   'Hikayeyi kaydetmek için lütfen giriş yapınız.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha:0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 16,
                   ),
                 ),
@@ -214,7 +244,7 @@ class StoryDisplayRepository {
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.white.withValues(alpha:0.7),
+                        foregroundColor: Colors.white.withValues(alpha: 0.7),
                       ),
                       child: const Text(
                         'İptal',

@@ -322,7 +322,7 @@ class _PremiumPurchaseViewState extends State<PremiumPurchaseView> {
 
     return ElevatedButton(
       onPressed: canPurchase
-          ? () async => await _buyProduct(product!)
+          ? () async => await _buyProduct(product)
           : _errorMessage != null
               ? () async => await _initStoreAndPurchaseStatus()
               : null,
