@@ -8,7 +8,7 @@ class SupportView extends StatefulWidget {
   const SupportView({super.key});
 
   @override
-  _SupportViewState createState() => _SupportViewState();
+  State<SupportView> createState() => _SupportViewState();
 }
 
 class _SupportViewState extends State<SupportView> {
@@ -38,7 +38,7 @@ class _SupportViewState extends State<SupportView> {
             'E-posta uygulaması açılamadı!',
             style: TextStyle(color: Colors.white),
           ),
-          backgroundColor: Colors.red.withOpacity(0.8),
+          backgroundColor: Colors.red.withValues(alpha:0.8),
         ),
       );
     }
@@ -62,7 +62,7 @@ class _SupportViewState extends State<SupportView> {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 500),
                     child: Card(
-                      color: SpaceTheme.primaryDark.withOpacity(0.8),
+                      color: SpaceTheme.primaryDark.withValues(alpha:0.8),
                       elevation: 10,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -97,7 +97,7 @@ class _SupportViewState extends State<SupportView> {
                             Text(
                               'Soruların mı var? Bize mesaj gönder, uzay ekibimiz sana yardımcı olsun!',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withValues(alpha:0.8),
                                 fontSize: 16,
                               ),
                               textAlign: TextAlign.center,
@@ -108,19 +108,19 @@ class _SupportViewState extends State<SupportView> {
                               maxLines: 5,
                               decoration: InputDecoration(
                                 labelText: 'Mesajın',
-                                labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
+                                labelStyle: TextStyle(color: Colors.white.withValues(alpha:0.8)),
                                 hintText: 'Sorunu veya talebini yaz...',
-                                hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                                hintStyle: TextStyle(color: Colors.white.withValues(alpha:0.6)),
                                 prefixIcon: Icon(
                                   Icons.message_outlined,
                                   color: SpaceTheme.accentPurple,
                                 ),
                                 filled: true,
-                                fillColor: SpaceTheme.primaryDark.withOpacity(0.3),
+                                fillColor: SpaceTheme.primaryDark.withValues(alpha:0.3),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
                                   borderSide: BorderSide(
-                                      color: SpaceTheme.accentPurple.withOpacity(0.5)),
+                                      color: SpaceTheme.accentPurple.withValues(alpha:0.5)),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -142,7 +142,7 @@ class _SupportViewState extends State<SupportView> {
                                         'Lütfen bir mesaj gir!',
                                         style: TextStyle(color: Colors.white),
                                       ),
-                                      backgroundColor: Colors.red.withOpacity(0.8),
+                                      backgroundColor: Colors.red.withValues(alpha:0.8),
                                     ),
                                   );
                                 }
@@ -166,7 +166,7 @@ class _SupportViewState extends State<SupportView> {
                             ),
                             SizedBox(height: context.getDynamicHeight(2)),
                             TextButton(
-                              onPressed: () => Navigator.pushNamed(context, '/delete-account'),
+                              onPressed: () => Navigator.pop(context),
                               child: Text(
                                 'Geri Dön',
                                 style: TextStyle(

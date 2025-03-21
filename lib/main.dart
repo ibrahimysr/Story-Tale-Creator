@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/viewmodels/register_viewmodel.dart';
 // import 'package:masal/views/delete_account.view.dart';
 // import 'package:masal/views/privacy_policy_view.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
 
         ChangeNotifierProvider(create: (_) => StoryViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()..loadUserProfile()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
       ],
       child: MaterialApp(
         

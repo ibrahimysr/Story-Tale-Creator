@@ -24,7 +24,7 @@ class PrivacyPolicyView extends StatelessWidget {
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 500),
                     child: Card(
-                      color: SpaceTheme.primaryDark.withOpacity(0.8),
+                      color: SpaceTheme.primaryDark.withValues(alpha:0.8),
                       elevation: 10,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -96,7 +96,7 @@ Soruların varsa, galaksi iletişim kanalımız açık:
 Bu Politikayı kabul ederek, uzay gemimize binmiş ve kurallarımıza uymuş olursunuz. Yıldızlarla dolu bir yolculuk dileriz!
                               ''',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withValues(alpha:0.8),
                                 fontSize: 16,
                               ),
                               textAlign: TextAlign.left,

@@ -123,7 +123,7 @@ class StepContent extends StatelessWidget {
               selectedValue: viewModel.selectedEvent,
               onChanged: (value) {
                 viewModel.updateSelection(event: value);
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => StoryPreviewView()),
                 );

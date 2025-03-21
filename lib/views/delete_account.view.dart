@@ -48,7 +48,7 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                             maxWidth: 500, 
                           ),
                           child: Card(
-                            color: SpaceTheme.primaryDark.withOpacity(0.8),
+                            color: SpaceTheme.primaryDark.withValues(alpha: 0.8),
                             elevation: 10,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -83,7 +83,7 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                                   Text(
                                     'Bu işlem geri alınamaz! E-posta ve şifreni girerek hesabını sil. Uzay maceran sona erecek!',
                                     style: TextStyle(
-                                      color: Colors.white.withOpacity(0.8),
+                                      color: Colors.white.withValues(alpha:0.8),
                                       fontSize: 16,
                                     ),
                                     textAlign: TextAlign.center,
@@ -94,20 +94,20 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                                     decoration: InputDecoration(
                                       labelText: 'E-posta',
                                       labelStyle:
-                                          TextStyle(color: Colors.white.withOpacity(0.8)),
+                                          TextStyle(color: Colors.white.withValues(alpha:0.8)),
                                       hintText: 'E-posta adresini gir',
                                       hintStyle:
-                                          TextStyle(color: Colors.white.withOpacity(0.6)),
+                                          TextStyle(color: Colors.white.withValues(alpha:0.6)),
                                       prefixIcon: Icon(
                                         Icons.email_outlined,
                                         color: SpaceTheme.accentPurple,
                                       ),
                                       filled: true,
-                                      fillColor: SpaceTheme.primaryDark.withOpacity(0.3),
+                                      fillColor: SpaceTheme.primaryDark.withValues(alpha:0.3),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(15),
                                         borderSide: BorderSide(
-                                            color: SpaceTheme.accentPurple.withOpacity(0.5)),
+                                            color: SpaceTheme.accentPurple.withValues(alpha:0.5)),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(15),
@@ -125,20 +125,20 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                                     decoration: InputDecoration(
                                       labelText: 'Şifren',
                                       labelStyle:
-                                          TextStyle(color: Colors.white.withOpacity(0.8)),
+                                          TextStyle(color: Colors.white.withValues(alpha:0.8)),
                                       hintText: 'Şifreni gir',
                                       hintStyle:
-                                          TextStyle(color: Colors.white.withOpacity(0.6)),
+                                          TextStyle(color: Colors.white.withValues(alpha:0.6)),
                                       prefixIcon: Icon(
                                         Icons.lock_outline,
                                         color: SpaceTheme.accentPurple,
                                       ),
                                       filled: true,
-                                      fillColor: SpaceTheme.primaryDark.withOpacity(0.3),
+                                      fillColor: SpaceTheme.primaryDark.withValues(alpha:0.3),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(15),
                                         borderSide: BorderSide(
-                                            color: SpaceTheme.accentPurple.withOpacity(0.5)),
+                                            color: SpaceTheme.accentPurple.withValues(alpha:0.5)),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(15),
@@ -181,7 +181,7 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                                                     style: TextStyle(color: Colors.white),
                                                   ),
                                                   backgroundColor:
-                                                      SpaceTheme.accentPurple.withOpacity(0.8),
+                                                      SpaceTheme.accentPurple.withValues(alpha:0.8),
                                                   duration: Duration(seconds: 3),
                                                   behavior: SnackBarBehavior.floating,
                                                   shape: RoundedRectangleBorder(
@@ -199,7 +199,7 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                                                 borderRadius: BorderRadius.circular(25)),
                                             elevation: 5,
                                             shadowColor:
-                                                SpaceTheme.accentPurple.withOpacity(0.5),
+                                                SpaceTheme.accentPurple.withValues(alpha:0.5),
                                           ),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
