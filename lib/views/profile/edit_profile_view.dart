@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/views/auth/login_view.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/space_theme.dart';
 import '../../../core/theme/widgets/starry_background.dart';
@@ -20,10 +22,26 @@ class _EditProfileViewState extends State<EditProfileView> {
   String _selectedAvatar = 'boy (1).png';
 
   final List<String> _avatars = [
-    'boy (1).png', 'boy (2).png', 'boy (3).png', 'boy (4).png', 'boy (5).png',
-    'boy (6).png', 'boy (7).png', 'boy (8).png', 'boy (9).png', 'boy (10).png',
-    'girl (1).png', 'girl (2).png', 'girl (3).png', 'girl (4).png', 'girl (5).png',
-    'girl (6).png', 'girl (7).png', 'girl (8).png', 'girl (9).png', 'girl (10).png',
+    'boy (1).png',
+    'boy (2).png',
+    'boy (3).png',
+    'boy (4).png',
+    'boy (5).png',
+    'boy (6).png',
+    'boy (7).png',
+    'boy (8).png',
+    'boy (9).png',
+    'boy (10).png',
+    'girl (1).png',
+    'girl (2).png',
+    'girl (3).png',
+    'girl (4).png',
+    'girl (5).png',
+    'girl (6).png',
+    'girl (7).png',
+    'girl (8).png',
+    'girl (9).png',
+    'girl (10).png',
   ];
 
   @override
@@ -31,7 +49,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     super.initState();
     final viewModel = context.read<ProfileViewModel>();
     final profile = viewModel.userProfile;
-    
+
     _nameController = TextEditingController(text: profile?.name ?? '');
     _usernameController = TextEditingController(text: profile?.username ?? '');
     _selectedAvatar = profile?.avatar ?? 'boy (1).png';
@@ -55,12 +73,12 @@ class _EditProfileViewState extends State<EditProfileView> {
             SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: context.paddingNormal*1.3,
+                  padding: context.paddingNormal * 1.3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildHeader(context),
-                       SizedBox(height: context.getDynamicHeight(3)),
+                      SizedBox(height: context.getDynamicHeight(3)),
                       _buildForm(),
                     ],
                   ),
@@ -105,19 +123,19 @@ class _EditProfileViewState extends State<EditProfileView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: context.paddingNormal*1.3,
+            padding: context.paddingNormal * 1.3,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha:0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.white.withValues(alpha:0.1),
+                color: Colors.white.withValues(alpha: 0.1),
               ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildAvatarSelector(),
-                 SizedBox(height: context.getDynamicHeight(2)),
+                SizedBox(height: context.getDynamicHeight(2)),
                 _buildInputField(
                   'İsim',
                   'Görünen adınızı girin',
@@ -132,7 +150,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     return null;
                   },
                 ),
-                 SizedBox(height: context.getDynamicHeight(2)),
+                SizedBox(height: context.getDynamicHeight(2)),
                 _buildInputField(
                   'Kullanıcı Adı',
                   'Benzersiz kullanıcı adınızı girin',
@@ -153,21 +171,38 @@ class _EditProfileViewState extends State<EditProfileView> {
               ],
             ),
           ),
-                 SizedBox(height: context.getDynamicHeight(3)),
+          SizedBox(height: context.getDynamicHeight(3)),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _saveChanges,
               style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentBlue),
-              child:  Padding(
+              child: Padding(
                 padding: context.paddingNormalVertical,
                 child: Text(
                   'Değişiklikleri Kaydet',
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white
-                  ),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: context.getDynamicHeight(3)),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _deleteAccount,
+              style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentPink),
+              child: Padding(
+                padding: context.paddingNormalVertical,
+                child: Text(
+                  'Hesabımı Sil',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
               ),
             ),
@@ -193,10 +228,10 @@ class _EditProfileViewState extends State<EditProfileView> {
         Container(
           height: 150,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha:0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.white.withValues(alpha:0.1),
+              color: Colors.white.withValues(alpha: 0.1),
             ),
           ),
           child: GridView.builder(
@@ -221,7 +256,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected ? SpaceTheme.accentGold : Colors.transparent,
+                      color: isSelected
+                          ? SpaceTheme.accentGold
+                          : Colors.transparent,
                       width: 2,
                     ),
                   ),
@@ -262,39 +299,39 @@ class _EditProfileViewState extends State<EditProfileView> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: Colors.white.withValues(alpha:0.5),
+              color: Colors.white.withValues(alpha: 0.5),
             ),
             filled: true,
-            fillColor: Colors.white.withValues(alpha:0.1),
+            fillColor: Colors.white.withValues(alpha: 0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.white.withValues(alpha:0.2),
+                color: Colors.white.withValues(alpha: 0.2),
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.white.withValues(alpha:0.2),
+                color: Colors.white.withValues(alpha: 0.2),
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: SpaceTheme.accentGold.withValues(alpha:0.5),
+                color: SpaceTheme.accentGold.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.red.withValues(alpha:0.5),
+                color: Colors.red.withValues(alpha: 0.5),
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: Colors.red.withValues(alpha:0.5),
+                color: Colors.red.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
@@ -340,4 +377,66 @@ class _EditProfileViewState extends State<EditProfileView> {
       }
     }
   }
-} 
+
+  void _deleteAccount() {
+    var dialog = AlertDialog(
+      title: Text(
+        "Hesabını silmek istediğinden emin misin?",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: SpaceTheme.accentPink),
+      ),
+      content: Text(
+          "Mail adresiniz ve oluşturduğunuz içerikler kalıcı olarak silinecektir. Devam etmek istiyor musun?"),
+      actions: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              onPressed: _signOut,
+              child: Text(
+                "Evet",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: SpaceTheme.accentPink),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Kapat")),
+          ],
+        )
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (context) => dialog,
+    );
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginView(),
+          ),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Çıkış yapılırken bir hata oluştu: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+}
