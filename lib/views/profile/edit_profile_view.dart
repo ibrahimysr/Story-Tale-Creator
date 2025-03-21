@@ -418,7 +418,11 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   Future<void> _signOut() async {
     try {
-      await FirebaseAuth.instance.signOut();
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await user.delete();
+      }
+
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
