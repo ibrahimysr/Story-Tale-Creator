@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
+import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
 import 'package:masal/widgets/story/story_preview/cancel_dialog.dart';
 import 'package:masal/widgets/story/story_preview/create_button.dart';
 import 'package:masal/widgets/story/story_preview/preview_header.dart';
 import 'package:masal/widgets/story/story_preview/preview_selections.dart';
 import 'package:provider/provider.dart';
-
 
 class StoryPreviewView extends StatelessWidget {
   const StoryPreviewView({super.key});
@@ -19,6 +19,8 @@ class StoryPreviewView extends StatelessWidget {
       value: context.read<StoryViewModel>(),
       child: Consumer<StoryViewModel>(
         builder: (context, viewModel, child) {
+          final homeViewModel = context.read<HomeViewModel>();
+          
           return PopScope(
             canPop: !viewModel.isLoading,
             onPopInvokedWithResult: (didPop, result) async {
@@ -74,7 +76,10 @@ class StoryPreviewView extends StatelessWidget {
                             SizedBox(height: context.getDynamicHeight(3)),
                             PreviewSelections(viewModel: viewModel),
                             SizedBox(height: context.getDynamicHeight(3)),
-                            CreateButton(viewModel: viewModel),
+                            CreateButton(
+                              storyViewModel: viewModel,
+                              homeViewModel: homeViewModel, 
+                            ),
                           ],
                         ),
                       ),

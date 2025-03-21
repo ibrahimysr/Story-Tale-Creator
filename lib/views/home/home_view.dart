@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
@@ -6,9 +5,7 @@ import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/views/story/story_creator_view.dart';
 import 'package:masal/views/story/story_library_view.dart';
-import 'package:masal/views/subscription/subscription_view.dart';
 import 'package:masal/widgets/home/activity_card.dart';
-import 'package:masal/widgets/home/login_required_dialog.dart';
 import 'package:masal/widgets/home/recent_stories_list.dart';
 import 'package:provider/provider.dart';
 
@@ -74,8 +71,7 @@ class HomeView extends StatelessWidget {
                                     icon: Icons.auto_awesome_motion,
                                     color: SpaceTheme.accentPurple,
                                     onTap: () async {
-                                      await _handleStoryCreatorTap(
-                                          context, viewModel);
+                                     Navigator.push(context, MaterialPageRoute( builder: (context) => StoryCreatorView()));
                                     },
                                   ),
                                 ],
@@ -147,138 +143,138 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Future<void> _handleStoryCreatorTap(
-      BuildContext context, HomeViewModel viewModel) async {
-    final canAccess = await viewModel.canAccessStoryCreator();
-    if (!context.mounted) return;
-    if (canAccess) {
-      _navigateToStoryCreator(context);
-    } else {
-      if (FirebaseAuth.instance.currentUser != null) {
-        _showSubscriptionRequiredDialog(context);
-      } else {
-        _showLoginRequiredDialog(context);
-      }
-    }
-  }
+  // Future<void> _handleStoryCreatorTap(
+  //     BuildContext context, HomeViewModel viewModel) async {
+  //   final canAccess = await viewModel.canAccessStoryCreator();
+  //   if (!context.mounted) return;
+  //   if (canAccess) {
+  //     _navigateToStoryCreator(context);
+  //   } else {
+  //     if (FirebaseAuth.instance.currentUser != null) {
+  //       _showSubscriptionRequiredDialog(context);
+  //     } else {
+  //       _showLoginRequiredDialog(context);
+  //     }
+  //   }
+  // }
 
-  void _showSubscriptionRequiredDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          padding: context.paddingLowVertical * 1.5,
-          decoration: BoxDecoration(
-            gradient: SpaceTheme.mainGradient,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: SpaceTheme.accentPurple.withValues(alpha: 0.5),
-                blurRadius: 10,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Günlük Limit Aşıldı',
-                style: SpaceTheme.titleStyle.copyWith(
-                  fontSize: 22,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: context.getDynamicHeight(2)),
-              Padding(
-                padding: context.paddingLowHorizontal * 1.3,
-                child: Text(
-                  'Günlük 2 hikaye oluşturma limitine ulaştınız. Daha fazla hikaye oluşturmak için lütfen abone olunuz.',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: context.getDynamicHeight(3)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          SpaceTheme.primaryDark.withValues(alpha: 0.8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.lowValue * 2,
-                        vertical: context.lowValue,
-                      ),
-                    ),
-                    child: Text(
-                      'Tamam',
-                      style: TextStyle(
-                        color: SpaceTheme.accentBlue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PremiumPurchaseView()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SpaceTheme.accentPurple,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.lowValue * 2,
-                        vertical: context.lowValue,
-                      ),
-                    ),
-                    child: const Text(
-                      'Abone Ol',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // void _showSubscriptionRequiredDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) => Dialog(
+  //       backgroundColor: Colors.transparent,
+  //       child: Container(
+  //         padding: context.paddingLowVertical * 1.5,
+  //         decoration: BoxDecoration(
+  //           gradient: SpaceTheme.mainGradient,
+  //           borderRadius: BorderRadius.circular(20),
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: SpaceTheme.accentPurple.withValues(alpha: 0.5),
+  //               blurRadius: 10,
+  //               spreadRadius: 2,
+  //             ),
+  //           ],
+  //         ),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: [
+  //             Text(
+  //               'Günlük Limit Aşıldı',
+  //               style: SpaceTheme.titleStyle.copyWith(
+  //                 fontSize: 22,
+  //                 color: Colors.white,
+  //               ),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             SizedBox(height: context.getDynamicHeight(2)),
+  //             Padding(
+  //               padding: context.paddingLowHorizontal * 1.3,
+  //               child: Text(
+  //                 'Günlük 2 hikaye oluşturma limitine ulaştınız. Daha fazla hikaye oluşturmak için lütfen abone olunuz.',
+  //                 style: TextStyle(
+  //                   color: Colors.white.withValues(alpha: 0.9),
+  //                   fontSize: 16,
+  //                 ),
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //             SizedBox(height: context.getDynamicHeight(3)),
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: [
+  //                 ElevatedButton(
+  //                   onPressed: () {
+  //                     Navigator.of(context).pop();
+  //                   },
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor:
+  //                         SpaceTheme.primaryDark.withValues(alpha: 0.8),
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(12),
+  //                     ),
+  //                     padding: EdgeInsets.symmetric(
+  //                       horizontal: context.lowValue * 2,
+  //                       vertical: context.lowValue,
+  //                     ),
+  //                   ),
+  //                   child: Text(
+  //                     'Tamam',
+  //                     style: TextStyle(
+  //                       color: SpaceTheme.accentBlue,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 ElevatedButton(
+  //                   onPressed: () {
+  //                     Navigator.of(context).pop();
+  //                     Navigator.push(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) => PremiumPurchaseView()));
+  //                   },
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor: SpaceTheme.accentPurple,
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(12),
+  //                     ),
+  //                     padding: EdgeInsets.symmetric(
+  //                       horizontal: context.lowValue * 2,
+  //                       vertical: context.lowValue,
+  //                     ),
+  //                   ),
+  //                   child: const Text(
+  //                     'Abone Ol',
+  //                     style: TextStyle(
+  //                       color: Colors.white,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  void _navigateToStoryCreator(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const StoryCreatorView(),
-      ),
-    );
-  }
+  // void _navigateToStoryCreator(BuildContext context) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => const StoryCreatorView(),
+  //     ),
+  //   );
+  // }
 
-  void _showLoginRequiredDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => const LoginRequiredDialog(),
-    );
-  }
+  // void _showLoginRequiredDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) => const LoginRequiredDialog(),
+  //   );
+  // }
 }

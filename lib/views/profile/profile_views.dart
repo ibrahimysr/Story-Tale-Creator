@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/views/support_view.dart';
 import 'package:masal/widgets/profile/auth_required.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -171,8 +172,14 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
                                   );
                                 },
-                                onSettings: () {},
-                                onHelp: () {},
+                                onHelp: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const SupportView(),
+                                    ),
+                                  );
+                                },
                               ),
                                SizedBox(height: context.getDynamicHeight(2)),
                               Container(

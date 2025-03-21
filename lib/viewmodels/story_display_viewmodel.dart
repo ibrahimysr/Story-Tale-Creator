@@ -29,7 +29,7 @@ class StoryDisplayViewModel extends ChangeNotifier {
 
   Color _getContrastingTextColor(Color backgroundColor) {
     return _isColorLight(backgroundColor) 
-        ? Colors.black.withValues(alpha:0.8)
+        ? Colors.black.withValues(alpha: 0.8)
         : Colors.white;
   }
 
@@ -95,28 +95,59 @@ class StoryDisplayViewModel extends ChangeNotifier {
     }
   }
 
-Future<bool> saveStory(StoryDisplayModel story, {BuildContext? context}) async {
-  try {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
+  Future<bool> saveStory(StoryDisplayModel story, {BuildContext? context}) async {
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
 
-    final success = await _repository.saveStory(story, context: context);
+      final success = await _repository.saveStory(story, context: context);
 
-    _isLoading = false;
-    notifyListeners();
-    
-    return success; 
-  } catch (e) {
-    _isLoading = false;
-    _errorMessage = e.toString();
-    notifyListeners();
-    rethrow;
+      _isLoading = false;
+      notifyListeners();
+      
+      return success; 
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      rethrow;
+    }
   }
-}
+
+  
+  Future<bool> reportStory({
+    required String storyTitle,
+    required String storyContent,
+    required String reason,
+    BuildContext? context,
+  }) async {
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      final success = await _repository.reportStory(
+        storyTitle: storyTitle,
+        storyContent: storyContent,
+        reason: reason,
+        context: context,
+      );
+
+      _isLoading = false;
+      notifyListeners();
+
+      return success;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
 
   void clearError() {
     _errorMessage = null;
     notifyListeners();
   }
-} 
+}

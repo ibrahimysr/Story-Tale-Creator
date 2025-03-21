@@ -12,6 +12,12 @@ class StoryDisplayRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  String _getStoryPrefix(String story, {int maxLength = 100}) {
+    return story.length <= maxLength
+        ? story
+        : story.substring(0, maxLength).trim();
+  }
+
   Future<bool> saveStory(StoryDisplayModel story, {BuildContext? context}) async {
     try {
       final user = _auth.currentUser;
@@ -20,6 +26,23 @@ class StoryDisplayRepository {
           _showLoginDialog(context);
         }
         return false;
+      }
+
+      final storyPrefix = _getStoryPrefix(story.story);
+
+      final existingStoryQuery = await _firestore
+          .collection('userStories')
+          .where('userId', isEqualTo: user.uid)
+          .where('title', isEqualTo: story.title)
+          .where('storyPrefix', isEqualTo: storyPrefix)
+          .limit(1)
+          .get();
+
+      if (existingStoryQuery.docs.isNotEmpty) {
+        if (context != null) {
+          _showAlreadyExistsDialog(context);
+        }
+        return false; 
       }
 
       String? imageFileName;
@@ -34,13 +57,126 @@ class StoryDisplayRepository {
         'imageFileName': imageFileName,
         'likeCount': 0,
         'likedByUsers': [],
+        'storyPrefix': storyPrefix, 
       };
 
       await _firestore.collection('userStories').add(storyData);
-      return true; 
+      return true;
     } catch (e) {
       throw Exception('Hikaye kaydedilirken bir hata oluştu: $e');
     }
+  }
+
+  Future<bool> reportStory({
+    required String storyTitle,
+    required String storyContent,
+    required String reason,
+    BuildContext? context,
+  }) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        if (context != null) {
+          _showLoginDialog(context);
+        }
+        return false;
+      }
+
+      final reportData = {
+        'storyTitle': storyTitle,
+        'storyContent': storyContent,
+        'reason': reason,
+        'userId': user.uid,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await _firestore.collection('reports').add(reportData);
+      return true;
+    } catch (e) {
+      throw Exception('Rapor kaydedilirken bir hata oluştu: $e');
+    }
+  }
+
+  void _showAlreadyExistsDialog(BuildContext context) {
+    final accentColor = SpaceTheme.accentPurple;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Container(
+            width: 300,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.deepPurple.shade800,
+                  Colors.deepPurple.shade600,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 15,
+                  spreadRadius: 5,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.info_outline_rounded,
+                  color: Colors.white,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Hikaye Zaten Var',
+                  style: SpaceTheme.titleStyle.copyWith(
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Bu hikaye zaten kütüphanenizde mevcut.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: accentColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                  ),
+                  child: const Text(
+                    'Tamam',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _showLoginDialog(BuildContext context) {
@@ -68,7 +204,7 @@ class StoryDisplayRepository {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha:0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   blurRadius: 15,
                   spreadRadius: 5,
                 ),
@@ -95,7 +231,7 @@ class StoryDisplayRepository {
                   'Hikayeyi kaydetmek için lütfen giriş yapınız.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha:0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 16,
                   ),
                 ),
@@ -108,7 +244,7 @@ class StoryDisplayRepository {
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.white.withValues(alpha:0.7),
+                        foregroundColor: Colors.white.withValues(alpha: 0.7),
                       ),
                       child: const Text(
                         'İptal',

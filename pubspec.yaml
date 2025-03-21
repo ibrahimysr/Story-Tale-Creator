@@ -4,7 +4,7 @@ description: "Yeni Masallar Üretin ve Okuyun"
 publish_to: 'none' 
 
 
-version: 1.0.1+7
+version: 1.0.1+8
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -33,6 +33,9 @@ dependencies:
   liquid_swipe: ^3.1.0
   firebase_remote_config:
   in_app_purchase:
+  url_launcher:
+  url_strategy:
+
  
 
 dev_dependencies:
