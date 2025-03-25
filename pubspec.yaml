@@ -32,6 +32,8 @@ dependencies:
   in_app_purchase:
   url_launcher:
   url_strategy:
+  pdf: 
+  printing: 
 
  
 
@@ -48,23 +50,6 @@ flutter:
  
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/avatar/
-  #   - images/a_dot_ham.jpeg
-
  
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package

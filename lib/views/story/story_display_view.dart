@@ -222,6 +222,39 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
         storyTitle: widget.title,
         storyContent: widget.story,
       ),
+      IconButton(
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: viewModel.colorPalette.isNotEmpty
+                ? viewModel.colorPalette[0].withValues(alpha: 0.3)
+                : Colors.white.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: viewModel.isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Icon(
+                  Icons.picture_as_pdf,
+                  color: viewModel.textColor,
+                ),
+        ),
+        onPressed: viewModel.isLoading
+            ? null
+            : () => viewModel.exportToPdf(
+                  title: widget.title,
+                  story: widget.story,
+                  image: widget.image,
+                  context: context,
+                  viewModel: viewModel
+                ),
+      ),
       if (widget.showSaveButton)
         IconButton(
           icon: Container(

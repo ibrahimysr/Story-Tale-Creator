@@ -67,7 +67,7 @@ class StoriesList extends StatelessWidget {
   }
 
   void _viewStoryDetail(BuildContext context, story) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => StoryDisplayView(

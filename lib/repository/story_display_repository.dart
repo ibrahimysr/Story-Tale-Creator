@@ -322,4 +322,24 @@ class StoryDisplayRepository {
       throw Exception('Resim yüklenirken bir hata oluştu: $e');
     }
   }
+
+  Future<bool> isUserSubscribed() async {
+  try {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+
+    final userDoc = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    final data = userDoc.data();
+    if (data != null && data['subscribed'] == true) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    throw Exception('Abonelik durumu kontrol edilirken hata: $e');
+  }
+}
 }
