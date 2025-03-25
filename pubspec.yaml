@@ -4,7 +4,7 @@ description: "Yeni Masallar Üretin ve Okuyun"
 publish_to: 'none' 
 
 
-version: 1.0.1+9
+version: 1.0.2+10
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
