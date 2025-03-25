@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:masal/env.dart';
+import 'package:masal/EnvironmentConfig.dart';
 import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/viewmodels/register_viewmodel.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';

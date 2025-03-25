@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:masal/env.dart';
+import 'package:masal/EnvironmentConfig.dart';
 import '../../model/story/story_model.dart';
 
 class StoryService {
