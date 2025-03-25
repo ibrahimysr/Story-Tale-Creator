@@ -106,7 +106,8 @@ class HomeViewModel extends ChangeNotifier {
       } else {
         _recentStories.addAll(moreStories);
         _updateCache();
-        _loadStoryImages(startIndex: _recentStories.length - moreStories.length);
+        _loadStoryImages(
+            startIndex: _recentStories.length - moreStories.length);
       }
 
       _isLoadingMore = false;
@@ -124,7 +125,9 @@ class HomeViewModel extends ChangeNotifier {
       if (!_mounted) return;
 
       final story = _recentStories[i];
-      if (story.hasImage && story.imageFileName != null && story.imageData == null) {
+      if (story.hasImage &&
+          story.imageFileName != null &&
+          story.imageData == null) {
         story.imageData = await _repository.loadImage(story.imageFileName!);
         if (_mounted) notifyListeners();
       }
@@ -157,8 +160,9 @@ class HomeViewModel extends ChangeNotifier {
       if (isSubscribed) {
         return true;
       } else {
-        const int dailyLimit = 2;
-        final String todayKey = 'story_creation_count_${DateTime.now().toIso8601String().substring(0, 10)}';
+        const int dailyLimit = 1;
+        final String todayKey =
+            'story_creation_count_${DateTime.now().toIso8601String().substring(0, 10)}';
         final String lastCreationDateKey = 'last_creation_date';
 
         final String? lastCreationDate = prefs.getString(lastCreationDateKey);
@@ -206,7 +210,4 @@ class HomeViewModel extends ChangeNotifier {
     }
     return 'unknown';
   }
-
-
-  
 }
