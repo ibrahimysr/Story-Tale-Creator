@@ -195,67 +195,33 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
     return paragraphs;
   }
 
- PreferredSizeWidget _buildAppBar(
-    BuildContext context, StoryDisplayViewModel viewModel) {
-  return AppBar(
-    leading: IconButton(
-      icon: const Icon(Icons.arrow_back, color: Colors.white),
-      onPressed: () {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainScreen()));
-      },
-    ),
-    centerTitle: true,
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-    title: Text(
-      widget.title,
-      style: SpaceTheme.titleStyle.copyWith(
-        fontSize: 20,
-        color: viewModel.textColor,
+  PreferredSizeWidget _buildAppBar(
+      BuildContext context, StoryDisplayViewModel viewModel) {
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => MainScreen()));
+        },
       ),
-    ),
-    iconTheme: IconThemeData(color: viewModel.textColor),
-    actions: [
-      ReportButton(
-        viewModel: viewModel,
-        storyTitle: widget.title,
-        storyContent: widget.story,
-      ),
-      IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: viewModel.colorPalette.isNotEmpty
-                ? viewModel.colorPalette[0].withValues(alpha: 0.3)
-                : Colors.white.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: viewModel.isLoading
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
-              : Icon(
-                  Icons.picture_as_pdf,
-                  color: viewModel.textColor,
-                ),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: Text(
+        widget.title,
+        style: SpaceTheme.titleStyle.copyWith(
+          fontSize: 20,
+          color: viewModel.textColor,
         ),
-        onPressed: viewModel.isLoading
-            ? null
-            : () => viewModel.exportToPdf(
-                  title: widget.title,
-                  story: widget.story,
-                  image: widget.image,
-                  context: context,
-                  viewModel: viewModel
-                ),
       ),
-      if (widget.showSaveButton)
+      iconTheme: IconThemeData(color: viewModel.textColor),
+      actions: [
+        ReportButton(
+          viewModel: viewModel,
+          storyTitle: widget.title,
+          storyContent: widget.story,
+        ),
         IconButton(
           icon: Container(
             padding: const EdgeInsets.all(8),
@@ -265,7 +231,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
                   : Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: viewModel.isLoading
+            child: viewModel.isLoadingPdf
                 ? const SizedBox(
                     width: 20,
                     height: 20,
@@ -275,18 +241,51 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
                     ),
                   )
                 : Icon(
-                    Icons.save,
+                    Icons.picture_as_pdf,
                     color: viewModel.textColor,
                   ),
           ),
-          onPressed: viewModel.isLoading
+          onPressed: viewModel.isLoadingPdf
               ? null
-              : () => _saveStory(context, viewModel),
+              : () => viewModel.exportToPdf(
+                  title: widget.title,
+                  story: widget.story,
+                  image: widget.image,
+                  context: context,
+                  viewModel: viewModel),
         ),
-      const SizedBox(width: 8),
-    ],
-  );
-}
+        if (widget.showSaveButton)
+          IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: viewModel.colorPalette.isNotEmpty
+                    ? viewModel.colorPalette[0].withValues(alpha: 0.3)
+                    : Colors.white.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: viewModel.isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : Icon(
+                      Icons.save,
+                      color: viewModel.textColor,
+                    ),
+            ),
+            onPressed: viewModel.isLoading
+                ? null
+                : () => _saveStory(context, viewModel),
+          ),
+        const SizedBox(width: 8),
+      ],
+    );
+  }
 
   Future<void> _saveStory(
       BuildContext context, StoryDisplayViewModel viewModel) async {
@@ -349,5 +348,4 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
       );
     }
   }
-
-   }
+}
