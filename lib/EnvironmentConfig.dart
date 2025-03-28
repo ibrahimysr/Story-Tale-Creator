@@ -45,7 +45,7 @@ class EnvironmentConfig {
 
 class Environment {
   static String geminiApiUrl =
-      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent";
+      "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent";
   static String vyroApiUrl = 'https://api.vyro.ai/v2/image/generations';
 
   static String geminiApiKey = "";

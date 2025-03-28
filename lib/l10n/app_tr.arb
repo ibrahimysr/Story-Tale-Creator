@@ -1,0 +1,21 @@
+{
+  "@@locale": "tr",
+  "profileTitle": "Profil",
+  "checkingAuthentication": "Kimlik Doğrulama Kontrol Ediliyor...",
+  "editProfile": "Profili Düzenle",
+  "helpSupport": "Yardım & Destek",
+  "signOut": "Çıkış Yap",
+  "errorOccurred": "Bir hata oluştu",
+  "tryAgain": "Tekrar Dene",
+  "profileNotFound": "Profil bulunamadı",
+  "stories": "Hikayeler",
+  "totalLikes": "Toplam Beğeni",
+  "signOutError": "Çıkış yapılırken hata oluştu: {error}",
+  "language": "Dil",
+  "turkish": "Türkçe",
+  "english": "İngilizce",
+  "authRequiredTitle": "Giriş Yapmanız Gerekiyor",
+  "authRequiredMessage": "Profilinizi görüntülemek için lütfen giriş yapın veya kaydolun.",
+  "login": "Giriş Yap",
+  "signUp": "Kayıt Ol"
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/views/support_view.dart';
 import 'package:masal/widgets/profile/auth_required.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,9 @@ import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_stats.dart';
 import '../../widgets/profile/profile_actions.dart';
 import '../../viewmodels/profile_viewmodel.dart';
-import 'edit_profile_view.dart';
+import 'edit_profile_view.dart'; 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -28,7 +31,54 @@ class _ProfileViewState extends State<ProfileView> {
     super.initState();
     _checkAuthentication();
   }
+  Widget _buildLanguageDropdown(BuildContext context) {
+     final localizations = context.localizations;
+    final localeProvider = context.localeProvider;
 
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+      ),
+      child: DropdownButtonFormField<Locale>(
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          border: InputBorder.none,
+          labelText: localizations.language,
+          labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+        ),
+        dropdownColor: SpaceTheme.accentPurple.withOpacity(0.8),
+        value: localeProvider.locale ?? const Locale('en'),
+        onChanged: (Locale? newLocale) {
+          if (newLocale != null) {
+            localeProvider.setLocale(newLocale);
+          }
+        },
+        items: [
+          DropdownMenuItem(
+            value: const Locale('en'),
+            child: Text(
+              localizations.english, 
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          DropdownMenuItem(
+            value: const Locale('tr'),
+            child: Text(
+              localizations.turkish, 
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+        icon: Icon(
+          Icons.language, 
+          color: SpaceTheme.accentGold,
+        ),
+      ),
+    );
+  }
   Future<void> _checkAuthentication() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     
@@ -82,7 +132,9 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+        final localizations = AppLocalizations.of(context);
+
     return Container(
       decoration: BoxDecoration(gradient: SpaceTheme.mainGradient),
       child: Stack(
@@ -139,9 +191,9 @@ class _ProfileViewState extends State<ProfileView> {
 
                       final profile = viewModel.userProfile;
                       if (profile == null) {
-                        return const Center(
+                        return  Center(
                           child: Text(
-                            'Profil bulunamadı',
+                            localizations.profileNotFound,
                             style: TextStyle(color: Colors.white),
                           ),
                         );
@@ -181,6 +233,9 @@ class _ProfileViewState extends State<ProfileView> {
                                   );
                                 },
                               ),
+
+                                                                            _buildLanguageDropdown(context),
+
                                SizedBox(height: context.getDynamicHeight(2)),
                               Container(
                                 margin: context.paddingNormalHorizontal,
@@ -228,7 +283,7 @@ class _ProfileViewState extends State<ProfileView> {
                                               ),
                                                SizedBox(width: context.getDynamicWidth(4)),
                                               Text(
-                                                'Çıkış Yap',
+                                                localizations.signOut,
                                                 style: TextStyle(
                                                   color: Colors.white.withValues(alpha: 0.9),
                                                   fontSize: 16,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import '../../../core/theme/space_theme.dart';
 
 class ProfileActions extends StatelessWidget {
@@ -13,12 +14,14 @@ class ProfileActions extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+         final localizations = context.localizations;
+
     return Column(
       children: [
         _buildActionButton(
           context,
-          'Profili Düzenle',
+          localizations.editProfile,
           Icons.edit,
           SpaceTheme.accentBlue,
           onEditProfile,
@@ -27,7 +30,7 @@ class ProfileActions extends StatelessWidget {
          SizedBox(height: context.getDynamicHeight(2)),
         _buildActionButton(
           context,
-          'Yardım ve Destek',
+          localizations.helpSupport,
           Icons.help_outline,
           SpaceTheme.accentEmerald,
           onHelp,

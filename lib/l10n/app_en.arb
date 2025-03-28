@@ -1,0 +1,21 @@
+ {
+  "@@locale": "en",
+  "profileTitle": "Profile",
+  "checkingAuthentication": "Checking Authentication...",
+  "editProfile": "Edit Profile",
+  "helpSupport": "Help & Support",
+  "signOut": "Sign Out",
+  "errorOccurred": "An error occurred",
+  "tryAgain": "Try Again",
+  "profileNotFound": "Profile not found",
+  "stories": "Stories",
+  "totalLikes": "Total Likes",
+  "signOutError": "Error signing out: {error}",
+  "language": "Language",
+  "turkish": "Turkish",
+  "english": "English",
+  "authRequiredTitle": "Authentication Required",
+  "authRequiredMessage": "Please log in or sign up to view your profile.",
+  "login": "Login",
+  "signUp": "Sign Up"
+} 

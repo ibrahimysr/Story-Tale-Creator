@@ -24,7 +24,7 @@ Hikaye 8-9 paragraf uzunluğunda olmalı ve 5-10 yaş arası çocuklar için uyg
 Hikaye akıcı, sade ve eğlenceli bir dille yazılmalı; karmaşık kelimelerden kaçınılmalı.
 Hikayenin başında # işareti ile başlayan, kısa ve çarpıcı bir başlık olmalı (en fazla 5 kelime).
 Örnek başlık: # Gizemli Ormanın Kahramanı
-Hikaye Türkçe olmalı ve çocukların ilgisini çekecek şekilde bir başlangıç, gelişme ve tatmin edici bir son içermeli.
+Hikaye ingilizce olmalı ve çocukların ilgisini çekecek şekilde bir başlangıç, gelişme ve tatmin edici bir son içermeli.
 """;
 
     try {
