@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/register_viewmodel.dart';
 import 'package:masal/widgets/auth/space_text_field.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
-
 
 class RegisterForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -66,7 +66,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   _buildLoginButton(),
                   if (viewModel.state == RegisterState.error)
                     Padding(
-                      padding:  EdgeInsets.only(top: context.lowValue),
+                      padding: EdgeInsets.only(top: context.lowValue),
                       child: Text(
                         viewModel.errorMessage,
                         style: TextStyle(
@@ -100,7 +100,7 @@ class _RegisterFormState extends State<RegisterForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Avatar Seç',
+            context.localizations.selectAvatar, 
             style: TextStyle(
               color: SpaceTheme.accentGold,
               fontSize: 16,
@@ -147,12 +147,12 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget _buildUsernameField() {
     return SpaceTextField(
       controller: widget.usernameController,
-      label: 'Kaşif Adı',
+      label: context.localizations.explorerName,
       icon: Icons.person_outline,
       textInputAction: TextInputAction.next,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Lütfen bir kaşif adı girin';
+          return context.localizations.enterExplorerName;
         }
         return null;
       },
@@ -162,16 +162,16 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget _buildEmailField() {
     return SpaceTextField(
       controller: widget.emailController,
-      label: 'Galaktik E-posta',
+      label: context.localizations.galacticEmail,
       icon: Icons.email_outlined,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Lütfen e-posta adresinizi girin';
+          return context.localizations.enterEmail; 
         }
         if (!value.contains('@')) {
-          return 'Geçerli bir e-posta adresi girin';
+          return context.localizations.invalidEmail; 
         }
         return null;
       },
@@ -181,7 +181,7 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget _buildPasswordField(RegisterViewModel viewModel) {
     return SpaceTextField(
       controller: widget.passwordController,
-      label: 'Gizli Şifre',
+      label: context.localizations.secretPassword, 
       icon: Icons.lock_outline,
       isPassword: true,
       textInputAction: TextInputAction.done,
@@ -198,10 +198,10 @@ class _RegisterFormState extends State<RegisterForm> {
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Lütfen şifrenizi girin';
+          return context.localizations.enterPassword; 
         }
         if (value.length < 6) {
-          return 'Şifre en az 6 karakter olmalıdır';
+          return context.localizations.passwordMinLength; 
         }
         return null;
       },
@@ -247,9 +247,9 @@ class _RegisterFormState extends State<RegisterForm> {
                       strokeWidth: 2.0,
                     ),
                   )
-                : const Text(
-                    'Maceraya Katıl',
-                    style: TextStyle(
+                : Text(
+                    context.localizations.joinAdventure, 
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -265,7 +265,7 @@ class _RegisterFormState extends State<RegisterForm> {
     return TextButton(
       onPressed: () => Navigator.pop(context),
       child: Text(
-        'Zaten bir kaşif misin? Giriş yap',
+        context.localizations.alreadyExplorerLogin,
         style: TextStyle(
           color: SpaceTheme.accentGold,
           fontSize: 16,
