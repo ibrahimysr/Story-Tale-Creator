@@ -1,4 +1,4 @@
- {
+{
   "@@locale": "en",
   "profileTitle": "Profile",
   "checkingAuthentication": "Checking Authentication...",
@@ -17,5 +17,26 @@
   "authRequiredTitle": "Authentication Required",
   "authRequiredMessage": "Please log in or sign up to view your profile.",
   "login": "Login",
-  "signUp": "Sign Up"
-} 
+  "signUp": "Sign Up",
+  "name": "Name",
+  "enterDisplayName": "Enter your display name",
+  "nameCannotBeEmpty": "Name cannot be empty",
+  "nameMinLength": "Name must be at least 2 characters",
+  "username": "Username",
+  "enterUniqueUsername": "Enter your unique username",
+  "usernameCannotBeEmpty": "Username cannot be empty",
+  "usernameMinLength": "Username must be at least 3 characters",
+  "usernameFormat": "Only letters, numbers, and underscores are allowed",
+  "avatar": "Avatar",
+  "saveChanges": "Save Changes",
+  "deleteAccount": "Delete My Account",
+  "deleteAccountConfirmation": "Are you sure you want to delete your account?",
+  "deleteAccountWarning": "Your email address and created content will be permanently deleted. Do you want to continue?",
+  "yes": "Yes",
+  "close": "Close" , 
+  "authRequiredMessage": "Please log in or sign up to view your profile.",
+  "login": "Login",
+  "spaceJourney": "Space Journey",
+  "stories": "Stories",
+  "totalLikes": "Total Likes"
+}

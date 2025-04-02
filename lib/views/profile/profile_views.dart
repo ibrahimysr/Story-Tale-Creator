@@ -165,7 +165,7 @@ class _ProfileViewState extends State<ProfileView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Bir hata oluştu',
+                                localizations.errorOccurred,
                                 style: TextStyle(
                                   color: Colors.red[300],
                                   fontSize: 18,
@@ -182,7 +182,7 @@ class _ProfileViewState extends State<ProfileView> {
                               ElevatedButton(
                                 onPressed: () => viewModel.loadUserProfile(),
                                 style: SpaceTheme.getMagicalButtonStyle(SpaceTheme.accentBlue),
-                                child: const Text('Tekrar Dene'),
+                                child:  Text(localizations.tryAgain),
                               ),
                             ],
                           ),

@@ -16,21 +16,16 @@ import 'viewmodels/profile_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
-  // Ensure Flutter bindings are initialized before Firebase
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Set path URL strategy for web
   setPathUrlStrategy();
 
-  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initialize environment configuration
   await EnvironmentConfig.initializeEnvironment();
 
-  // Run the app
   runApp(const MyApp());
 }
 
@@ -41,7 +36,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // View Model Providers
         ChangeNotifierProvider(create: (_) => RegisterViewModel()),
         ChangeNotifierProvider(create: (_) => StoryViewModel()),
         ChangeNotifierProvider(
@@ -49,19 +43,15 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         
-        // Locale Provider
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
       ],
       child: Consumer<LocaleProvider>(
         builder: (context, localeProvider, child) {
           return MaterialApp(
-            // Remove debug banner
             debugShowCheckedModeBanner: false,
             
-            // App title
             title: 'Masal',
             
-            // Localization settings
             locale: localeProvider.locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,
@@ -71,25 +61,11 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: AppLocalizations.supportedLocales,
             
-            // Theme configuration
-            theme: ThemeData(
-              primarySwatch: Colors.deepPurple,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-              
-              // Optional: Add a more comprehensive app-wide theme
-              brightness: Brightness.light,
-              fontFamily: 'Roboto', // Replace with your preferred font
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Colors.deepPurple,
-                foregroundColor: Colors.white,
-              ),
-            ),
+          
             
-            // Authentication state management
             home: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
-                // Show loading indicator while checking auth state
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Scaffold(
                     body: Center(
@@ -100,7 +76,6 @@ class MyApp extends StatelessWidget {
                   );
                 }
                 
-                // Navigate based on authentication state
                 if (snapshot.hasData && snapshot.data != null) {
                   return const MainScreen();
                 }
