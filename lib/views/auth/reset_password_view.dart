@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/reset_password_viewmodel.dart';
@@ -41,7 +42,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
               elevation: 0,
               centerTitle: true,
               title: Text(
-                'Şifremi Unuttum',
+                context.localizations.forgotPassword,
                 style: SpaceTheme.titleStyle.copyWith(fontSize: 24),
               ),
             ),
@@ -99,7 +100,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
         ),
         SizedBox(height: context.getDynamicHeight(2)),
         Text(
-          'Şifreni Yenile!',
+          context.localizations.resetPassword,
           style: SpaceTheme.titleStyle.copyWith(
             fontSize: 28,
             color: Colors.white,
@@ -108,7 +109,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
         ),
         SizedBox(height: context.getDynamicHeight(1)),
         Text(
-          'E-posta adresini gir, uzay maceralarına geri dön!',
+          context.localizations.enterEmailAndReturnToSpace,
           style: TextStyle(
             color: Colors.white.withValues(alpha:0.8),
             fontSize: 16,
@@ -124,7 +125,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       controller: _emailController,
       onChanged: (value) => viewModel.updateEmail(value),
       decoration: InputDecoration(
-        labelText: 'E-posta Adresi',
+        labelText: context.localizations.emailAddressLabel,
         labelStyle: TextStyle(color: Colors.white.withValues(alpha:0.8)),
         hintText: 'örneğin: uzayci@masal.com',
         hintStyle: TextStyle(color: Colors.white.withValues(alpha:0.6)),
@@ -174,7 +175,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                 ),
                 SizedBox(width: 8),
                 Text(
-                  'Şifremi Sıfırla',
+                  context.localizations.resetPassword,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,

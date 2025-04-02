@@ -57,5 +57,27 @@
   "passwordMinLength": "Password must be at least 6 characters",
   "joinAdventure": "Join Adventure",
   "alreadyExplorerLogin": "Already an explorer? Log in", 
-  "registerTitle": "Join Space Adventure"
+  "registerTitle": "Join Space Adventure", 
+  "emailAddressLabel" : "E-posta", 
+  "resetPassword": "Reset Your Password", 
+  "enterEmailAndReturnToSpace": "Enter your email and return to space adventures!", 
+  "welcomeExplorer": "Welcome Explorer!",
+  "magicStoryCreator": "Magic Story Creator",
+  "createYourUniverse": "Push the limits of your imagination and create your own universe!",
+  "seeAll": "See All",
+  "myRecentStories": "My Recent Stories", 
+  "myStoryLibrary" : "My Story Library" , 
+   "deleteStoryTitle": "Delete Story",
+  "deleteStoryMessage": "Are you sure you want to delete this story? This action cannot be undone.",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "storyDeletedSuccess": "Story deleted successfully",
+  "storyDeletedError": "An error occurred while deleting the story: {error}",
+  "loadingMore": "Loading more...", 
+  "noSavedStories": "You have no saved stories yet",
+  "createNewStory": "Create and save a new story!", 
+  "loginPromptMessage": "Please log in to view your story library",
+  "loginPromptDescription": "Log in to access all your stories and save new ones.",
+  "readTheStory":"Read the Story"
+
 }

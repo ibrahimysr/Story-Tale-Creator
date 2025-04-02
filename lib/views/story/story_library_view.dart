@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/story_library_viewmodel.dart';
@@ -69,7 +70,7 @@ class StoryLibraryView extends StatelessWidget {
       elevation: 0,
       centerTitle: true,
       title: Text(
-        'Hikaye Kütüphanem',
+       context.localizations.myStoryLibrary,
         style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
       ),
       actions: [

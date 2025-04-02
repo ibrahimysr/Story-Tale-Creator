@@ -58,5 +58,28 @@
   "passwordMinLength": "Şifre en az 6 karakter olmalıdır",
   "joinAdventure": "Maceraya Katıl",
   "alreadyExplorerLogin": "Zaten bir kaşif misin? Giriş yap", 
-  "registerTitle": "Uzay Macerası Katıl"
+  "registerTitle": "Uzay Macerası Katıl", 
+  "emailAddressLabel" : "E-posta" , 
+  "resetPassword": "Şifreni Yenile!",
+  "enterEmailAndReturnToSpace": "E-posta adresini gir, uzay maceralarına geri dön!", 
+   "welcomeExplorer": "Hoş Geldin Kaşif!",
+  "magicStoryCreator": "Sihirli Hikaye Yaratıcısı",
+  "createYourUniverse": "Hayal gücünün sınırlarını zorla ve kendi evrenini yarat!",
+  "seeAll": "Tümünü Gör",
+  "myRecentStories": "Son Hikayelerim",
+  "myStoryLibrary" : "Hikaye Kütüphanem", 
+   "deleteStoryTitle": "Hikayeyi Sil",
+  "deleteStoryMessage": "Bu hikayeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+  "cancel": "İptal",
+  "delete": "Sil",
+  "storyDeletedSuccess": "Hikaye başarıyla silindi",
+  "storyDeletedError": "Hikaye silinirken bir hata oluştu: {error}",
+  "loadingMore": "Daha fazla yükleniyor...", 
+   "noSavedStories": "Henüz kaydedilmiş hikayeniz yok",
+  "createNewStory": "Yeni bir hikaye oluşturun ve kaydedin!", 
+  "loginPromptMessage": "Hikaye Kütüphanenizi Görmek İçin\nLütfen Giriş Yapınız",
+  "loginPromptDescription": "Tüm hikayelerinize erişmek ve yeni hikayeler kaydetmek için hesabınıza giriş yapın.",
+  "readTheStory":"Hikayeyi Oku"
+
+
 }

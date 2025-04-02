@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/views/auth/login_view.dart';
 
@@ -18,8 +19,8 @@ class LoginPrompt extends StatelessWidget {
             color: SpaceTheme.accentGold,
           ),
           SizedBox(height: context.getDynamicHeight(2)),
-          const Text(
-            'Hikaye Kütüphanenizi Görmek İçin\nLütfen Giriş Yapınız',
+           Text(
+            context.localizations.loginPromptMessage,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -28,8 +29,8 @@ class LoginPrompt extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.getDynamicHeight(2)),
-          const Text(
-            'Tüm hikayelerinize erişmek ve yeni hikayeler kaydetmek için hesabınıza giriş yapın.',
+           Text(
+            context.localizations.loginPromptDescription,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white70,
@@ -48,8 +49,8 @@ class LoginPrompt extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            child: const Text(
-              'Giriş Yap',
+            child:  Text(
+             context.localizations.login,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
