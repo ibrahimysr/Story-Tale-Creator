@@ -82,6 +82,14 @@
   "noStoryFound": "No story found matching your search criteria",
   "noStoryShared": "No story has been shared yet",
   "shareFirstStory": "Be the first to share a story!", 
-  "searchHintText": "Search in stories..."
+  "searchHintText": "Search in stories...", 
+  "discoverTitle":"Discover", 
+   "loginRequiredTitle": "Login Required",
+  "loginRequiredMessage": "Please log in or register to use the story creation feature.", 
+  "missionCenter": "Mission Center",
+  "exploreSpace": "Explore Space",
+  "myCollection": "My Collection",
+  "explorer": "Explorer"
+
 
 }

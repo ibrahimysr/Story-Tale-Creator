@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/views/story/story_display_view.dart';
 import 'package:masal/widgets/home/home_story_item.dart';
@@ -35,7 +36,7 @@ class RecentStoriesList extends StatelessWidget {
                 TextButton(
                   onPressed: viewModel.loadRecentStories,
                   child: Text(
-                    'Tekrar Dene',
+                   context.localizations.tryAgain,
                     style: TextStyle(color: SpaceTheme.accentBlue),
                   ),
                 ),
@@ -51,8 +52,8 @@ class RecentStoriesList extends StatelessWidget {
               children: [
                 Icon(Icons.book, color: Colors.amber[100], size: 32),
                 const SizedBox(height: 8),
-                const Text(
-                  'Henüz bir hikaye oluşturmadınız',
+                 Text(
+                 context.localizations.createNewStory,
                   style: TextStyle(color: Colors.white70),
                 ),
               ],

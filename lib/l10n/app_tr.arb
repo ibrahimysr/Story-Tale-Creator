@@ -83,7 +83,12 @@
    "noStoryFound": "Aradığınız kriterlere uygun hikaye bulunamadı",
   "noStoryShared": "Henüz hikaye paylaşılmamış",
   "shareFirstStory": "İlk hikayeyi siz paylaşın!", 
-  "searchHintText": "Hikayelerde ara..."
-
-
+  "searchHintText": "Hikayelerde ara...",
+  "discoverTitle":"Keşfet", 
+  "loginRequiredTitle": "Giriş Yapmanız Gerekiyor",
+  "loginRequiredMessage": "Hikaye oluşturma özelliğini kullanmak için lütfen giriş yapın veya kayıt olun.", 
+  "missionCenter": "Görev Merkezi",
+  "exploreSpace": "Uzayı Keşfet",
+  "myCollection": "Koleksiyonum",
+  "explorer": "Kaşif"
 }
