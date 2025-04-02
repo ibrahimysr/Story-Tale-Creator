@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 import 'package:masal/widgets/report_button.dart';
 import 'package:provider/provider.dart';
@@ -303,7 +304,7 @@ class _StoryDisplayViewState extends State<StoryDisplayView> {
             content: Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                'Hikaye kütüphanenize kaydedildi! ✨',
+                context.localizations.storySaved,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: viewModel.textColor,

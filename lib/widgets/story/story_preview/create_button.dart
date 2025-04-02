@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
@@ -11,9 +12,10 @@ import 'package:masal/widgets/home/login_required_dialog.dart';
 class CreateButton extends StatelessWidget {
   final StoryViewModel storyViewModel;
   final HomeViewModel homeViewModel;
-  
-  const CreateButton({super.key, required this.storyViewModel, required this.homeViewModel});
-  
+
+  const CreateButton(
+      {super.key, required this.storyViewModel, required this.homeViewModel});
+
   @override
   Widget build(BuildContext context) {
     return storyViewModel.isLoading
@@ -26,10 +28,11 @@ class CreateButton extends StatelessWidget {
             onPressed: () async {
               final canAccess = await homeViewModel.canAccessStoryCreator();
               if (!context.mounted) return;
-              
+
               if (canAccess) {
                 await storyViewModel.generateStory().then((_) {
-                  if (storyViewModel.generatedStory != null && context.mounted) {
+                  if (storyViewModel.generatedStory != null &&
+                      context.mounted) {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -53,7 +56,8 @@ class CreateButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: SpaceTheme.accentPurple,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25)),
               elevation: 5,
               shadowColor: SpaceTheme.accentPurple.withValues(alpha: 0.5),
             ),
@@ -66,8 +70,8 @@ class CreateButton extends StatelessWidget {
                   size: 24,
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  'Hikayemi Oluştur!',
+                Text(
+                  context.localizations.createStoryButton,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -102,7 +106,7 @@ class CreateButton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Günlük Limit Aşıldı',
+                context.localizations.dailyLimitReached,
                 style: SpaceTheme.titleStyle.copyWith(
                   fontSize: 22,
                   color: Colors.white,
@@ -113,8 +117,7 @@ class CreateButton extends StatelessWidget {
               Padding(
                 padding: context.paddingLowHorizontal * 1.3,
                 child: Text(
-                  'Günlük 2 hikaye oluşturma limitine ulaştınız. Daha fazla hikaye oluşturmak için lütfen abone olunuz.',
-                  style: TextStyle(
+                    context.localizations.dailyLimitMessage,style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 16,
                   ),
@@ -141,7 +144,7 @@ class CreateButton extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Tamam',
+                      context.localizations.okButton,
                       style: TextStyle(
                         color: SpaceTheme.accentBlue,
                         fontWeight: FontWeight.bold,
@@ -166,8 +169,8 @@ class CreateButton extends StatelessWidget {
                         vertical: context.lowValue,
                       ),
                     ),
-                    child: const Text(
-                      'Abone Ol',
+                    child:  Text(
+                      context.localizations.subscribeButton,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

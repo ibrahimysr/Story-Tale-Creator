@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 
 class StoryDisplayContent extends StatefulWidget {
   final String story;
@@ -175,7 +176,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
                       ),
                       SizedBox(width: context.getDynamicWidth(3)),
                       Text(
-                        'Okumak için kaydırın',
+                        context.localizations.swipeToRead,
                         style: TextStyle(
                           color: widget.textColor.withValues(alpha: 0.8),
                           fontSize: 14,
@@ -365,7 +366,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
           ),
           const SizedBox(height: 24),
           Text(
-            'Hikaye Sonu',
+            context.localizations.storyEnd,
             style: TextStyle(
               color: widget.textColor,
               fontSize: 24,
@@ -388,7 +389,7 @@ class _StoryDisplayContentState extends State<StoryDisplayContent> {
                     )
                   : const Icon(Icons.save),
               label: Text(
-                  widget.isLoading ? 'Kaydediliyor...' : 'Kütüphaneme Kaydet'),
+                  widget.isLoading ? context.localizations.saving :  context.localizations.saveToLibrary),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white.withValues(alpha: 0.2),
                 foregroundColor: widget.textColor,

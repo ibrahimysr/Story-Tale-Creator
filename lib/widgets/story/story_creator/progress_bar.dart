@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 
 class ProgressBar extends StatelessWidget {
@@ -31,7 +32,7 @@ class ProgressBar extends StatelessWidget {
           ),
           SizedBox(height: context.getDynamicHeight(2)),
           Text(
-            'Adım $currentStep/5',
+            '${context.localizations.step} $currentStep/5',
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,

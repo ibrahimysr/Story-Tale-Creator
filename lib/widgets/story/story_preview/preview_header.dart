@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 
 class PreviewHeader extends StatelessWidget {
@@ -19,7 +20,7 @@ class PreviewHeader extends StatelessWidget {
         ),
         SizedBox(height: context.getDynamicHeight(2)),
         Text(
-          'Uzay Maceranı Keşfet!',
+          context.localizations.exploreSpaceAdventure,
           style: SpaceTheme.titleStyle.copyWith(
             fontSize: 28,
             color: Colors.white,
@@ -28,7 +29,7 @@ class PreviewHeader extends StatelessWidget {
         ),
         SizedBox(height: context.getDynamicHeight(1)),
         Text(
-          'Seçtiklerinle galaktik bir hikaye oluşturmaya hazır mısın?',
+          context.localizations.readyToCreate,
           style: TextStyle(
             color: Colors.white.withValues(alpha:  0.8),
             fontSize: 16,

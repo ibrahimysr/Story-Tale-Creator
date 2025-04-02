@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
 import 'package:masal/views/story/story_display_view.dart';
@@ -67,7 +68,7 @@ class FinalStepButton extends StatelessWidget {
               ),
             const SizedBox(width: 8),
             Text(
-              viewModel.isLoading ? 'Oluşturuluyor...' : 'Maceraya Başla',
+              viewModel.isLoading ? context.localizations.creating: context.localizations.startAdventure,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,

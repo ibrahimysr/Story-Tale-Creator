@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/home_viewmodel.dart';
@@ -20,7 +21,7 @@ class StoryPreviewView extends StatelessWidget {
       child: Consumer<StoryViewModel>(
         builder: (context, viewModel, child) {
           final homeViewModel = context.read<HomeViewModel>();
-          
+
           return PopScope(
             canPop: !viewModel.isLoading,
             onPopInvokedWithResult: (didPop, result) async {
@@ -41,7 +42,7 @@ class StoryPreviewView extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 title: Text(
-                  'Hikayeni Önizle',
+                  context.localizations.previewStory,
                   style: SpaceTheme.titleStyle.copyWith(fontSize: 24),
                 ),
                 leading: IconButton(
@@ -78,7 +79,7 @@ class StoryPreviewView extends StatelessWidget {
                             SizedBox(height: context.getDynamicHeight(3)),
                             CreateButton(
                               storyViewModel: viewModel,
-                              homeViewModel: homeViewModel, 
+                              homeViewModel: homeViewModel,
                             ),
                           ],
                         ),

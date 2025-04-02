@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
 import 'package:masal/widgets/common/selector_card.dart';
 import 'package:masal/core/theme/space_theme.dart';
@@ -18,9 +19,9 @@ class StepContent extends StatelessWidget {
       case 1:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Galaktik Mekan',
-              subtitle: 'Hikayenin geçeceği yeri seç',
+             StepTitle(
+              title: context.localizations.galacticPlaceTitle,
+              subtitle: context.localizations.galacticPlaceSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -41,9 +42,9 @@ class StepContent extends StatelessWidget {
       case 2:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Uzay Kahramanı',
-              subtitle: 'Ana karakterini seç',
+             StepTitle(
+              title: context.localizations.spaceHeroTitle,
+              subtitle: context.localizations.spaceHeroSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -64,9 +65,9 @@ class StepContent extends StatelessWidget {
       case 3:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Zaman Boyutu',
-              subtitle: 'Hikayenin zamanını seç',
+             StepTitle(
+              title: context.localizations.timeDimensionTitle,
+              subtitle: context.localizations.timeDimensionSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -87,9 +88,9 @@ class StepContent extends StatelessWidget {
       case 4:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Kozmik Duygu',
-              subtitle: 'Hikayedeki ana duyguyu seç',
+             StepTitle(
+              title: context.localizations.cosmicEmotionTitle,
+              subtitle: context.localizations.cosmicEmotionSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -110,9 +111,9 @@ class StepContent extends StatelessWidget {
       case 5:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Yıldızlararası Olay',
-              subtitle: 'Hikayedeki ana olayı seç',
+             StepTitle(
+              title:  context.localizations.intergalacticEventTitle,
+              subtitle:  context.localizations.intergalacticEventSubtitle,
             ),
             SelectorCard(
               title: '',

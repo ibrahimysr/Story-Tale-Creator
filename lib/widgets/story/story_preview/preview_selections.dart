@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
 
@@ -22,19 +23,19 @@ class PreviewSelections extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSelection(
-              'Galaktik Mekan', viewModel.selectedPlace ?? 'Seçilmedi'),
+              context.localizations.galacticPlace, viewModel.selectedPlace ??   context.localizations.notSelected),
           SizedBox(height: context.getDynamicHeight(1)),
           _buildSelection(
-              'Uzay Kahramanı', viewModel.selectedCharacter ?? 'Seçilmedi'),
+              context.localizations.spaceHero, viewModel.selectedCharacter ??  context.localizations.notSelected),
           SizedBox(height: context.getDynamicHeight(1)),
           _buildSelection(
-              'Zaman Boyutu', viewModel.selectedTime ?? 'Seçilmedi'),
+             context.localizations.timeDimension, viewModel.selectedTime ??  context.localizations.notSelected),
           SizedBox(height: context.getDynamicHeight(1)),
           _buildSelection(
-              'Kozmik Duygu', viewModel.selectedEmotion ?? 'Seçilmedi'),
+              context.localizations.cosmicFeeling, viewModel.selectedEmotion ??  context.localizations.notSelected),
           SizedBox(height: context.getDynamicHeight(1)),
           _buildSelection(
-              'Yıldızlararası Olay', viewModel.selectedEvent ?? 'Seçilmedi'),
+               context.localizations.interstellarEvent, viewModel.selectedEvent ??  context.localizations.notSelected),
         ],
       ),
     );
