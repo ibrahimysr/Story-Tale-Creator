@@ -78,6 +78,10 @@
   "createNewStory": "Create and save a new story!", 
   "loginPromptMessage": "Please log in to view your story library",
   "loginPromptDescription": "Log in to access all your stories and save new ones.",
-  "readTheStory":"Read the Story"
+  "readTheStory":"Read the Story", 
+  "noStoryFound": "No story found matching your search criteria",
+  "noStoryShared": "No story has been shared yet",
+  "shareFirstStory": "Be the first to share a story!", 
+  "searchHintText": "Search in stories..."
 
 }

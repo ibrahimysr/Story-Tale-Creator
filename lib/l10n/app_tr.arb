@@ -79,7 +79,11 @@
   "createNewStory": "Yeni bir hikaye oluşturun ve kaydedin!", 
   "loginPromptMessage": "Hikaye Kütüphanenizi Görmek İçin\nLütfen Giriş Yapınız",
   "loginPromptDescription": "Tüm hikayelerinize erişmek ve yeni hikayeler kaydetmek için hesabınıza giriş yapın.",
-  "readTheStory":"Hikayeyi Oku"
+  "readTheStory":"Hikayeyi Oku", 
+   "noStoryFound": "Aradığınız kriterlere uygun hikaye bulunamadı",
+  "noStoryShared": "Henüz hikaye paylaşılmamış",
+  "shareFirstStory": "İlk hikayeyi siz paylaşın!", 
+  "searchHintText": "Hikayelerde ara..."
 
 
 }

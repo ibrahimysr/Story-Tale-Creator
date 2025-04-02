@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/story_discover_viewmodel.dart';
 
@@ -38,8 +39,8 @@ class ErrorView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             ),
-            child: const Text(
-              'Tekrar Dene',
+            child:  Text(
+              context.localizations.tryAgain,
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
           ),
