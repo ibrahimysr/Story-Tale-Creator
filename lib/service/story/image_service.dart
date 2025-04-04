@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
-import 'package:masal/EnvironmentConfig.dart';
+import 'package:masal/environment_config.dart';
 
 class ImageService {
   Future<Uint8List> generateImage({

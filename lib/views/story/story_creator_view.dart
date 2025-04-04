@@ -19,11 +19,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      if (mounted) {
-        context.read<StoryViewModel>().resetSelections();
-      }
-    });
+   
   }
 
   void _showErrorDialog(String message) {

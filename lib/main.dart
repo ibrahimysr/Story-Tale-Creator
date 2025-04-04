@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:masal/EnvironmentConfig.dart';
+import 'package:masal/environment_config.dart';
 import 'package:masal/viewmodels/home_viewmodel.dart';
 import 'package:masal/viewmodels/locale_provider.dart';
 import 'package:masal/viewmodels/register_viewmodel.dart';
@@ -17,7 +17,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   setPathUrlStrategy();
 
   await Firebase.initializeApp(
@@ -36,22 +36,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
         ChangeNotifierProvider(create: (_) => RegisterViewModel()),
-        ChangeNotifierProvider(create: (_) => StoryViewModel()),
         ChangeNotifierProvider(
-          create: (_) => ProfileViewModel()..loadUserProfile()
+          create: (context) => StoryViewModel(
+            localeProvider: context.read<LocaleProvider>(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileViewModel()..loadUserProfile(),
         ),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
-        
-        ChangeNotifierProvider(create: (_) => LocaleProvider()),
       ],
       child: Consumer<LocaleProvider>(
         builder: (context, localeProvider, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            
             title: 'Masal',
-            
             locale: localeProvider.locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,
@@ -60,9 +61,6 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: AppLocalizations.supportedLocales,
-            
-          
-            
             home: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
@@ -75,11 +73,11 @@ class MyApp extends StatelessWidget {
                     ),
                   );
                 }
-                
+
                 if (snapshot.hasData && snapshot.data != null) {
                   return const MainScreen();
                 }
-                
+
                 return const LoginView();
               },
             ),

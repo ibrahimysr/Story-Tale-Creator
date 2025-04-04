@@ -345,7 +345,6 @@ class StoryDisplayViewModel extends ChangeNotifier {
       _isLoadingPdf = false;
       notifyListeners();
     } catch (e) {
-      print("Hata detayları: $e");
       _isLoadingPdf = false;
       _errorMessage = e.toString();
       notifyListeners();

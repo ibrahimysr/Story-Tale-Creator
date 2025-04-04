@@ -1,82 +1,69 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+class CategoryOptions {
+  final List<String> en;
+  final List<String> tr;
+
+  CategoryOptions({required this.en, required this.tr});
+
+  List<String> getOptions(String languageCode) {
+    return languageCode == 'tr' ? tr : en;
+  }
+
+  String? findEnglishEquivalent(String value) {
+    int index = tr.indexOf(value);
+    if (index != -1 && index < en.length) {
+      return en[index];
+    }
+    index = en.indexOf(value);
+    if (index != -1) {
+      return en[index];
+    }
+    return null;
+  }
+}
 
 class StoryOptionsRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
- 
-
-  Future<List<String>> getPlaces() async {
+  Future<CategoryOptions> _getCategoryOptions(String categoryId) async {
     try {
-      final doc = await _firestore.collection('categories').doc('places').get();
-      return List<String>.from(doc.data()?['options'] ?? []);
+      final doc =
+          await _firestore.collection('categoriess').doc(categoryId).get();
+      final data = doc.data();
+      if (data == null) {
+        return CategoryOptions(en: [], tr: []);
+      }
+
+      final enOptions = List<String>.from(data['en'] ?? []);
+      final trOptions = List<String>.from(data['tr'] ?? []);
+
+      if (enOptions.length != trOptions.length && kDebugMode) {}
+
+      return CategoryOptions(en: enOptions, tr: trOptions);
     } catch (e) {
-      throw Exception('Mekanlar yüklenirken bir hata oluştu: $e');
+      throw Exception('Error loading options for "$categoryId": $e');
     }
   }
 
-  Future<List<String>> getCharacters() async {
-    try {
-      final doc = await _firestore.collection('categories').doc('characters').get();
-      return List<String>.from(doc.data()?['options'] ?? []);
-    } catch (e) {
-      throw Exception('Karakterler yüklenirken bir hata oluştu: $e');
-    }
+  Future<CategoryOptions> getPlaces() async {
+    return await _getCategoryOptions('places');
   }
 
-  Future<List<String>> getTimes() async {
-    try {
-      final doc = await _firestore.collection('categories').doc('times').get();
-      return List<String>.from(doc.data()?['options'] ?? []);
-    } catch (e) {
-      throw Exception('Zamanlar yüklenirken bir hata oluştu: $e');
-    }
+  Future<CategoryOptions> getCharacters() async {
+    return await _getCategoryOptions('characters');
   }
 
-  Future<List<String>> getEmotions() async {
-    try {
-      final doc = await _firestore.collection('categories').doc('emotions').get();
-      return List<String>.from(doc.data()?['options'] ?? []);
-    } catch (e) {
-      throw Exception('Duygular yüklenirken bir hata oluştu: $e');
-    }
+  Future<CategoryOptions> getTimes() async {
+    return await _getCategoryOptions('times');
   }
 
-  Future<List<String>> getEvents() async {
-    try {
-      final doc = await _firestore.collection('categories').doc('events').get();
-      return List<String>.from(doc.data()?['options'] ?? []);
-    } catch (e) {
-      throw Exception('Olaylar yüklenirken bir hata oluştu: $e');
-    }
+  Future<CategoryOptions> getEmotions() async {
+    return await _getCategoryOptions('emotions');
   }
 
-  Future<Map<String, String>> getPlaceTranslations() async {
-    try {
-      final doc = await _firestore.collection('categories').doc('places').get();
-      final translations = doc.data()?['translations'] as Map<String, dynamic>?;
-      return Map<String, String>.from(translations ?? {});
-    } catch (e) {
-      throw Exception('Mekan çevirileri yüklenirken bir hata oluştu: $e');
-    }
+  Future<CategoryOptions> getEvents() async {
+    return await _getCategoryOptions('events');
   }
-
-  Future<Map<String, String>> getCharacterTranslations() async {
-    try {
-      final doc = await _firestore.collection('categories').doc('characters').get();
-      final translations = doc.data()?['translations'] as Map<String, dynamic>?;
-      return Map<String, String>.from(translations ?? {});
-    } catch (e) {
-      throw Exception('Karakter çevirileri yüklenirken bir hata oluştu: $e');
-    }
-  }
-
-  Future<Map<String, String>> getEventTranslations() async {
-    try {
-      final doc = await _firestore.collection('categories').doc('events').get();
-      final translations = doc.data()?['translations'] as Map<String, dynamic>?;
-      return Map<String, String>.from(translations ?? {});
-    } catch (e) {
-      throw Exception('Olay çevirileri yüklenirken bir hata oluştu: $e');
-    }
-  }
-} 
+}

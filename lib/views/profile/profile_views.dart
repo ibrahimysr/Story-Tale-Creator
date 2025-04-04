@@ -50,7 +50,7 @@ class _ProfileViewState extends State<ProfileView> {
           labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
         ),
         dropdownColor: SpaceTheme.accentPurple.withOpacity(0.8),
-        value: localeProvider.locale ?? const Locale('en'),
+        value: localeProvider.locale,
         onChanged: (Locale? newLocale) {
           if (newLocale != null) {
             localeProvider.setLocale(newLocale);
