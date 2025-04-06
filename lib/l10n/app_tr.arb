@@ -14,6 +14,7 @@
   "language": "Dil",
   "turkish": "Türkçe",
   "english": "İngilizce",
+  "spanish":"İspanyolca",
   "authRequiredTitle": "Giriş Yapmanız Gerekiyor",
   "authRequiredMessage": "Profilinizi görüntülemek için lütfen giriş yapın veya kaydolun.",
   "login": "Giriş Yap",

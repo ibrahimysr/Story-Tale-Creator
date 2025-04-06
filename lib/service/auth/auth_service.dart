@@ -6,6 +6,7 @@ class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<User?> registerWithEmailAndPassword(BuildContext context, String email, String password) async {
+    if (!context.mounted) return null;
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
@@ -13,13 +14,16 @@ class FirebaseAuthService {
       );
       return result.user;
     } on FirebaseAuthException catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw _handleFirebaseAuthException(context, e, isRegistration: true);
     } catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
   Future<User?> signInWithEmailAndPassword(BuildContext context, String email, String password) async {
+    if (!context.mounted) return null;
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email.trim(),
@@ -27,23 +31,29 @@ class FirebaseAuthService {
       );
       return result.user;
     } on FirebaseAuthException catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw _handleFirebaseAuthException(context, e, isRegistration: false);
     } catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
   Future<void> resetPassword(BuildContext context, String email) async {
+    if (!context.mounted) return;
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
     } on FirebaseAuthException catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw _handleFirebaseAuthException(context, e, isReset: true);
     } catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
   Future<void> deleteAccount(BuildContext context, String email, String password) async {
+    if (!context.mounted) return;
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email.trim(),
@@ -51,14 +61,18 @@ class FirebaseAuthService {
       );
       await credential.user!.delete();
     } on FirebaseAuthException catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw _handleFirebaseAuthException(context, e, isDelete: true);
     } catch (e) {
+      if (!context.mounted) throw Exception('Context not mounted');
       throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
   Exception _handleFirebaseAuthException(BuildContext context, FirebaseAuthException e,
       {bool isRegistration = false, bool isReset = false, bool isDelete = false}) {
+    if (!context.mounted) return Exception('Context not mounted');
+    
     String baseMessage = e.message ?? 'Bilinmeyen bir hata oluştu';
     
     switch (e.code) {

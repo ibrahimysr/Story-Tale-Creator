@@ -83,6 +83,7 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _isLoading = false;
+     if (!context.mounted) return;
       _error = context.localizations.genericError(e.toString());
       notifyListeners();
     }

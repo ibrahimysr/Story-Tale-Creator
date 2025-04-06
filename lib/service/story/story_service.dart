@@ -31,6 +31,22 @@ Hikayenin başında # işareti ile başlayan, kısa ve çarpıcı bir başlık o
 Örnek başlık: # Gizemli Ormanın Kahramanı
 Hikaye Türkçe olmalı ve çocukların ilgisini çekecek şekilde bir başlangıç, gelişme ve tatmin edici bir son içermeli.
 """;
+    } else if (languageCode == 'es') {
+      prompt = """
+Escribe un cuento divertido, imaginativo y corto para niños.
+El cuento debe tener las siguientes características:
+- Lugar: $place (describe el lugar de manera vívida y detallada en la historia)
+- Personaje: $character (destaca la personalidad y características del personaje)
+- Tiempo: $time (integra el tiempo en la historia de manera natural)
+- Emoción principal: $emotion (esta emoción debe establecer el tono de la historia)
+- Evento: $event (haz que el evento sea emocionante e intrigante)
+
+El cuento debe tener de 8 a 9 párrafos de largo y ser adecuado para niños de 5 a 10 años.
+El cuento debe estar escrito en un lenguaje fluido, simple y divertido; evita palabras complejas.
+Al principio del cuento, debe haber un título breve e impactante que comience con # (máximo 5 palabras).
+Ejemplo de título: # Héroe del Bosque Misterioso
+El cuento debe estar en español y debe contener un comienzo atractivo, desarrollo y una conclusión satisfactoria, adecuada para niños.
+""";
     } else {
       prompt = """
 Write a fun, imaginative, and short story for children.

@@ -7,7 +7,7 @@ class FirebaseDataUploader {
 
   Future<void> uploadCategoryData(String category, Map<String, List<String>> data) async {
     try {
-      await _firestore.collection('categoriess').doc(category).set(data);
+      await _firestore.collection('categories').doc(category).set(data);
     } catch (e) {
       throw Exception('Veri yükleme hatası: $e');
     }
@@ -55,6 +55,26 @@ class FirebaseDataUploader {
         "Detective owl",
         "Ninja panda",
       ],
+      'es': [
+        "Princesa valiente",
+        "Amigo robot",
+        "Pequeño dragón",
+        "Gato parlante",
+        "Niño mago",
+        "Perro héroe",
+        "Estudiante alienígena",
+        "Pintor soñador",
+        "Pingüino viajero",
+        "Ardilla músico",
+        "Conejo inventor",
+        "Delfín buceador",
+        "Viajero del tiempo",
+        "Ratón superhéroe",
+        "Piloto espacial",
+        "Mariposa bailarina",
+        "Búho detective",
+        "Panda ninja",
+      ],
     };
     await uploadCategoryData('characters', charactersData);
   }
@@ -100,6 +120,26 @@ class FirebaseDataUploader {
         "Empathy",
         "Creativity",
         "Gratitude",
+      ],
+      'es': [
+        "Emoción",
+        "Curiosidad",
+        "Felicidad",
+        "Amistad",
+        "Valentía",
+        "Sorpresa",
+        "Esperanza",
+        "Amor",
+        "Espíritu aventurero",
+        "Solidaridad",
+        "Confianza",
+        "Alegría",
+        "Entusiasmo",
+        "Compasión",
+        "Determinación",
+        "Empatía",
+        "Creatividad",
+        "Gratitud",
       ],
     };
     await uploadCategoryData('emotions', emotionsData);
@@ -147,6 +187,26 @@ class FirebaseDataUploader {
         "Discovering secret powers",
         "Magical tournament",
       ],
+      'es': [
+        "Búsqueda del tesoro",
+        "Búsqueda de mascota perdida",
+        "Sorpresa de cumpleaños",
+        "Descubrir una puerta mágica",
+        "Hacer un nuevo amigo",
+        "Competencia científica",
+        "Encontrar un mapa misterioso",
+        "Cultivar una semilla mágica",
+        "Misión de recolección de estrellas",
+        "Cruzar el puente del arcoíris",
+        "Encontrar el instrumento perdido",
+        "Aventura de viaje en el tiempo",
+        "Olimpiadas espaciales",
+        "Secreto del libro mágico",
+        "Descubrir una civilización perdida",
+        "Festival galáctico",
+        "Descubrir poderes secretos",
+        "Torneo mágico",
+      ],
     };
     await uploadCategoryData('events', eventsData);
   }
@@ -192,6 +252,26 @@ class FirebaseDataUploader {
         "Robot country",
         "Dream garden",
         "Interstellar station",
+      ],
+      'es': [
+        "Bosque mágico",
+        "Nave espacial",
+        "Submarino",
+        "Reino de las hadas",
+        "País de los dulces",
+        "Isla de dinosaurios",
+        "Valle del arcoíris",
+        "Cueva de cristal",
+        "Isla flotante",
+        "Ciudad de las nubes",
+        "Máquina del tiempo",
+        "Casa del árbol secreta",
+        "Ciudad perdida de Atlántida",
+        "Base lunar",
+        "Isla de piratas",
+        "País de los robots",
+        "Jardín de los sueños",
+        "Estación interestelar",
       ],
     };
     await uploadCategoryData('places', placesData);
@@ -239,6 +319,26 @@ class FirebaseDataUploader {
         "During harvest season",
         "During a lunar eclipse",
       ],
+      'es': [
+        "En tiempos antiguos",
+        "En el futuro",
+        "Durante las vacaciones de verano",
+        "En un día de invierno",
+        "A medianoche",
+        "Al amanecer",
+        "Mientras brillan las estrellas",
+        "Cuando aparece un arcoíris",
+        "En una noche de luna llena",
+        "En un festival de primavera",
+        "En un festival de otoño",
+        "Cuando el tiempo se detiene",
+        "En la víspera de Año Nuevo",
+        "Durante una lluvia de meteoros",
+        "Durante un eclipse solar",
+        "En tiempo de carnaval",
+        "Durante la temporada de cosecha",
+        "Durante un eclipse lunar",
+      ],
     };
     await uploadCategoryData('times', timesData);
   }
@@ -255,4 +355,3 @@ class FirebaseDataUploader {
     }
   }
 }
-

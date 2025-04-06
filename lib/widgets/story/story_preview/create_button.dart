@@ -30,7 +30,7 @@ class CreateButton extends StatelessWidget {
               if (!context.mounted) return;
 
               if (canAccess) {
-                await storyViewModel.generateStory().then((_) {
+                await storyViewModel.generateStory(context).then((_) {
                   if (storyViewModel.generatedStory != null &&
                       context.mounted) {
                     Navigator.pushReplacement(

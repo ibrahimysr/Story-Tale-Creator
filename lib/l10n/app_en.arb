@@ -15,6 +15,7 @@
   "language": "Language",
   "turkish": "Turkish",
   "english": "English",
+  "spanish":"Spanish",
   "authRequiredTitle": "Authentication Required",
   "authRequiredMessage": "Please log in or sign up to view your profile.",
   "login": "Login",

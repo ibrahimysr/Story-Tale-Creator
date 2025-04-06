@@ -13,11 +13,11 @@ class StoryViewModel extends ChangeNotifier {
   final StoryOptionsService _optionsService;
   final LocaleProvider _localeProvider;
 
-  CategoryOptions _placesData = CategoryOptions(en: [], tr: []);
-  CategoryOptions _charactersData = CategoryOptions(en: [], tr: []);
-  CategoryOptions _timesData = CategoryOptions(en: [], tr: []);
-  CategoryOptions _emotionsData = CategoryOptions(en: [], tr: []);
-  CategoryOptions _eventsData = CategoryOptions(en: [], tr: []);
+  CategoryOptions _placesData = CategoryOptions(en: [], tr: [], es: []);
+  CategoryOptions _charactersData = CategoryOptions(en: [], tr: [], es: []);
+  CategoryOptions _timesData = CategoryOptions(en: [], tr: [], es: []);
+  CategoryOptions _emotionsData = CategoryOptions(en: [], tr: [], es: []);
+  CategoryOptions _eventsData = CategoryOptions(en: [], tr: [], es: []);
 
   String? _selectedPlaceEn;
   String? _selectedCharacterEn;

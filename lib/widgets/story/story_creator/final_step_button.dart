@@ -15,7 +15,7 @@ class FinalStepButton extends StatelessWidget {
     return AnimatedScaleButton(
       onPressed: viewModel.selectedEvent != null && !viewModel.isLoading
           ? () {
-              viewModel.generateStory().then((_) {
+              viewModel.generateStory(context).then((_) {
                 if (viewModel.generatedStory != null && context.mounted) {
                   Navigator.pushReplacement(
                     context,
