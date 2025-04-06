@@ -9,7 +9,10 @@ class DiscoverSearchBar extends StatelessWidget {
   const DiscoverSearchBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+    if (context.read<StoryDiscoverViewModel>().context == null) {
+      context.read<StoryDiscoverViewModel>().updateContext(context);
+    }
     return Consumer<StoryDiscoverViewModel>(
       builder: (context, viewModel, _) {
         return Padding(

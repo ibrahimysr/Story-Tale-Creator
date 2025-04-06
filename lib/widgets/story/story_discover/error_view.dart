@@ -10,6 +10,9 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   if (viewModel.context == null) {
+          viewModel.updateContext(context); 
+        }
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

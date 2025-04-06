@@ -2,9 +2,11 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:masal/core/theme/space_theme.dart';
+import 'package:masal/viewmodels/locale_provider.dart';
 import 'package:masal/views/subscription/subscription_view.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:printing/printing.dart';
+import 'package:provider/provider.dart';
 import '../model/story/story_display_model.dart';
 import '../repository/story_display_repository.dart';
 import 'package:pdf/pdf.dart';
@@ -18,7 +20,8 @@ class StoryDisplayViewModel extends ChangeNotifier {
   PaletteGenerator? _palette;
   Color _dominantColor = Colors.black;
   Color _textColor = Colors.white;
-  List<Color> _colorPalette = [];
+  List<Color> _colorPalette = []; 
+
 
   StoryDisplayViewModel({StoryDisplayRepository? repository})
       : _repository = repository ?? StoryDisplayRepository();
@@ -102,24 +105,40 @@ class StoryDisplayViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> saveStory(StoryDisplayModel story,
-      {BuildContext? context}) async {
+    Future<bool> saveStory(StoryDisplayModel story,
+      {BuildContext? context}) async { 
+
+    if (context == null) {
+      log('Hata saveStory: Dil kodunu almak için BuildContext gerekli.');
+      _isLoading = false; 
+      _errorMessage = "Dil ayarı alınamadı (Context eksik).";
+      notifyListeners();
+      throw ArgumentError("Hikayeyi kaydetmek için dil kodunu belirlemek üzere BuildContext gereklidir.");
+    }
+
     try {
       _isLoading = true;
       _errorMessage = null;
       notifyListeners();
 
-      final success = await _repository.saveStory(story, context: context);
+    
+      final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
+      String langCode = localeProvider.locale.languageCode;
+
+      log('Hikaye kaydediliyor, dil kodu: $langCode');
+
+      final success = await _repository.saveStory(story, langCode, context: context);
 
       _isLoading = false;
-      notifyListeners();
+      notifyListeners(); 
 
       return success;
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();
+      log('Hikaye kaydedilirken hata: $e'); 
       notifyListeners();
-      rethrow;
+      rethrow;  
     }
   }
 

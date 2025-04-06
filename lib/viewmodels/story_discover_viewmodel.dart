@@ -1,17 +1,20 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:masal/viewmodels/locale_provider.dart';
+import 'package:provider/provider.dart';
 import '../model/story/story_library_model.dart';
 import '../repository/story_discover_repository.dart';
 
 class StoryDiscoverViewModel extends ChangeNotifier {
   final StoryDiscoverRepository _repository;
+  BuildContext? context;
   bool _isLoading = false;
   bool _isLoadingMore = false;
   String? _errorMessage;
   List<StoryLibraryModel> _stories = [];
   bool _mounted = true;
-
+  
   static const int pageSize = 15;
   bool _hasMoreStories = true;
 
@@ -21,9 +24,20 @@ class StoryDiscoverViewModel extends ChangeNotifier {
   String _searchQuery = '';
   bool _isSearching = false;
 
-  StoryDiscoverViewModel({StoryDiscoverRepository? repository})
+  // Context parametresi opsiyonel
+  StoryDiscoverViewModel({StoryDiscoverRepository? repository, this.context})
       : _repository = repository ?? StoryDiscoverRepository() {
     loadStories();
+  }
+
+  // Context güncelleme metodu
+  void updateContext(BuildContext newContext) {
+    context = newContext;
+    // Context değiştiğinde dil kodumuz değişmiş olabilir, yeniden yükleme yapabiliriz
+    // Ancak sürekli yeniden yükleme yapmamak için bir kontrol ekleyelim
+    if (_stories.isEmpty && !_isLoading) {
+      loadStories();
+    }
   }
 
   bool get isLoading => _isLoading;
@@ -59,22 +73,39 @@ class StoryDiscoverViewModel extends ChangeNotifier {
     }
   }
 
+  // Dil kodunu almak için yardımcı metot
+  String _getCurrentLanguageCode() {
+    if (context != null) {
+      try {
+        final localeProvider = Provider.of<LocaleProvider>(context!, listen: false);
+        return localeProvider.locale.languageCode;
+      } catch (e) {
+        log('Error getting language code: $e');
+      }
+    }
+    return 'en'; // Varsayılan dil kodu
+  }
+
   Future<void> loadStories() async {
     if (!_mounted) return;
 
     if (_isCacheValid()) {
       return;
     }
-
+     
     try {
       _isLoading = true;
       _errorMessage = null;
       _hasMoreStories = true;
+      
+      // Context kullanarak dil kodunu al
+      String langCode = _getCurrentLanguageCode();
       notifyListeners();
 
       final stories = await _repository.getAllStories(
         limit: pageSize,
         searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
+        languageCode: langCode,
       );
 
       if (!_mounted) return;
@@ -102,11 +133,15 @@ class StoryDiscoverViewModel extends ChangeNotifier {
 
     try {
       _isLoadingMore = true;
+      
+      // Context kullanarak dil kodunu al
+      String langCode = _getCurrentLanguageCode();
       notifyListeners();
 
       if (_stories.isEmpty) {
         _isLoadingMore = false;
         _hasMoreStories = false;
+        
         notifyListeners();
         return;
       }
@@ -116,6 +151,7 @@ class StoryDiscoverViewModel extends ChangeNotifier {
         limit: pageSize,
         startAfter: lastStory.id,
         searchQuery: _searchQuery.isEmpty ? null : _searchQuery,
+        languageCode: langCode
       );
 
       if (!_mounted) return;

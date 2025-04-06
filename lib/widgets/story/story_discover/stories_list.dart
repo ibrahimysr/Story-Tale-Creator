@@ -17,8 +17,11 @@ class StoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     if (discoverViewModel.context == null) {
+          discoverViewModel.updateContext(context);  
+        }
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(12.0),
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
           if (!discoverViewModel.isLoadingMore &&
@@ -36,7 +39,7 @@ class StoriesList extends StatelessWidget {
           itemBuilder: (context, index) {
             if (index == discoverViewModel.stories.length) {
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: Center(
                   child: SizedBox(
                     width: 24,
@@ -52,7 +55,7 @@ class StoriesList extends StatelessWidget {
 
             final story = discoverViewModel.stories[index];
             return Padding(
-              padding: const EdgeInsets.all( 16.0),
+              padding: const EdgeInsets.all( 2.0),
               child: StoryLibraryItem(
                 story: story,
                 onTap: () => _viewStoryDetail(context, story),

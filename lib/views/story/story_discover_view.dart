@@ -18,7 +18,7 @@ class StoryDiscoverView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => StoryDiscoverViewModel()),
+        ChangeNotifierProvider(create: (_) => StoryDiscoverViewModel(context: context)),
         ChangeNotifierProvider(create: (_) => StoryDisplayViewModel()), 
       ],
       child: Scaffold(

@@ -18,7 +18,7 @@ class StoryDisplayRepository {
         : story.substring(0, maxLength).trim();
   }
 
-  Future<bool> saveStory(StoryDisplayModel story, {BuildContext? context}) async {
+  Future<bool> saveStory(StoryDisplayModel story,String languageCode, {BuildContext? context}) async {
     try {
       final user = _auth.currentUser;
       if (user == null) {
@@ -58,6 +58,7 @@ class StoryDisplayRepository {
         'likeCount': 0,
         'likedByUsers': [],
         'storyPrefix': storyPrefix, 
+        "Language": languageCode
       };
 
       await _firestore.collection('userStories').add(storyData);
