@@ -357,7 +357,8 @@ class _EditProfileViewState extends State<EditProfileView> {
       await viewModel.updateProfile(
         name: _nameController.text,
         username: _usernameController.text,
-        avatar: _selectedAvatar,
+        avatar: _selectedAvatar, 
+        context: context
       );
 
       if (!mounted) return;

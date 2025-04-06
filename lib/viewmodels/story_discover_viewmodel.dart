@@ -24,17 +24,14 @@ class StoryDiscoverViewModel extends ChangeNotifier {
   String _searchQuery = '';
   bool _isSearching = false;
 
-  // Context parametresi opsiyonel
   StoryDiscoverViewModel({StoryDiscoverRepository? repository, this.context})
       : _repository = repository ?? StoryDiscoverRepository() {
     loadStories();
   }
 
-  // Context güncelleme metodu
   void updateContext(BuildContext newContext) {
     context = newContext;
-    // Context değiştiğinde dil kodumuz değişmiş olabilir, yeniden yükleme yapabiliriz
-    // Ancak sürekli yeniden yükleme yapmamak için bir kontrol ekleyelim
+    
     if (_stories.isEmpty && !_isLoading) {
       loadStories();
     }
@@ -73,7 +70,6 @@ class StoryDiscoverViewModel extends ChangeNotifier {
     }
   }
 
-  // Dil kodunu almak için yardımcı metot
   String _getCurrentLanguageCode() {
     if (context != null) {
       try {
@@ -83,7 +79,7 @@ class StoryDiscoverViewModel extends ChangeNotifier {
         log('Error getting language code: $e');
       }
     }
-    return 'en'; // Varsayılan dil kodu
+    return 'tr';
   }
 
   Future<void> loadStories() async {
@@ -98,7 +94,6 @@ class StoryDiscoverViewModel extends ChangeNotifier {
       _errorMessage = null;
       _hasMoreStories = true;
       
-      // Context kullanarak dil kodunu al
       String langCode = _getCurrentLanguageCode();
       notifyListeners();
 
@@ -134,7 +129,6 @@ class StoryDiscoverViewModel extends ChangeNotifier {
     try {
       _isLoadingMore = true;
       
-      // Context kullanarak dil kodunu al
       String langCode = _getCurrentLanguageCode();
       notifyListeners();
 

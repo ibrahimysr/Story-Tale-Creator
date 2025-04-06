@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import '../../core/theme/space_theme.dart';
 import '../../model/home/home_story_model.dart';
 
@@ -91,8 +92,8 @@ class HomeStoryItem extends StatelessWidget {
                             color: SpaceTheme.accentBlue.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Text(
-                            'Okumaya Devam Et',
+                          child:  Text(
+                            context.localizations.readTheStory,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 10,

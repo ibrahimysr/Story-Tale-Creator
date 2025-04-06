@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/service/auth/auth_service.dart';
 
 class PasswordResetViewModel extends ChangeNotifier {
@@ -8,6 +9,7 @@ class PasswordResetViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? _successMessage;
   bool _shouldNavigateToLogin = false;
+  BuildContext? context;
 
   String? get email => _email;
   bool get isLoading => _isLoading;
@@ -20,9 +22,9 @@ class PasswordResetViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> resetPassword() async {
+  Future<void> resetPassword(BuildContext context) async {
     if (_email == null || _email!.isEmpty) {
-      _errorMessage = 'Lütfen e-posta adresinizi girin.';
+      _errorMessage = context.localizations.enterEmail;
       notifyListeners();
       return;
     }
@@ -34,8 +36,8 @@ class PasswordResetViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.resetPassword(_email!);
-      _successMessage = 'Şifre sıfırlama bağlantısı e-postanıza gönderildi!';
+      await _authService.resetPassword(context , _email!);
+      _successMessage = context.localizations.sentToResetPassword;
       _errorMessage = null;
       _shouldNavigateToLogin = true; 
     } on Exception catch (e) {

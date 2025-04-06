@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/locale_provider.dart';
 import 'package:masal/views/subscription/subscription_view.dart';
@@ -109,11 +110,10 @@ class StoryDisplayViewModel extends ChangeNotifier {
       {BuildContext? context}) async { 
 
     if (context == null) {
-      log('Hata saveStory: Dil kodunu almak için BuildContext gerekli.');
       _isLoading = false; 
-      _errorMessage = "Dil ayarı alınamadı (Context eksik).";
+      _errorMessage = context!.localizations.context_missing;
       notifyListeners();
-      throw ArgumentError("Hikayeyi kaydetmek için dil kodunu belirlemek üzere BuildContext gereklidir.");
+      throw ArgumentError(context.localizations.missing_locale_context);
     }
 
     try {
@@ -125,7 +125,6 @@ class StoryDisplayViewModel extends ChangeNotifier {
       final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
       String langCode = localeProvider.locale.languageCode;
 
-      log('Hikaye kaydediliyor, dil kodu: $langCode');
 
       final success = await _repository.saveStory(story, langCode, context: context);
 
@@ -136,7 +135,6 @@ class StoryDisplayViewModel extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();
-      log('Hikaye kaydedilirken hata: $e'); 
       notifyListeners();
       rethrow;  
     }
@@ -412,7 +410,7 @@ class StoryDisplayViewModel extends ChangeNotifier {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Abonelik Gerekli',
+                  context.localizations.subscription_required_title,
                   style: SpaceTheme.titleStyle.copyWith(
                     fontSize: 22,
                     color: Colors.white,
@@ -420,8 +418,7 @@ class StoryDisplayViewModel extends ChangeNotifier {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'PDF indirmek için premium abone olmanız gerekiyor.',
-                  textAlign: TextAlign.center,
+context.localizations.subscription_required_desc,                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 16,
@@ -438,8 +435,8 @@ class StoryDisplayViewModel extends ChangeNotifier {
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white.withValues(alpha: 0.7),
                       ),
-                      child: const Text(
-                        'İptal',
+                      child:  Text(
+                       context.localizations.cancel,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -461,8 +458,8 @@ class StoryDisplayViewModel extends ChangeNotifier {
                         ),
                         elevation: 3,
                       ),
-                      child: const Text(
-                        'Abone Ol',
+                      child:  Text(
+                       context.localizations.subscribeButton,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),

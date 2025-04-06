@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/viewmodels/locale_provider.dart';
 import '../model/story/story_model.dart';
 import '../service/story/story_service.dart';
@@ -180,7 +181,7 @@ class StoryViewModel extends ChangeNotifier {
         _selectedEventEn != null;
   }
 
-  Future<void> generateStory() async {
+  Future<void> generateStory(BuildContext context) async {
     if (!canGenerateStory) {
       List<String> missing = [];
       if (_selectedPlaceEn == null) missing.add("Mekan (Place)");
@@ -189,7 +190,7 @@ class StoryViewModel extends ChangeNotifier {
       if (_selectedEmotionEn == null) missing.add("Duygu (Emotion)");
       if (_selectedEventEn == null) missing.add("Olay (Event)");
 
-      errorMessage = 'Lütfen tüm seçimleri yapın. Eksik: ${missing.join(', ')}';
+      errorMessage = context.localizations.incomplete_selection(missing.join(', '));
 
       notifyListeners();
       return;
@@ -233,22 +234,7 @@ class StoryViewModel extends ChangeNotifier {
     } catch (e) {
       if (_isCancelled) return;
       isLoading = false;
-      String error = e.toString().replaceFirst('Exception: ', '');
-
-      if (error.contains('Görsel oluşturulamadı')) {
-        errorMessage =
-            '$error\nBu sorunun çözümü için destek ekibinden yardım alabilirsiniz.';
-      } else if (error.contains('Çok fazla istek')) {
-        errorMessage = error;
-      } else if (error.contains('API anahtarı geçersiz')) {
-        errorMessage = error;
-      } else if (error.contains('Hikaye oluşturulamadı')) {
-        errorMessage = error;
-      } else {
-        errorMessage =
-            'Hikaye veya görsel oluşturulurken bir hata oluştu: $error\nLütfen tekrar deneyin veya destek ekibinden yardım alın.';
-      }
-      notifyListeners();
+     notifyListeners();
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/widgets/navigation/bottom_nav_bar.dart';
 
 class LoginViewModel extends ChangeNotifier {
@@ -29,12 +30,14 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login(BuildContext context) async {
+  Future<void> login(BuildContext context) async { 
+       final localizations = context.localizations;
+
     if (_email.isEmpty || _password.isEmpty) {
       _error = 'Lütfen e-posta ve şifrenizi girin';
       notifyListeners();
       return;
-    }
+    } 
 
     try {
       _isLoading = true;
@@ -59,28 +62,28 @@ class LoginViewModel extends ChangeNotifier {
       _isLoading = false;
       switch (e.code) {
         case 'user-not-found':
-          _error = 'Bu e-posta ile kayıtlı kullanıcı bulunamadı';
+          _error = localizations.userNotFound;
           break;
         case 'wrong-password':
-          _error = 'Girdiğiniz şifre hatalı. Lütfen tekrar deneyin';
+          _error = localizations.wrongPassword;
           break;
         case 'invalid-email':
-          _error = 'Geçersiz e-posta adresi formatı';
+          _error = localizations.invalidEmail;
           break;
         case 'user-disabled':
-          _error = 'Bu hesap devre dışı bırakılmış';
+          _error =localizations.userDisabled;
           break;
         case 'too-many-requests':
           _error =
-              'Çok fazla başarısız giriş denemesi. Lütfen daha sonra tekrar deneyin';
+              localizations.tooManyRequests;
           break;
         default:
-          _error = 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin';
+          _error = localizations.operationNotAllowed;
       }
       notifyListeners();
     } catch (e) {
       _isLoading = false;
-      _error = 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin';
+      _error = context.localizations.genericError(e.toString());
       notifyListeners();
     }
   }

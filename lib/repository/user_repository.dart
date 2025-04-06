@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:masal/service/auth/auth_service.dart';
 import '../model/auth/user_model.dart';
 
@@ -8,10 +9,10 @@ class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<UserModel> registerUser(
-      String username, String email, String password, String avatar) async {
+      String username, String email, String password, String avatar,BuildContext context) async {
     try {
       User? user = await _authService.registerWithEmailAndPassword(
-          email, password);
+     context, email, password);
       
       if (user == null) {
         throw Exception('Kullanıcı kaydı başarısız oldu.');
@@ -40,9 +41,10 @@ class UserRepository {
     }
   }
 
-  Future<UserModel> loginUser(String email, String password) async {
+  Future<UserModel> loginUser(BuildContext context,String email, String password) async {
     try {
       User? user = await _authService.signInWithEmailAndPassword(
+        context,
           email, password);
       
       if (user == null) {

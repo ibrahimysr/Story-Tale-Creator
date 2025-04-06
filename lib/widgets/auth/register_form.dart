@@ -192,7 +192,8 @@ class _RegisterFormState extends State<RegisterForm> {
             widget.usernameController.text,
             widget.emailController.text,
             widget.passwordController.text,
-            widget.selectedAvatar,
+            widget.selectedAvatar, 
+            context,
           );
         }
       },
@@ -220,7 +221,8 @@ class _RegisterFormState extends State<RegisterForm> {
                     widget.usernameController.text,
                     widget.emailController.text,
                     widget.passwordController.text,
-                    widget.selectedAvatar,
+                    widget.selectedAvatar, 
+                    context
                   );
                   if (viewModel.state == RegisterState.success) {
                     if (mounted) {

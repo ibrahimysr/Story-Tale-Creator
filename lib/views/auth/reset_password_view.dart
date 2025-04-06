@@ -157,7 +157,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             ),
           )
         : ElevatedButton(
-            onPressed: () => viewModel.resetPassword(),
+            onPressed: () => viewModel.resetPassword(context),
             style: ElevatedButton.styleFrom(
               backgroundColor: SpaceTheme.accentPurple,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),

@@ -109,7 +109,7 @@ class RecentStoriesList extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => StoryDisplayView(
           story: story.story,
-          title: story.title ?? "Hikayem",
+          title: story.title ?? context.localizations.mystorie,
           image: story.imageData,
           showSaveButton: false,
         ),
