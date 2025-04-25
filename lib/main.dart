@@ -60,7 +60,20 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: AppLocalizations.supportedLocales,
+            supportedLocales: AppLocalizations.supportedLocales, 
+        //       initialRoute: '/delete-account', 
+        //  onGenerateRoute: (settings) {
+        //  switch (settings.name) {
+        //    case '/delete-account':
+        //      return MaterialPageRoute(builder: (_) => const DeleteAccountView());
+        //    case '/support':
+        //      return MaterialPageRoute(builder: (_) => const SupportView());
+        //    case '/privacy-policy':
+        //      return MaterialPageRoute(builder: (_) => const PrivacyPolicyView());
+        //    default:
+        //      return MaterialPageRoute(builder: (_) => const DeleteAccountView()); 
+        //  }
+       
             home: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
