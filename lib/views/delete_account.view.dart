@@ -167,10 +167,11 @@ class _DeleteAccountViewState extends State<DeleteAccountView> {
                                         )
                                       : ElevatedButton(
                                           onPressed: () async {
-                                            await viewModel.deleteAccount(
+                                            await viewModel.deleteAccount( 
+                                              
+                                              context,
                                               _emailController.text,
                                               _passwordController.text,
-                                              context,
                                             );
                                             if (viewModel.successMessage != null &&
                                                 context.mounted) {

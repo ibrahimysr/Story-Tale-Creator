@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/register_viewmodel.dart';
@@ -81,7 +82,7 @@ class _RegisterViewState extends State<RegisterView>
                     child: Column(
                       children: [
                         SizedBox(height: context.getDynamicHeight(5)),
-                        buildHeader(context, Icons.auto_awesome, 'Uzay Macerasına Katıl'),
+                        buildHeader(context, Icons.auto_awesome, context.localizations.registerTitle),
                         SizedBox(height: context.getDynamicHeight(5)),
                         FadeTransition(
                           opacity: _fadeAnimation,

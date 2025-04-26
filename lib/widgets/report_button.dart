@@ -165,6 +165,9 @@ class ReportButton extends StatelessWidget {
     if (result != true || reportReason.trim().isEmpty) return;
 
     try {
+      if (!context.mounted) return;
+    
+
       final success = await viewModel.reportStory(
         storyTitle: storyTitle,
         storyContent: storyContent,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/views/auth/login_view.dart';
 
@@ -12,12 +13,12 @@ class LoginRequiredDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      title: const Text(
-        'Giriş Yapmanız Gerekiyor',
+      title:  Text(
+        context.localizations.loginRequiredTitle,
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
-      content: const Text(
-        'Hikaye oluşturma özelliğini kullanmak için lütfen giriş yapın veya kayıt olun.',
+      content:  Text(
+        context.localizations.loginRequiredMessage,
         style: TextStyle(color: Colors.white70),
       ),
       actions: [
@@ -26,7 +27,7 @@ class LoginRequiredDialog extends StatelessWidget {
             Navigator.of(context).pop();
           },
           child: Text(
-            'İptal',
+            context.localizations.cancel,
             style: TextStyle(color: SpaceTheme.accentBlue),
           ),
         ),
@@ -43,8 +44,8 @@ class LoginRequiredDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          child: const Text(
-            'Giriş Yap',
+          child:  Text(
+            context.localizations.login,
             style: TextStyle(color: Colors.white),
           ),
         ),

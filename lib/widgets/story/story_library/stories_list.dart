@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/story_library_viewmodel.dart';
-import 'package:masal/viewmodels/story_display_viewmodel.dart'; 
+import 'package:masal/viewmodels/story_display_viewmodel.dart';
 import 'package:masal/views/story/story_display_view.dart';
 import 'package:masal/widgets/story/story_library/story_library_item.dart';
 
 class StoriesList extends StatelessWidget {
   final StoryLibraryViewModel libraryViewModel;
-  final StoryDisplayViewModel displayViewModel; 
+  final StoryDisplayViewModel displayViewModel;
 
   const StoriesList({
     super.key,
     required this.libraryViewModel,
-    required this.displayViewModel, 
+    required this.displayViewModel,
   });
 
   @override
@@ -23,7 +24,8 @@ class StoriesList extends StatelessWidget {
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
           if (!libraryViewModel.isLoadingMore &&
-              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent * 0.8 &&
+              scrollInfo.metrics.pixels >=
+                  scrollInfo.metrics.maxScrollExtent * 0.8 &&
               libraryViewModel.canLoadMore) {
             libraryViewModel.loadMoreStories();
           }
@@ -31,7 +33,8 @@ class StoriesList extends StatelessWidget {
         },
         child: ListView.builder(
           physics: const BouncingScrollPhysics(),
-          itemCount: libraryViewModel.stories.length + (libraryViewModel.isLoadingMore ? 1 : 0),
+          itemCount: libraryViewModel.stories.length +
+              (libraryViewModel.isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
             if (index == libraryViewModel.stories.length) {
               return Padding(
@@ -55,9 +58,10 @@ class StoriesList extends StatelessWidget {
               child: StoryLibraryItem(
                 story: story,
                 onTap: () => _viewStoryDetail(context, story),
-                onDelete: () => _confirmDelete(context, libraryViewModel, story),
+                onDelete: () =>
+                    _confirmDelete(context, libraryViewModel, story),
                 onLike: () => libraryViewModel.toggleLike(story.id),
-                viewModel: displayViewModel, 
+                viewModel: displayViewModel,
               ),
             );
           },
@@ -95,24 +99,25 @@ class StoriesList extends StatelessWidget {
               width: 2,
             ),
           ),
-          title: const Text(
-            'Hikayeyi Sil',
+          title: Text(
+            context.localizations.deleteStoryTitle,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          content: const Text(
-            'Bu hikayeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+          content: Text(
+            context.localizations.deleteStoryMessage,
             style: TextStyle(color: Colors.white),
           ),
           actions: <Widget>[
             TextButton(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.grey.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Text(
-                  'İptal',
+                child: Text(
+                  context.localizations.cancel,
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -120,14 +125,16 @@ class StoriesList extends StatelessWidget {
             ),
             TextButton(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.red.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Text(
-                  'Sil',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                child: Text(
+                  context.localizations.delete,
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
               onPressed: () async {
@@ -137,15 +144,17 @@ class StoriesList extends StatelessWidget {
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text(
-                        'Hikaye başarıyla silindi',
+                      content: Text(
+                        context.localizations.storyDeletedSuccess,
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      backgroundColor: SpaceTheme.accentPurple.withValues(alpha: 0.8),
+                      backgroundColor:
+                          SpaceTheme.accentPurple.withValues(alpha: 0.8),
                       duration: const Duration(seconds: 2),
                       behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
                     ),
                   );
                 } catch (e) {
@@ -153,14 +162,16 @@ class StoriesList extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Hikaye silinirken bir hata oluştu: ${e.toString()}',
+                        context.localizations.storyDeletedError(e.toString()),
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 16),
                       ),
                       backgroundColor: Colors.red.withValues(alpha: 0.8),
                       duration: const Duration(seconds: 3),
                       behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
                     ),
                   );
                 }

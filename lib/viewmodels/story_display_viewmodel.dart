@@ -1,10 +1,13 @@
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
+import 'package:masal/viewmodels/locale_provider.dart';
 import 'package:masal/views/subscription/subscription_view.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:printing/printing.dart';
+import 'package:provider/provider.dart';
 import '../model/story/story_display_model.dart';
 import '../repository/story_display_repository.dart';
 import 'package:pdf/pdf.dart';
@@ -18,7 +21,8 @@ class StoryDisplayViewModel extends ChangeNotifier {
   PaletteGenerator? _palette;
   Color _dominantColor = Colors.black;
   Color _textColor = Colors.white;
-  List<Color> _colorPalette = [];
+  List<Color> _colorPalette = []; 
+
 
   StoryDisplayViewModel({StoryDisplayRepository? repository})
       : _repository = repository ?? StoryDisplayRepository();
@@ -102,24 +106,37 @@ class StoryDisplayViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> saveStory(StoryDisplayModel story,
-      {BuildContext? context}) async {
+    Future<bool> saveStory(StoryDisplayModel story,
+      {BuildContext? context}) async { 
+
+    if (context == null) {
+      _isLoading = false; 
+      _errorMessage = context!.localizations.context_missing;
+      notifyListeners();
+      throw ArgumentError(context.localizations.missing_locale_context);
+    }
+
     try {
       _isLoading = true;
       _errorMessage = null;
       notifyListeners();
 
-      final success = await _repository.saveStory(story, context: context);
+    
+      final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
+      String langCode = localeProvider.locale.languageCode;
+
+
+      final success = await _repository.saveStory(story, langCode, context: context);
 
       _isLoading = false;
-      notifyListeners();
+      notifyListeners(); 
 
       return success;
     } catch (e) {
       _isLoading = false;
       _errorMessage = e.toString();
       notifyListeners();
-      rethrow;
+      rethrow;  
     }
   }
 
@@ -345,7 +362,6 @@ class StoryDisplayViewModel extends ChangeNotifier {
       _isLoadingPdf = false;
       notifyListeners();
     } catch (e) {
-      print("Hata detayları: $e");
       _isLoadingPdf = false;
       _errorMessage = e.toString();
       notifyListeners();
@@ -394,7 +410,7 @@ class StoryDisplayViewModel extends ChangeNotifier {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Abonelik Gerekli',
+                  context.localizations.subscription_required_title,
                   style: SpaceTheme.titleStyle.copyWith(
                     fontSize: 22,
                     color: Colors.white,
@@ -402,8 +418,7 @@ class StoryDisplayViewModel extends ChangeNotifier {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'PDF indirmek için premium abone olmanız gerekiyor.',
-                  textAlign: TextAlign.center,
+context.localizations.subscription_required_desc,                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 16,
@@ -420,8 +435,8 @@ class StoryDisplayViewModel extends ChangeNotifier {
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white.withValues(alpha: 0.7),
                       ),
-                      child: const Text(
-                        'İptal',
+                      child:  Text(
+                       context.localizations.cancel,
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -443,8 +458,8 @@ class StoryDisplayViewModel extends ChangeNotifier {
                         ),
                         elevation: 3,
                       ),
-                      child: const Text(
-                        'Abone Ol',
+                      child:  Text(
+                       context.localizations.subscribeButton,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),

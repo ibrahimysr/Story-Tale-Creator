@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/story_discover_viewmodel.dart';
@@ -17,7 +18,7 @@ class StoryDiscoverView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => StoryDiscoverViewModel()),
+        ChangeNotifierProvider(create: (_) => StoryDiscoverViewModel(context: context)),
         ChangeNotifierProvider(create: (_) => StoryDisplayViewModel()), 
       ],
       child: Scaffold(
@@ -71,7 +72,7 @@ class StoryDiscoverView extends StatelessWidget {
       elevation: 0,
       centerTitle: true,
       title: Text(
-        'Keşfet',
+        context.localizations.discoverTitle,
         style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
       ),
       actions: [

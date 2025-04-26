@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/viewmodels/story_discover_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,10 @@ class DiscoverSearchBar extends StatelessWidget {
   const DiscoverSearchBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
+    if (context.read<StoryDiscoverViewModel>().context == null) {
+      context.read<StoryDiscoverViewModel>().updateContext(context);
+    }
     return Consumer<StoryDiscoverViewModel>(
       builder: (context, viewModel, _) {
         return Padding(
@@ -17,7 +21,7 @@ class DiscoverSearchBar extends StatelessWidget {
             onChanged: (value) => viewModel.search(value),
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              hintText: 'Hikayelerde ara...',
+              hintText: context.localizations.searchHintText,
               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
               prefixIcon: Icon(
                 Icons.search,

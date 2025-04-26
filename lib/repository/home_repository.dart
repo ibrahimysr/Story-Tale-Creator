@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,11 +68,9 @@ class HomeRepository {
       if (response.statusCode == 200) {
         return response.bodyBytes;
       } else {
-        log('Resim yükleme hatası: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      log('Resim yükleme hatası: $e');
       return null;
     }
   }

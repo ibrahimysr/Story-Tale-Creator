@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/views/profile/profile_views.dart';
 import 'package:masal/views/home/home_view.dart';
 import 'package:masal/views/story/story_discover_view.dart';
@@ -140,7 +141,7 @@ class _MainScreenState extends State<MainScreen> {
                       color: Colors.white.withValues(alpha:0.1),
                     ),
                     child: Text(
-                      ["Görev Merkezi", "Uzayı Keşfet", "Koleksiyonum", "Kaşif"][index],
+                      [context.localizations.missionCenter,context.localizations.exploreSpace, context.localizations.myCollection, context.localizations.explorer][index],
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white.withValues(alpha:0.9),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/views/auth/login_view.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/space_theme.dart';
@@ -109,7 +110,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
         const SizedBox(width: 8),
         Text(
-          'Profili Düzenle',
+          context.localizations.editProfile,
           style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
         ),
       ],
@@ -137,33 +138,33 @@ class _EditProfileViewState extends State<EditProfileView> {
                 _buildAvatarSelector(),
                 SizedBox(height: context.getDynamicHeight(2)),
                 _buildInputField(
-                  'İsim',
-                  'Görünen adınızı girin',
+                  context.localizations.name,
+                  context.localizations.enterDisplayName,
                   _nameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'İsim boş bırakılamaz';
+                      return context.localizations.nameCannotBeEmpty;
                     }
                     if (value.length < 2) {
-                      return 'İsim en az 2 karakter olmalıdır';
+                      return context.localizations.nameMinLength;
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: context.getDynamicHeight(2)),
                 _buildInputField(
-                  'Kullanıcı Adı',
-                  'Benzersiz kullanıcı adınızı girin',
+                  context.localizations.username,
+                  context.localizations.enterUniqueUsername,
                   _usernameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Kullanıcı adı boş bırakılamaz';
+                      return context.localizations.usernameCannotBeEmpty;
                     }
                     if (value.length < 3) {
-                      return 'Kullanıcı adı en az 3 karakter olmalıdır';
+                      return context.localizations.usernameMinLength;
                     }
                     if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
-                      return 'Sadece harf, rakam ve alt çizgi kullanılabilir';
+                      return context.localizations.usernameFormat;
                     }
                     return null;
                   },
@@ -180,7 +181,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               child: Padding(
                 padding: context.paddingNormalVertical,
                 child: Text(
-                  'Değişiklikleri Kaydet',
+                  context.localizations.saveChanges,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -198,7 +199,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               child: Padding(
                 padding: context.paddingNormalVertical,
                 child: Text(
-                  'Hesabımı Sil',
+                  context.localizations.deleteAccount,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -217,7 +218,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Avatar',
+          context.localizations.avatar,
           style: TextStyle(
             color: SpaceTheme.accentGold,
             fontSize: 16,
@@ -356,7 +357,8 @@ class _EditProfileViewState extends State<EditProfileView> {
       await viewModel.updateProfile(
         name: _nameController.text,
         username: _usernameController.text,
-        avatar: _selectedAvatar,
+        avatar: _selectedAvatar, 
+        context: context
       );
 
       if (!mounted) return;
@@ -381,12 +383,11 @@ class _EditProfileViewState extends State<EditProfileView> {
   void _deleteAccount() {
     var dialog = AlertDialog(
       title: Text(
-        "Hesabını silmek istediğinden emin misin?",
+        context.localizations.deleteAccountConfirmation,
         textAlign: TextAlign.center,
         style: TextStyle(color: SpaceTheme.accentPink),
       ),
-      content: Text(
-          "Mail adresiniz ve oluşturduğunuz içerikler kalıcı olarak silinecektir. Devam etmek istiyor musun?"),
+      content: Text(context.localizations.deleteAccountWarning),
       actions: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -394,18 +395,19 @@ class _EditProfileViewState extends State<EditProfileView> {
           children: [
             ElevatedButton(
               onPressed: _signOut,
-              child: Text(
-                "Evet",
-                style: TextStyle(color: Colors.white),
-              ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: SpaceTheme.accentPink),
+              child: Text(
+                context.localizations.yes,
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Kapat")),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(context.localizations.close),
+            ),
           ],
         )
       ],
@@ -437,8 +439,7 @@ class _EditProfileViewState extends State<EditProfileView> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Çıkış yapılırken bir hata oluştu: ${e.toString()}'),
-          backgroundColor: Colors.red,
+content: Text(context.localizations.signOutError(e.toString())),
         ),
       );
     }

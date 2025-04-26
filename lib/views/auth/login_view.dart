@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/widgets/auth/header.dart';
 import 'package:masal/widgets/auth/login_form.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class _LoginViewState extends State<LoginView>
                     child: Column(
                       children: [
                         SizedBox(height: context.getDynamicHeight(8)),
-                        buildHeader(context,Icons.rocket_launch, 'Galaktik Giriş'),
+                        buildHeader(context,Icons.rocket_launch, context.localizations.loginTitle),
                         SizedBox(height: context.getDynamicHeight(5)),
                         FadeTransition(
                           opacity: _fadeAnimation,

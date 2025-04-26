@@ -3,15 +3,16 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import '../model/story/story_library_model.dart';
+import '../model/story/story_library_model.dart'; 
 
 class StoryDiscoverRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final Map<String, bool> _likeInProgress = {};
+  final Map<String, bool> _likeInProgress = {}; 
 
   Future<List<StoryLibraryModel>> getAllStories({
+    required String languageCode, 
     int limit = 15,
     String? startAfter,
     String? searchQuery,
@@ -20,40 +21,25 @@ class StoryDiscoverRepository {
       Query query = _firestore
           .collection('userStories')
           .where('isPublic', isEqualTo: true)
+          .where('Language', isEqualTo: languageCode) 
           .orderBy('likeCount', descending: true)
           .orderBy('createdAt', descending: true)
-          .limit(limit);
+          .limit(limit); 
 
       if (startAfter != null) {
         final startAfterDoc =
             await _firestore.collection('userStories').doc(startAfter).get();
         if (startAfterDoc.exists) {
           query = query.startAfterDocument(startAfterDoc);
+        } else {
+           log("Uyarı: $startAfter ID'li startAfter dokümanı bulunamadı.");
+           
         }
       }
 
       final QuerySnapshot snapshot = await query.get();
 
-      if (snapshot.docs.isEmpty) {
-        final allStoriesQuery = await _firestore
-            .collection('userStories')
-            .orderBy('createdAt', descending: true)
-            .limit(limit)
-            .get();
-
-        for (var doc in allStoriesQuery.docs) {
-          if (!(doc.data()).containsKey('isPublic')) {
-            await doc.reference.update({'isPublic': true});
-          }
-        }
-
-        return getAllStories(
-          limit: limit,
-          startAfter: startAfter,
-          searchQuery: searchQuery,
-        );
-      }
-
+  
       var stories = snapshot.docs.map((doc) {
         return StoryLibraryModel.fromFirebase(
           doc.id,
@@ -64,30 +50,37 @@ class StoryDiscoverRepository {
       if (searchQuery != null && searchQuery.isNotEmpty) {
         final searchLower = searchQuery.toLowerCase();
         stories = stories.where((story) {
-          return story.title.toLowerCase().contains(searchLower) ||
-              story.story.toLowerCase().contains(searchLower);
+          final titleLower = story.title.toLowerCase() ;
+          final storyLower = story.story.toLowerCase() ;
+          return titleLower.contains(searchLower) ||
+                 storyLower.contains(searchLower);
         }).toList();
       }
 
       return stories;
+
     } catch (e) {
+      log("Hikayeler yüklenirken hata oluştu: $e"); 
+
       if (e is FirebaseException) {
         if (e.code == 'failed-precondition') {
           throw Exception(
-              'Sistem hazırlanıyor, lütfen biraz bekleyin ve sayfayı yenileyin. '
-              'Bu işlem sadece ilk seferde gereklidir.');
+              'Veritabanı sorgusu için gerekli indeks eksik. '
+              'Lütfen Firestore indekslerinizi kontrol edin veya geliştirici konsolundaki '
+              'indeks oluşturma bağlantısını kullanın. (Detay: ${e.message})');
         }
-
         if (e.message?.contains('indexes?create_composite=') ?? false) {
-          throw Exception('Sistem ilk kurulum aşamasında. '
+          throw Exception('Sistem ilk kurulum aşamasında (indeks oluşturuluyor). '
               'Lütfen birkaç dakika bekleyip tekrar deneyin.');
         }
       }
 
       throw Exception(
-          'Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+          'Hikayeler yüklenirken bir hata oluştu. Lütfen tekrar deneyin. (Detay: $e)');
     }
   }
+
+
 
   Future<StoryLibraryModel?> getStory(String storyId) async {
     try {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 
 class EmptyView extends StatelessWidget {
   final bool isSearching;
@@ -19,8 +20,8 @@ class EmptyView extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             isSearching
-                ? 'Aradığınız kriterlere uygun hikaye bulunamadı'
-                : 'Henüz hikaye paylaşılmamış',
+                ? context.localizations.noStoryFound
+                : context.localizations.noStoryShared,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
@@ -28,8 +29,8 @@ class EmptyView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           if (!isSearching)
-            const Text(
-              'İlk hikayeyi siz paylaşın!',
+             Text(
+              context.localizations.shareFirstStory,
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 16,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/core/theme/widgets/starry_background.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
@@ -18,11 +19,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      if (mounted) {
-        context.read<StoryViewModel>().resetSelections();
-      }
-    });
+   
   }
 
   void _showErrorDialog(String message) {
@@ -30,7 +27,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Hata'),
+          title: Text(context.localizations.errorOccurred),
           content: Text(message),
           actions: [
             TextButton(
@@ -38,7 +35,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                 Navigator.of(context).pop();
                 context.read<StoryViewModel>().errorMessage = null;
               },
-              child: const Text('Tamam'),
+              child: Text(context.localizations.okButton),
             ),
           ],
         );
@@ -53,21 +50,21 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
       backgroundColor: SpaceTheme.primaryDark,
       appBar: AppBar(
         leadingWidth: 70,
-        
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Galaktik Hikaye Yaratıcısı',
+          context.localizations.galacticStoryCreator,
           style: SpaceTheme.titleStyle.copyWith(fontSize: 20),
         ),
         leading: Consumer<StoryViewModel>(
           builder: (context, viewModel, child) {
             return viewModel.currentStep > 1
                 ? IconButton(
-              icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 24),
-              onPressed: () => viewModel.goToPreviousStep(),
-            )
+                    icon: const Icon(Icons.arrow_back_rounded,
+                        color: Colors.white, size: 24),
+                    onPressed: () => viewModel.goToPreviousStep(),
+                  )
                 : const SizedBox.shrink();
           },
         ),
@@ -96,7 +93,7 @@ class _StoryCreatorViewState extends State<StoryCreatorView> {
                           ),
                           SizedBox(height: context.getDynamicHeight(2)),
                           Text(
-                            'Kategoriler yükleniyor...',
+                            context.localizations.loadingCategories,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 16,

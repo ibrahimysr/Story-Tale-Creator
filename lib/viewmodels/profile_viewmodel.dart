@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import '../model/user/user_profile_model.dart';
 import '../repository/profile_repository.dart';
 
@@ -53,7 +54,6 @@ class ProfileViewModel extends ChangeNotifier {
           'name': displayName,
           'username': email.split('@')[0], 
           'stories': 0,
-          'missions': '0/10',
           'level': 1,
           'avatar': 'boy (1).png',
         };
@@ -95,6 +95,7 @@ class ProfileViewModel extends ChangeNotifier {
     String? name,
     String? username,
     String? avatar,
+    BuildContext? context,
   }) async {
     try {
       _isLoading = true;
@@ -103,7 +104,7 @@ class ProfileViewModel extends ChangeNotifier {
 
       final user = _auth.currentUser;
       if (user == null) {
-        throw Exception('Kullanıcı oturumu bulunamadı');
+        throw Exception(context?.localizations.auth_required);
       }
 
       final updates = <String, dynamic>{};
@@ -116,7 +117,7 @@ class ProfileViewModel extends ChangeNotifier {
       if (username != null) {
         final isAvailable = await checkUsernameAvailable(username);
         if (!isAvailable && username != _userProfile?.username) {
-          throw Exception('Bu kullanıcı adı zaten kullanımda');
+          throw Exception(context?.localizations.username_taken);
         }
         updates['username'] = username;
       }

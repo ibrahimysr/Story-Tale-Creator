@@ -32,6 +32,7 @@ class _SupportViewState extends State<SupportView> {
     if (await canLaunchUrl(emailUri)) {
       await launchUrl(emailUri);
     } else {
+      if(mounted){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -41,7 +42,7 @@ class _SupportViewState extends State<SupportView> {
           backgroundColor: Colors.red.withValues(alpha:0.8),
         ),
       );
-    }
+    }}
   }
 
   @override

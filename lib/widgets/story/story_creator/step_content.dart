@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/viewmodels/story_viewmodel.dart';
 import 'package:masal/widgets/common/selector_card.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/widgets/story/story_creator/step_title.dart';
-import 'package:masal/views/story/story_preview_view.dart'; 
+import 'package:masal/views/story/story_preview_view.dart';
 
 class StepContent extends StatelessWidget {
   final StoryViewModel viewModel;
@@ -14,14 +15,30 @@ class StepContent extends StatelessWidget {
   Widget build(BuildContext context) {
     int currentStep = viewModel.currentStep;
 
+    if (viewModel.isLoadingCategories) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (viewModel.errorMessage != null && viewModel.places.isEmpty) {
+      return Center(
+          child: Text("Error loading categories: ${viewModel.errorMessage}"));
+    }
+
     switch (currentStep) {
       case 1:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Galaktik Mekan',
-              subtitle: 'Hikayenin geçeceği yeri seç',
+            StepTitle(
+              title: context.localizations.galacticPlaceTitle,
+              subtitle: context.localizations.galacticPlaceSubtitle,
             ),
+            if (viewModel.places.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'DEBUG: Places list is empty!',
+                  style: TextStyle(color: Colors.redAccent, fontSize: 16),
+                ),
+              ),
             SelectorCard(
               title: '',
               description: '',
@@ -32,7 +49,9 @@ class StepContent extends StatelessWidget {
               onChanged: (value) {
                 viewModel.updateSelection(place: value);
                 Future.delayed(const Duration(milliseconds: 300), () {
-                  viewModel.goToNextStep();
+                  if (context.mounted) {
+                    viewModel.goToNextStep();
+                  }
                 });
               },
             ),
@@ -41,9 +60,9 @@ class StepContent extends StatelessWidget {
       case 2:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Uzay Kahramanı',
-              subtitle: 'Ana karakterini seç',
+            StepTitle(
+              title: context.localizations.spaceHeroTitle,
+              subtitle: context.localizations.spaceHeroSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -55,7 +74,9 @@ class StepContent extends StatelessWidget {
               onChanged: (value) {
                 viewModel.updateSelection(character: value);
                 Future.delayed(const Duration(milliseconds: 300), () {
-                  viewModel.goToNextStep();
+                  if (context.mounted) {
+                    viewModel.goToNextStep();
+                  }
                 });
               },
             ),
@@ -64,9 +85,9 @@ class StepContent extends StatelessWidget {
       case 3:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Zaman Boyutu',
-              subtitle: 'Hikayenin zamanını seç',
+            StepTitle(
+              title: context.localizations.timeDimensionTitle,
+              subtitle: context.localizations.timeDimensionSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -78,7 +99,9 @@ class StepContent extends StatelessWidget {
               onChanged: (value) {
                 viewModel.updateSelection(time: value);
                 Future.delayed(const Duration(milliseconds: 300), () {
-                  viewModel.goToNextStep();
+                  if (context.mounted) {
+                    viewModel.goToNextStep();
+                  }
                 });
               },
             ),
@@ -87,9 +110,9 @@ class StepContent extends StatelessWidget {
       case 4:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Kozmik Duygu',
-              subtitle: 'Hikayedeki ana duyguyu seç',
+            StepTitle(
+              title: context.localizations.cosmicEmotionTitle,
+              subtitle: context.localizations.cosmicEmotionSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -101,7 +124,9 @@ class StepContent extends StatelessWidget {
               onChanged: (value) {
                 viewModel.updateSelection(emotion: value);
                 Future.delayed(const Duration(milliseconds: 300), () {
-                  viewModel.goToNextStep();
+                  if (context.mounted) {
+                    viewModel.goToNextStep();
+                  }
                 });
               },
             ),
@@ -110,9 +135,9 @@ class StepContent extends StatelessWidget {
       case 5:
         return Column(
           children: [
-            const StepTitle(
-              title: 'Yıldızlararası Olay',
-              subtitle: 'Hikayedeki ana olayı seç',
+            StepTitle(
+              title: context.localizations.intergalacticEventTitle,
+              subtitle: context.localizations.intergalacticEventSubtitle,
             ),
             SelectorCard(
               title: '',
@@ -123,11 +148,14 @@ class StepContent extends StatelessWidget {
               selectedValue: viewModel.selectedEvent,
               onChanged: (value) {
                 viewModel.updateSelection(event: value);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => StoryPreviewView()),
-                );
-                            },
+
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => StoryPreviewView()),
+                  );
+                }
+              },
             ),
           ],
         );

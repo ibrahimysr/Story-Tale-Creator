@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 import 'package:masal/core/theme/space_theme.dart';
 import 'package:masal/model/story/story_library_model.dart';
 import 'package:masal/viewmodels/story_display_viewmodel.dart';
@@ -209,8 +210,8 @@ class StoryLibraryItem extends StatelessWidget {
                                           .withValues(alpha: 0.3),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
-                                    child: const Text(
-                                      'Hikayeyi Oku',
+                                    child:  Text(
+                                      context.localizations.readTheStory,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14,

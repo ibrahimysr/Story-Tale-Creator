@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<User?> registerWithEmailAndPassword(String email, String password) async {
+  Future<User?> registerWithEmailAndPassword(BuildContext context, String email, String password) async {
+    if (!context.mounted) return null;
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
@@ -11,13 +14,16 @@ class FirebaseAuthService {
       );
       return result.user;
     } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e, isRegistration: true);
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw _handleFirebaseAuthException(context, e, isRegistration: true);
     } catch (e) {
-      throw Exception('Kayıt sırasında beklenmeyen bir hata oluştu: $e');
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
-  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(BuildContext context, String email, String password) async {
+    if (!context.mounted) return null;
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email.trim(),
@@ -25,23 +31,29 @@ class FirebaseAuthService {
       );
       return result.user;
     } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e, isRegistration: false);
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw _handleFirebaseAuthException(context, e, isRegistration: false);
     } catch (e) {
-      throw Exception('Giriş sırasında beklenmeyen bir hata oluştu: $e');
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
-  Future<void> resetPassword(String email) async {
+  Future<void> resetPassword(BuildContext context, String email) async {
+    if (!context.mounted) return;
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
     } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e, isReset: true);
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw _handleFirebaseAuthException(context, e, isReset: true);
     } catch (e) {
-      throw Exception('Şifre sıfırlama sırasında beklenmeyen bir hata oluştu: $e');
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
-  Future<void> deleteAccount(String email, String password) async {
+  Future<void> deleteAccount(BuildContext context, String email, String password) async {
+    if (!context.mounted) return;
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email.trim(),
@@ -49,74 +61,48 @@ class FirebaseAuthService {
       );
       await credential.user!.delete();
     } on FirebaseAuthException catch (e) {
-      throw _handleFirebaseAuthException(e, isDelete: true);
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw _handleFirebaseAuthException(context, e, isDelete: true);
     } catch (e) {
-      throw Exception('Hesap silme sırasında beklenmeyen bir hata oluştu: $e');
+      if (!context.mounted) throw Exception('Context not mounted');
+      throw Exception(context.localizations.genericError(e.toString()));
     }
   }
 
-  Exception _handleFirebaseAuthException(FirebaseAuthException e,
+  Exception _handleFirebaseAuthException(BuildContext context, FirebaseAuthException e,
       {bool isRegistration = false, bool isReset = false, bool isDelete = false}) {
+    if (!context.mounted) return Exception('Context not mounted');
+    
     String baseMessage = e.message ?? 'Bilinmeyen bir hata oluştu';
-    String localizedMessage = _getLocalizedErrorMessage(baseMessage);
-
+    
     switch (e.code) {
       case 'email-already-in-use':
-        return Exception(
-            'Bu e-posta adresi başka bir kaşif tarafından kullanılıyor! Yeni bir e-posta dene.');
+        return Exception(context.localizations.emailAlreadyInUse);
       case 'invalid-email':
-        return Exception(
-            'E-posta adresin geçerli değil. Lütfen yıldız haritalarını kontrol et ve tekrar dene!');
+        return Exception(context.localizations.invalidEmail);
       case 'weak-password':
-        return Exception(
-            'Şifren yeterince güçlü değil. Uzay macerası için en az 6 karakter, rakam ve özel işaretlerle bir şifre seç!');
+        return Exception(context.localizations.weakPassword);
       case 'operation-not-allowed':
-        return Exception(
-            'E-posta/şifre ile kayıt şu anda galakside kapalı. Lütfen daha sonra dene.');
+        return Exception(context.localizations.operationNotAllowed);
       case 'user-not-found':
-        return Exception(
-            'Bu e-posta ile bir kaşif bulunamadı. Lütfen doğru bilgilerini gir!');
+        return Exception(context.localizations.userNotFound);
       case 'wrong-password':
-        return Exception(
-            'Hatalı şifre! Lütfen yıldız şifreni kontrol et ve tekrar dene.');
+        return Exception(context.localizations.wrongPassword);
       case 'user-disabled':
-        return Exception(
-            'Bu hesap galakside devre dışı. Destek ekibine ulaş, seni yıldızlara geri götürelim!');
+        return Exception(context.localizations.userDisabled);
       case 'too-many-requests':
-        return Exception(
-            'Çok fazla giriş denemesi yaptın! Bir süre bekle ve sonra uzaya geri dön.');
+        return Exception(context.localizations.tooManyRequests);
       case 'network-request-failed':
-        return Exception(
-            'İnternet bağlantında bir sorun var. Lütfen uzay sinyalini kontrol et ve tekrar dene.');
+        return Exception(context.localizations.networkRequestFailed);
       case 'invalid-credential':
-        return Exception(
-            'Kimlik bilgilerinde bir hata var. Lütfen galaktik bilgilerini kontrol et.');
+        return Exception(context.localizations.invalidCredential);
       case 'timeout':
-        return Exception(
-            'İşlem yıldızlar arasında kayboldu! Lütfen tekrar dene.');
+        return Exception(context.localizations.timeout);
       case 'requires-recent-login':
-        return Exception(
-            'Güvenlik için tekrar giriş yapman gerekiyor. Lütfen giriş yap ve tekrar dene.');
+        return Exception(context.localizations.requiresRecentLogin);
       default:
-        return Exception(
-            'Üzgünüz, bir galaktik hata oluştu: $localizedMessage. Lütfen daha sonra yıldızlara dön.');
+        return Exception(context.localizations.genericError(baseMessage));
     }
-  }
-
-  String _getLocalizedErrorMessage(String message) {
-    if (message.contains('network error')) {
-      return 'İnternet bağlantını kontrol et, uzay sinyalin zayıf olabilir!';
-    }
-    if (message.contains('invalid-credential')) {
-      return 'Kimlik bilgilerinde bir hata var, lütfen kontrol et!';
-    }
-    if (message.contains('timeout')) {
-      return 'İşlem yıldızlar arasında kayboldu, tekrar dene!';
-    }
-    if (message.contains('The supplied auth credential is incorrect, malformed or has expired')) {
-      return 'Kimlik bilgilerinde sorun var, lütfen galaktik verilerini yenile!';
-    }
-    return message;
   }
 
   Future<void> signOut() async {

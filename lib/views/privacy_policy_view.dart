@@ -58,10 +58,11 @@ class PrivacyPolicyView extends StatelessWidget {
                             SizedBox(height: context.getDynamicHeight(2)),
                             Text(
                               '''
-Uzay Macerası Gizlilik Politikası
+
+Temizlikcin Teknolojileri Yıldız Masalcısı Gizlilik Politikası
 Son Güncelleme: 17.03.2025
 
-Merhaba, yıldızlararası yolcu! Biz, Uzay Macerası Ekibi ("Galaksi Mürettebatı" ya da "Biz"), bu Platform (https://ibrahimysr.com ve mobil uygulamalarımız) ile sana eşsiz bir uzay macerası sunuyoruz. Bu Gizlilik Politikası, kişisel verilerinizi nasıl topladığımızı, kullandığımızı ve galaksi çapında koruduğumuzu açıklayan bir yıldız rehberidir.
+Merhaba, yıldızlararası yolcu! Biz, Uzay Macerası Ekibi Biz, bu Platform (https://ibrahimysr.com ve mobil uygulamalarımız) ile sana eşsiz bir uzay macerası sunuyoruz. Bu Gizlilik Politikası, kişisel verilerinizi nasıl topladığımızı, kullandığımızı ve galaksi çapında koruduğumuzu açıklayan bir yıldız rehberidir.
 
 ### Verileriniz Bizimle Güvende mi?
 Evet, kaptan! Kişisel verileriniz (e-posta, şifre, cihaz bilgileri gibi), uzay gemimizin en güvenli kabinlerinde saklanır. Bu verileri yalnızca Hizmetlerimizi sunmak, hesabınızı yönetmek ve galaksimizi geliştirmek için kullanıyoruz.
@@ -83,15 +84,10 @@ Verilerinizi yalnızca şu durumlarda paylaşırız:
 ### Haklarınız Neler?
 - Verilerine erişme, düzeltme veya silme hakkı.
 - İşlemeye itiraz etme veya verilerini başka bir gemiye taşıma.
-- Soruların için bize ulaşma: ibrahimyasar2701@gmail.com
+- Soruların için bize ulaşma: temizlikcin.rukiyeagca@gmail.com
 
 ### Güvenlik ve Saklama
 Verilerinizi yıldız tozuna dönüşmeden koruyoruz. Teknik ve organizasyonel önlemlerle güvenliğini sağlıyor, sadece gerektiği sürece saklıyoruz.
-
-### Bize Ulaşın
-Soruların varsa, galaksi iletişim kanalımız açık:
-- E-posta: ibrahimyasar2701@gmail.com
-
 
 Bu Politikayı kabul ederek, uzay gemimize binmiş ve kurallarımıza uymuş olursunuz. Yıldızlarla dolu bir yolculuk dileriz!
                               ''',

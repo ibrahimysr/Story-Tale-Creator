@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masal/core/extension/context_extension.dart';
+import 'package:masal/core/extension/locazition_extension.dart';
 
 class EmptyView extends StatelessWidget {
   const EmptyView({super.key});
@@ -16,16 +17,16 @@ class EmptyView extends StatelessWidget {
             size: 60,
           ),
           SizedBox(height: context.getDynamicHeight(2)),
-          const Text(
-            'Henüz kaydedilmiş hikayeniz yok',
+           Text(
+            context.localizations.noSavedStories,
             style: TextStyle(
               color: Colors.white,
               fontSize: 18,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Yeni bir hikaye oluşturun ve kaydedin!',
+           Text(
+            context.localizations.createNewStory,
             style: TextStyle(
               color: Colors.white70,
               fontSize: 16,
